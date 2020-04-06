@@ -8,7 +8,7 @@ using namespace std;
 template<class T> ostream& operator<<(ostream &os,vector<T> V){os<<"[ ";for(auto v:V)os<<v<<" ";return os<<"]";}
 template<class L,class R> ostream& operator<<(ostream &os,pair<L,R> P){return os<<"("<<P.first<<","<<P.second<<")";}
 
-#ifndef AR
+#ifndef TRACE
 #define trace(...) __f(#__VA_ARGS__,__VA_ARGS__)
 template<typename Arg1>
 void __f(const char* name,Arg1&& arg1){
@@ -43,9 +43,8 @@ typedef vector<VI> VVI;
 auto clk=clock();
 
 int mod = pow(10,9) +7;
-const int inf = 2e9;
-const long long linf = 2e18;
-const double eps = 1e-9;
+const long long inf = 2e18;
+const double eps = 1e-6;
 const int  LOGN = 20;
 
 int pow_mod(int a,int b,int m= mod){
@@ -87,10 +86,46 @@ string to_bin(T num){
 ///////////////////////////////////////////////////////////////////////////////////
 
 
-void solve(){
-    trace(1) ;
+void multiply(int arr[3][3],int brr[3][3]){
+    int crr[3][3];
+    forn(i,3)forn(j,3) crr[i][j] = 0;
+    forn(i,3)forn(j,3)forn(k,3){
+        crr[i][j] +=arr[i][k]*brr[k][j];
+        if(crr[i][j] > mod) crr[i][j]%=mod;
+    }
+    forn(i,3)forn(j,3) arr[i][j] = crr[i][j];
 }
+void solve(){
+   
+    int n;
+    cin >> n;
+    if(n == 1){
+        cout << 1 << endl;
+        return ;
+    }
+    if(n == 2){
+        cout << 6 << endl;
+        return;
+    }
+    n -=2;
+    
+    int b[3][3] ={{2,1,0},{mod-1,0,0},{4,0,1}};
+    int a[3][3] = {{6,1,1},{0,0,0},{0,0,0}};
 
+    while(n){
+        if(n&1){
+            multiply(a,b);
+        }
+        multiply(b,b);
+        n>>=1;
+    }
+    cout << a[0][0] << "\n";
+    // [s f 1] [2  1  0 ]  = [t s 1]
+    //          [-1 0 0 ]
+    //          [4  0 1 ]
+
+
+}
 
 signed main()
 {
@@ -99,11 +134,14 @@ signed main()
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
  #endif 
+    // cout.precision(6);cout << fixed;
+
    int tt = 1;
-//    cin >> tt;
+    cin >> tt;
    while(tt--){
        solve();
    }
+   cout << "ok";
 #ifndef ONLINE_JUDGE
 	cerr<<"Time elapsed: "<<(double)(clock()-clk)/CLOCKS_PER_SEC<<"  seconds" << "\n";
 #endif

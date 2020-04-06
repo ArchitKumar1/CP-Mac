@@ -94,7 +94,6 @@ using namespace std;
 template<class T> ostream& operator<<(ostream &os,vector<T> V){os<<"[ ";for(auto v:V)os<<v<<" ";return os<<"]";}
 template<class L,class R> ostream& operator<<(ostream &os,pair<L,R> P){return os<<"("<<P.first<<","<<P.second<<")";}
 
-
 #ifndef ONLINE_JUDGE
 #define trace(...) __f(#__VA_ARGS__,__VA_ARGS__)
 template<typename Arg1>
@@ -157,30 +156,7 @@ int main()
     freopen("output.txt", "w", stdout);
 #endif
     
-    int n,k;
-    cin >> n >> k;
-    vector<int> arr(n);
-    forn(i,n) cin >> arr[i];
-    sort(ALL(arr));
-    vector<int> brr= arr;
-    reverse(ALL(brr));
-    trace(arr,brr);
-    LL ans = INT_MAX;
-    LL temp = 0;
-    for(int i = 0;i<k-1;i++){
-        temp += (brr[i] - brr[i+1])*(i+1);
-    }
-    trace(temp);
-    ans = min(ans,temp);
-    temp = 0;
-    for(int i = 0;i<k-1;i++){
-        temp += (arr[i+1] - arr[i])*(i+1);
-    }
-    trace(temp);
-
-    ans = min(ans,temp);
-
-    cout << ans << endl;
+   cout << "OK" << endl;
     
         
 #ifndef ONLINE_JUDGE

@@ -8,7 +8,7 @@ using namespace std;
 template<class T> ostream& operator<<(ostream &os,vector<T> V){os<<"[ ";for(auto v:V)os<<v<<" ";return os<<"]";}
 template<class L,class R> ostream& operator<<(ostream &os,pair<L,R> P){return os<<"("<<P.first<<","<<P.second<<")";}
 
-#ifndef AR
+#ifndef TRACE
 #define trace(...) __f(#__VA_ARGS__,__VA_ARGS__)
 template<typename Arg1>
 void __f(const char* name,Arg1&& arg1){
@@ -43,9 +43,8 @@ typedef vector<VI> VVI;
 auto clk=clock();
 
 int mod = pow(10,9) +7;
-const int inf = 2e9;
-const long long linf = 2e18;
-const double eps = 1e-9;
+const long long inf = 2e18;
+const double eps = 1e-6;
 const int  LOGN = 20;
 
 int pow_mod(int a,int b,int m= mod){
@@ -88,7 +87,10 @@ string to_bin(T num){
 
 
 void solve(){
-    trace(1) ;
+   
+    
+
+
 }
 
 
@@ -99,8 +101,10 @@ signed main()
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
  #endif 
+    cout.precision(6);cout << fixed;
+
    int tt = 1;
-//    cin >> tt;
+    cin >> tt;
    while(tt--){
        solve();
    }
