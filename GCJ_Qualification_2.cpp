@@ -86,13 +86,62 @@ string to_bin(T num){
 ///////////////////////////////////////////////////////////////////////////////////
 
 
-
-
 void solve(){
    
-    
-   
-    
+    int n;
+    cin >> n;
+    vector<pair<int,int>> v(n);
+    forn(i,n) cin >> v[i].F >> v[i].S;
+    vector<pair<int,int>> all;
+    map<pair<int,int>,pair<int,int>> m1;
+    forn(i,n){
+        all.emplace_back(v[i].F,1LL);
+        all.emplace_back(v[i].S,-1LL);
+        m1[{v[i].F,1LL}] = {v[i].S,-1LL};
+    }
+    sort(ALL(all));
+    int curr =0 ;
+    string per ="JC";
+    PII x = {0,0};
+    PII y = {0,0};
+    string ans = "";
+    for(PII p : all){
+
+        if(x <= p){
+            x = {0,0};
+        }
+        if(y <= p){
+            y = {0,0};
+        }
+            
+        if(p.S == 1){   
+            curr +=1;
+            // trace(p,curr,"d");
+            if(curr>2){
+                cout << "IMPOSSIBLE" <<endl;
+                return ;   
+            }
+            if(curr == 2 || curr == 1){
+                bool ok = 0;
+                if(x == make_pair(0LL,0LL)){
+                    x = m1[p];
+                    ans += per[0];
+                    continue;
+                }
+
+                if(y == make_pair(0LL,0LL)){
+                   y = m1[p];
+                    ans += per[1];
+                }
+            }
+        }else{
+            curr-=1;
+            
+            // trace(p,curr);
+        }
+        
+    }
+    cout << ans << endl;
 }
 
 
@@ -105,10 +154,11 @@ signed main()
  #endif 
     cout.precision(6);cout << fixed;
 
-    seive();
    int tt = 1;
-    // cin >> tt;
+    cin >> tt;
+    int pos = 1;
    while(tt--){
+       cout << "Case #" << pos++ <<": ";
        solve();
    }
 #ifndef ONLINE_JUDGE

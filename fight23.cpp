@@ -86,12 +86,43 @@ string to_bin(T num){
 ///////////////////////////////////////////////////////////////////////////////////
 
 
+const int N = 1e6+5;
 
+vector<int> prime(N,1);
+vector<int> v(N,0);
+
+void seive(){
+    prime[0] = prime[1] = 0;
+    for(int i = 2;i*i<=N;i++){
+        if(prime[i] == 1){
+            v[i] = 0;
+            for(int j = i*i;j<N;j+=i){
+                prime[j] = 0;
+                if(v[j] == 0) v[j] = i;
+            }
+        }
+    }
+}
 
 void solve(){
    
     
-   
+   int n;
+   cin >> n;
+    for(int i = 0;i<n;i++){
+        int ans = 0;
+        int r;
+        cin >> r;
+        if(v[r] == 0){
+            ans += v[r];
+        }else{
+            ans += r - v[r];
+        }
+        cout << ans << endl;
+    }
+    // for(int i = 0;i<50;i++){
+    //     trace(i,prime[i],v[i]);
+    // }
     
 }
 

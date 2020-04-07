@@ -86,13 +86,35 @@ string to_bin(T num){
 ///////////////////////////////////////////////////////////////////////////////////
 
 
-
-
 void solve(){
    
+    int n;
+    cin >> n;
+    int arr[n][n];
+    forn(i,n)forn(j,n) cin >> arr[i][j];
+
     
-   
     
+    int r = 0;
+    int c = 0;
+    int t = 0;
+    for(int i = 0;i<n;i++){
+        set<int> s;
+        for(int j = 0;j<n;j++){
+            s.insert(arr[i][j]);
+        }
+        r += (s.size() < n);
+    }
+    for(int i = 0;i<n;i++){
+        set<int> s;
+        for(int j = 0;j<n;j++){
+            s.insert(arr[j][i]);
+        }
+        c += (s.size() < n);
+    }
+    forn(i,n)t += arr[i][i];
+    cout << t << " " << r << " " << c <<  endl;
+
 }
 
 
@@ -105,10 +127,11 @@ signed main()
  #endif 
     cout.precision(6);cout << fixed;
 
-    seive();
    int tt = 1;
-    // cin >> tt;
+    cin >> tt;
+    int pos = 1;
    while(tt--){
+       cout << "Case #" << pos++ <<": ";
        solve();
    }
 #ifndef ONLINE_JUDGE

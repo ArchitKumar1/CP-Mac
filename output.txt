@@ -1,1 +1,54 @@
-ok
+0
+0
+38
+48
+i : 0 | prime[i] : 0 | v[i] : 0
+i : 1 | prime[i] : 0 | v[i] : 0
+i : 2 | prime[i] : 1 | v[i] : 0
+i : 3 | prime[i] : 1 | v[i] : 0
+i : 4 | prime[i] : 0 | v[i] : 2
+i : 5 | prime[i] : 1 | v[i] : 0
+i : 6 | prime[i] : 0 | v[i] : 2
+i : 7 | prime[i] : 1 | v[i] : 0
+i : 8 | prime[i] : 0 | v[i] : 2
+i : 9 | prime[i] : 0 | v[i] : 3
+i : 10 | prime[i] : 0 | v[i] : 2
+i : 11 | prime[i] : 1 | v[i] : 0
+i : 12 | prime[i] : 0 | v[i] : 2
+i : 13 | prime[i] : 1 | v[i] : 0
+i : 14 | prime[i] : 0 | v[i] : 2
+i : 15 | prime[i] : 0 | v[i] : 3
+i : 16 | prime[i] : 0 | v[i] : 2
+i : 17 | prime[i] : 1 | v[i] : 0
+i : 18 | prime[i] : 0 | v[i] : 2
+i : 19 | prime[i] : 1 | v[i] : 0
+i : 20 | prime[i] : 0 | v[i] : 2
+i : 21 | prime[i] : 0 | v[i] : 3
+i : 22 | prime[i] : 0 | v[i] : 2
+i : 23 | prime[i] : 1 | v[i] : 0
+i : 24 | prime[i] : 0 | v[i] : 2
+i : 25 | prime[i] : 0 | v[i] : 5
+i : 26 | prime[i] : 0 | v[i] : 2
+i : 27 | prime[i] : 0 | v[i] : 3
+i : 28 | prime[i] : 0 | v[i] : 2
+i : 29 | prime[i] : 1 | v[i] : 0
+i : 30 | prime[i] : 0 | v[i] : 2
+i : 31 | prime[i] : 1 | v[i] : 0
+i : 32 | prime[i] : 0 | v[i] : 2
+i : 33 | prime[i] : 0 | v[i] : 3
+i : 34 | prime[i] : 0 | v[i] : 2
+i : 35 | prime[i] : 0 | v[i] : 5
+i : 36 | prime[i] : 0 | v[i] : 2
+i : 37 | prime[i] : 1 | v[i] : 0
+i : 38 | prime[i] : 0 | v[i] : 2
+i : 39 | prime[i] : 0 | v[i] : 3
+i : 40 | prime[i] : 0 | v[i] : 2
+i : 41 | prime[i] : 1 | v[i] : 0
+i : 42 | prime[i] : 0 | v[i] : 2
+i : 43 | prime[i] : 1 | v[i] : 0
+i : 44 | prime[i] : 0 | v[i] : 2
+i : 45 | prime[i] : 0 | v[i] : 3
+i : 46 | prime[i] : 0 | v[i] : 2
+i : 47 | prime[i] : 1 | v[i] : 0
+i : 48 | prime[i] : 0 | v[i] : 2
+i : 49 | prime[i] : 0 | v[i] : 7
