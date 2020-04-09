@@ -45,7 +45,7 @@ auto clk=clock();
 int mod = pow(10,9) +7;
 const long long inf = 2e18;
 const double eps = 1e-6;
-const int  LOGN = 20;
+const int  LOGN = 25;
 
 int pow_mod(int a,int b,int m= mod){
     long long  res = 1;
@@ -86,13 +86,55 @@ string to_bin(T num){
 ///////////////////////////////////////////////////////////////////////////////////
 
 
+const int N = 2e5;
+int up[N][25];
+vector<int> depth(N,0);
+vector<int> crr(N);
+vector<int> arr(N);
+vector<int> G[N];
 
+
+void dfs(int s,int par){
+    depth[s] = 1 + depth[par];
+    up[s][0] = par;
+    for(int c : G[s]){
+        if(c != par){
+            dfs(c,s);
+        }
+    }
+}
 
 void solve(){
    
+    int n;
+    cin >> n;
+    int q;
+    cin >> q;
+    forn(i,n-1){
+        int x,y;
+        cin >>x >> y;
+        G[x].PB(y);
+        G[y].PB(x);
+    }
+    dfs(1,1);
+    for(int i = 1;i<LOGN;i++){
+        for(int j = 1;j<=n;j++){
+            up[j][i] = up[up[j][i-1]][i-1];
+        }
+    }
+    for(int i = 1;i<=n;i++){
+        cin >> arr[i];
+    }
+    for(int i = 1;i<=n;i++){
+        cin >> crr[i];
+    }
     
-   
-    
+    while(q--){
+        int a,x;
+        cin >> a >> x;
+        
+    }
+
 }
 
 
@@ -103,9 +145,9 @@ signed main()
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
  #endif 
-    cout.precision(6);cout << fixed;
+    srand(chrono::high_resolution_clock::now().time_since_epoch().count());
+	cout<<fixed<<setprecision(8);
 
-    seive();
    int tt = 1;
     // cin >> tt;
    while(tt--){
