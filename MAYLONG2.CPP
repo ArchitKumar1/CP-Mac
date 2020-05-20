@@ -23,7 +23,7 @@ void __f(const char* names,Arg1&& arg1,Args&&... args){
 #endif
 
 #define FASTIO ios_base::sync_with_stdio(false); cin.tie(NULL);
-#define TC int t; cin >> t;while(t--)
+#define TC int testcase; cin >> testcase;while(testcase--)
 #define forn(i,n) for(int i=0;i<n;i++)
 
 #define ALL(x) x.begin(),x.end()
@@ -85,72 +85,11 @@ string to_bin(T num){
 }
 ///////////////////////////////////////////////////////////////////////////////////
 
-const int N = 2e5+5;
-
-int n,k;
-vector<int> G[N];
-vector<int> depth(N,0);
-vector<int> subcnt(N,0);
-vector<int> vis(N,0);
-vector<int> parent(N,0);
-priority_queue<pair<int,int>> pall;
-vector<int> children(N,0);
-
-void dfs(int s,int par){
-    
-    int child= 0;
-    parent[s]  = par;
-    
-    for(int  c: G[s]){
-    
-        if(c ==par) continue;
-        depth[c] = depth[s] + 1;
-        dfs(c,s);
-        subcnt[s] += subcnt[c] + 1;
-        
-        ++child;
-    }
-    children[s] = child;
-
+void minus1(){
+    cout << "-1" << endl;
+    exit(0);
 }
-void solve(){
-   
-    cin >> n >> k;
-    forn(i,n-1){
-        int x,y;
-        cin >> x>> y; 
-        G[x].PB(y); G[y].PB(x);
-    }
-    dfs(1,0);
 
-    for(int i =2;i<=n;i++){
-        if(G[i].size() == 1){
-            // trace(depth[i] - 1,i,1);
-            pall.push({depth[i] ,i});
-            
-        }
-    }
-    int fans = 0;
-    while(k--){
-        auto t = pall.top();
-        pall.pop();
-        // trace(t);
-        int i = t.second;
-        int gain = t.first;
-        // trace(i,parent[i],depth[i]);
-
-        fans += gain;
-        i = parent[i];
-        children[i]--;
-        if( children[i]==0){
-            pall.push({depth[i] - subcnt[i],i});
-        }
-        // trace("\n");
-    }
-    cout << fans << endl;
-
-
-}
 
 
 signed main()
@@ -163,11 +102,49 @@ signed main()
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
 	cout<<fixed<<setprecision(12);
 
-   int tt = 1;
-    // cin >> tt;
-   while(tt--){
-       solve();
-   }
+    
+    int x,y,l,r;
+    cin >> x >> y >> l >> r;
+
+    int len1 = 0;
+    int len2 = 0;
+    for(int i = 0;i<31;i++){
+        if((1<<i)&r) len1 = i;
+    }
+    for(int i = 0;i<31;i++){
+        if((1<<i)&l) len2 = i;
+    }
+
+    int def = 0 ;
+    for(int i =len2;~i;i--){
+        int a = ((1<<i)&x) >=1;
+        int b = ((1<<i)&y) >=1;
+
+        if( a ^ b ){
+            def = i;
+            break;
+        }
+    }
+
+    int first = 0;
+    int second = 0 ;
+
+
+    for(int i = 31;i>=0;i--){
+        int rb = ((1 << i) & r )>= 1;
+        if(rb == 0){
+            continue;
+        }else{
+            
+        }
+
+    }
+    
+    
+    
+    
+
+    
 #ifndef ONLINE_JUDGE
 	cerr<<"Time elapsed: "<<(double)(clock()-clk)/CLOCKS_PER_SEC<<"  seconds" << "\n";
 #endif

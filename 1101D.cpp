@@ -89,66 +89,26 @@ const int N = 2e5+5;
 
 int n,k;
 vector<int> G[N];
-vector<int> depth(N,0);
-vector<int> subcnt(N,0);
-vector<int> vis(N,0);
-vector<int> parent(N,0);
-priority_queue<pair<int,int>> pall;
-vector<int> children(N,0);
+vector<int> a(N);
+vector<int> in(N);
+vector<int> out(N);
 
-void dfs(int s,int par){
-    
-    int child= 0;
-    parent[s]  = par;
-    
-    for(int  c: G[s]){
-    
-        if(c ==par) continue;
-        depth[c] = depth[s] + 1;
-        dfs(c,s);
-        subcnt[s] += subcnt[c] + 1;
-        
-        ++child;
-    }
-    children[s] = child;
 
+void dfs1(int s,int par){
+    f
 }
+
 void solve(){
-   
-    cin >> n >> k;
+    int n;
+    cin >> n;
+    forn(i,n) cin >> a[i];
     forn(i,n-1){
         int x,y;
-        cin >> x>> y; 
-        G[x].PB(y); G[y].PB(x);
+        cin >> x >> y;
+        G[x].PB(y);
+        G[y].PB(x);
     }
     dfs(1,0);
-
-    for(int i =2;i<=n;i++){
-        if(G[i].size() == 1){
-            // trace(depth[i] - 1,i,1);
-            pall.push({depth[i] ,i});
-            
-        }
-    }
-    int fans = 0;
-    while(k--){
-        auto t = pall.top();
-        pall.pop();
-        // trace(t);
-        int i = t.second;
-        int gain = t.first;
-        // trace(i,parent[i],depth[i]);
-
-        fans += gain;
-        i = parent[i];
-        children[i]--;
-        if( children[i]==0){
-            pall.push({depth[i] - subcnt[i],i});
-        }
-        // trace("\n");
-    }
-    cout << fans << endl;
-
 
 }
 

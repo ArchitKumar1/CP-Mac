@@ -17,6 +17,9 @@
         "string": "cpp",
         "*.tcc": "cpp",
         "utility": "cpp",
-        "set": "cpp"
+        "set": "cpp",
+        "cmath": "cpp",
+        "chrono": "cpp",
+        "ios": "cpp"
     }
 }

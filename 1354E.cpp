@@ -23,7 +23,7 @@ void __f(const char* names,Arg1&& arg1,Args&&... args){
 #endif
 
 #define FASTIO ios_base::sync_with_stdio(false); cin.tie(NULL);
-#define TC int t; cin >> t;while(t--)
+#define TC int testcase; cin >> testcase;while(testcase--)
 #define forn(i,n) for(int i=0;i<n;i++)
 
 #define ALL(x) x.begin(),x.end()
@@ -43,7 +43,8 @@ typedef vector<VI> VVI;
 auto clk=clock();
 
 int mod = pow(10,9) +7;
-const long long inf = 2e18;
+const long long inf = 1e9;
+const long long linf = 2e18;
 const double eps = 1e-6;
 const int  LOGN = 25;
 
@@ -83,76 +84,48 @@ string to_bin(T num){
     reverse(binary.begin(), binary.end());
     return binary;
 }
+int to_int(string s){
+    reverse(s.begin(), s.end());
+    int pos = 0;
+    int ans = 0;
+    for(char c : s){
+        ans += (c == '1' ? pow(2,pos) : 0);
+        pos ++;
+    }
+    return ans;
+}
 ///////////////////////////////////////////////////////////////////////////////////
 
-const int N = 2e5+5;
 
-int n,k;
+const int N = 5e3+10;
+const int M = 1e5 + 10;
+
 vector<int> G[N];
-vector<int> depth(N,0);
-vector<int> subcnt(N,0);
+vector<int> colors(N);
 vector<int> vis(N,0);
-vector<int> parent(N,0);
-priority_queue<pair<int,int>> pall;
-vector<int> children(N,0);
 
-void dfs(int s,int par){
+int n,m;
+int n1,n2,n3;
+priority_queue<pair<int,int>> pq;
+
+
+void dfs(int s){
+
     
-    int child= 0;
-    parent[s]  = par;
-    
-    for(int  c: G[s]){
-    
-        if(c ==par) continue;
-        depth[c] = depth[s] + 1;
-        dfs(c,s);
-        subcnt[s] += subcnt[c] + 1;
-        
-        ++child;
+
+    auto cnt = pq.top().first;
+    auto col = pq.top().second;
+    pq.pop();
+    if(cnt-1 > 0){
+        pq.push({cnt-1,col});
     }
-    children[s] = child;
+    if(colors[s] == 0){
+        colors[s] = col;
+    }
+
+    
 
 }
-void solve(){
-   
-    cin >> n >> k;
-    forn(i,n-1){
-        int x,y;
-        cin >> x>> y; 
-        G[x].PB(y); G[y].PB(x);
-    }
-    dfs(1,0);
-
-    for(int i =2;i<=n;i++){
-        if(G[i].size() == 1){
-            // trace(depth[i] - 1,i,1);
-            pall.push({depth[i] ,i});
-            
-        }
-    }
-    int fans = 0;
-    while(k--){
-        auto t = pall.top();
-        pall.pop();
-        // trace(t);
-        int i = t.second;
-        int gain = t.first;
-        // trace(i,parent[i],depth[i]);
-
-        fans += gain;
-        i = parent[i];
-        children[i]--;
-        if( children[i]==0){
-            pall.push({depth[i] - subcnt[i],i});
-        }
-        // trace("\n");
-    }
-    cout << fans << endl;
-
-
-}
-
-
 signed main()
 {
     FASTIO
@@ -163,11 +136,27 @@ signed main()
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
 	cout<<fixed<<setprecision(12);
 
-   int tt = 1;
-    // cin >> tt;
-   while(tt--){
-       solve();
-   }
+   
+    cin >> n >> m;
+    cin >> n1 >> n2 >> n3;
+    forn(i,m){
+        int x,y;
+        cin  >> x >> y;
+        G[x].PB(y);
+        G[y].PB(x);
+    }
+    pq.push({n1,1});
+    pq.push({n2,2});
+    pq.push({n3,3});
+
+    dfs(1,0);
+
+
+    
+
+       
+          
+    
 #ifndef ONLINE_JUDGE
 	cerr<<"Time elapsed: "<<(double)(clock()-clk)/CLOCKS_PER_SEC<<"  seconds" << "\n";
 #endif

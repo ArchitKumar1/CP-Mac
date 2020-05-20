@@ -23,7 +23,7 @@ void __f(const char* names,Arg1&& arg1,Args&&... args){
 #endif
 
 #define FASTIO ios_base::sync_with_stdio(false); cin.tie(NULL);
-#define TC int t; cin >> t;while(t--)
+#define TC int testcase; cin >> testcase;while(testcase--)
 #define forn(i,n) for(int i=0;i<n;i++)
 
 #define ALL(x) x.begin(),x.end()
@@ -85,73 +85,32 @@ string to_bin(T num){
 }
 ///////////////////////////////////////////////////////////////////////////////////
 
-const int N = 2e5+5;
-
-int n,k;
-vector<int> G[N];
-vector<int> depth(N,0);
-vector<int> subcnt(N,0);
-vector<int> vis(N,0);
-vector<int> parent(N,0);
-priority_queue<pair<int,int>> pall;
-vector<int> children(N,0);
-
-void dfs(int s,int par){
-    
-    int child= 0;
-    parent[s]  = par;
-    
-    for(int  c: G[s]){
-    
-        if(c ==par) continue;
-        depth[c] = depth[s] + 1;
-        dfs(c,s);
-        subcnt[s] += subcnt[c] + 1;
-        
-        ++child;
-    }
-    children[s] = child;
-
-}
-void solve(){
-   
-    cin >> n >> k;
-    forn(i,n-1){
-        int x,y;
-        cin >> x>> y; 
-        G[x].PB(y); G[y].PB(x);
-    }
-    dfs(1,0);
-
-    for(int i =2;i<=n;i++){
-        if(G[i].size() == 1){
-            // trace(depth[i] - 1,i,1);
-            pall.push({depth[i] ,i});
-            
-        }
-    }
-    int fans = 0;
-    while(k--){
-        auto t = pall.top();
-        pall.pop();
-        // trace(t);
-        int i = t.second;
-        int gain = t.first;
-        // trace(i,parent[i],depth[i]);
-
-        fans += gain;
-        i = parent[i];
-        children[i]--;
-        if( children[i]==0){
-            pall.push({depth[i] - subcnt[i],i});
-        }
-        // trace("\n");
-    }
-    cout << fans << endl;
-
-
+void minus1(){
+    cout << "-1" << endl;
+    exit(0);
 }
 
+
+const int N = 5001;
+
+unordered_map<string,int> m1;
+unordered_map<int,string> m2;
+vector<int> sz(N,1);
+vector<int> par(N,0);
+
+int find(int v ){
+    return par[v] == v ? v : find(par[v]);
+}
+void merge(int a,int b){
+    a = find(a);
+    b = find(b);
+    if(a  == b) return ;
+    if(sz[a] < sz[b]){
+        swap(a,b);
+    }
+    sz[a] += sz[b];
+    par[b] = a;
+}
 
 signed main()
 {
@@ -163,11 +122,51 @@ signed main()
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
 	cout<<fixed<<setprecision(12);
 
-   int tt = 1;
-    // cin >> tt;
-   while(tt--){
-       solve();
+    forn(i,N){
+        par[i] = i;
+    }
+   int m;
+   cin >> m;
+   int cnt = 0;
+   forn(i,m){
+       string a,b;
+       cin >> a >> b;
+       int x ,y;
+
+       if(m1.find(a)!= m1.end()){
+           x = m1[a];
+       }else{
+           cnt+=1;
+           m1[a] = cnt;
+           m2[cnt] = a;
+           x = cnt;
+           
+       }
+       if(m1.find(b)!= m1.end()){
+           x = m1[b];
+       }else{
+           cnt+=1;
+           m1[b] = cnt;
+           m2[cnt] = b;
+           y =cnt;
+       }
+       trace(x,y);
+       merge(x,y);
    }
+   for(int  i = 1;i<=cnt;i++){
+       trace(find(i),m2[find(i)],m2[i]);
+       cout << m2[i] << " " ;
+       int ans = m  - sz[find(i)];
+       cout << m  << endl;
+   }
+    
+    
+
+  
+    
+
+
+
 #ifndef ONLINE_JUDGE
 	cerr<<"Time elapsed: "<<(double)(clock()-clk)/CLOCKS_PER_SEC<<"  seconds" << "\n";
 #endif

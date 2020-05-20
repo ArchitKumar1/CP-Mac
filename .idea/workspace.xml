@@ -9,7 +9,18 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="96ba9a7f-ed5f-4ba0-b3fb-1fd3ef2791d0" name="Default Changelist" comment="" />
+    <list default="true" id="96ba9a7f-ed5f-4ba0-b3fb-1fd3ef2791d0" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vscode/settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/.vscode/settings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/besttemp_LL_replaced_by_int" beforeDir="false" afterPath="$PROJECT_DIR$/besttemp_LL_replaced_by_int" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/input.txt" beforeDir="false" afterPath="$PROJECT_DIR$/input.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/output.txt" beforeDir="false" afterPath="$PROJECT_DIR$/output.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/template" beforeDir="false" afterPath="$PROJECT_DIR$/template" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/template.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/template.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testuperandlowerbound.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/testuperandlowerbound.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/whoware.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/whoware.cpp" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -17,6 +28,9 @@
   </component>
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1WCBSxtqVJP9m6LTdWdwYuJMKcZ" />
   <component name="ProjectViewState">
@@ -26,6 +40,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
@@ -62,6 +77,7 @@
       <workItem from="1581122295746" duration="2000" />
       <workItem from="1581626713972" duration="268000" />
       <workItem from="1581626995372" duration="34000" />
+      <workItem from="1588241944401" duration="157000" />
     </task>
     <servers />
   </component>
@@ -69,11 +85,16 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="184" y="102" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1581626761623">
-      <screen x="0" y="23" width="1440" height="833" />
+    <state x="208" y="177" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1588242035364">
+      <screen x="0" y="23" width="1440" height="827" />
     </state>
+    <state x="208" y="177" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1440.827@0.23.1440.827" timestamp="1588242035364" />
     <state x="184" y="102" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1440.830@0.23.1440.830" timestamp="1581000696545" />
     <state x="184" y="102" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1440.833@0.23.1440.833" timestamp="1581626761623" />
+    <state x="451" y="246" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1588242049131">
+      <screen x="0" y="23" width="1440" height="827" />
+    </state>
+    <state x="451" y="246" key="#com.intellij.fileTypes.FileTypeChooser/0.23.1440.827@0.23.1440.827" timestamp="1588242049131" />
     <state x="0" y="519" key="com.intellij.ide.util.TipDialog" timestamp="1581627000215">
       <screen x="0" y="23" width="1440" height="827" />
     </state>

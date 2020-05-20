@@ -85,70 +85,34 @@ string to_bin(T num){
 }
 ///////////////////////////////////////////////////////////////////////////////////
 
-const int N = 2e5+5;
-
-int n,k;
-vector<int> G[N];
-vector<int> depth(N,0);
-vector<int> subcnt(N,0);
-vector<int> vis(N,0);
-vector<int> parent(N,0);
-priority_queue<pair<int,int>> pall;
-vector<int> children(N,0);
-
-void dfs(int s,int par){
-    
-    int child= 0;
-    parent[s]  = par;
-    
-    for(int  c: G[s]){
-    
-        if(c ==par) continue;
-        depth[c] = depth[s] + 1;
-        dfs(c,s);
-        subcnt[s] += subcnt[c] + 1;
-        
-        ++child;
-    }
-    children[s] = child;
-
-}
 void solve(){
    
-    cin >> n >> k;
-    forn(i,n-1){
-        int x,y;
-        cin >> x>> y; 
-        G[x].PB(y); G[y].PB(x);
-    }
-    dfs(1,0);
+    int ans = LLONG_MAX;
+    int a,b,c;
+    cin >> a >> b >> c;
+    int curr;
+    vector<vector<int>> all(3,vector<int>());
+    forn(i,a) cin >> curr; all[0].push_back(curr);
+    forn(i,b) cin >> curr; all[1].push_back(curr);
+    forn(i,c) cin >> curr; all[c].push_back(curr);
+    
+    for(int i = 0;i<a;i++){
+        int x = all[0][i];
+        int y = lower_bound(ALL(all[1]),x) - all[1].begin();
+        int z = lower_bound(crr,crr+c,x) - crr;
 
-    for(int i =2;i<=n;i++){
-        if(G[i].size() == 1){
-            // trace(depth[i] - 1,i,1);
-            pall.push({depth[i] ,i});
-            
-        }
-    }
-    int fans = 0;
-    while(k--){
-        auto t = pall.top();
-        pall.pop();
-        // trace(t);
-        int i = t.second;
-        int gain = t.first;
-        // trace(i,parent[i],depth[i]);
 
-        fans += gain;
-        i = parent[i];
-        children[i]--;
-        if( children[i]==0){
-            pall.push({depth[i] - subcnt[i],i});
-        }
-        // trace("\n");
-    }
-    cout << fans << endl;
+        vector<int> curr = { x,y,z};
+        sort(ALL(curr));
+        do{
+            trace(curr);
 
+            x = curr[0];y = curr[1],z = curr[2];
+            ans = min(ans,(x-y)*(x-y)+(y-z)*(y-z) + (z-x)*(z-x) );
+        }while(next_permutation(ALL(curr)));
+
+    }
+    
 
 }
 
@@ -164,7 +128,7 @@ signed main()
 	cout<<fixed<<setprecision(12);
 
    int tt = 1;
-    // cin >> tt;
+    cin >> tt;
    while(tt--){
        solve();
    }

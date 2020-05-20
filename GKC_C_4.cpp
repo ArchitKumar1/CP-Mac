@@ -23,7 +23,7 @@ void __f(const char* names,Arg1&& arg1,Args&&... args){
 #endif
 
 #define FASTIO ios_base::sync_with_stdio(false); cin.tie(NULL);
-#define TC int t; cin >> t;while(t--)
+#define TC int testcase; cin >> testcase;while(testcase--)
 #define forn(i,n) for(int i=0;i<n;i++)
 
 #define ALL(x) x.begin(),x.end()
@@ -43,7 +43,8 @@ typedef vector<VI> VVI;
 auto clk=clock();
 
 int mod = pow(10,9) +7;
-const long long inf = 2e18;
+const long long inf = 1e9;
+const long long linf = 2e18;
 const double eps = 1e-6;
 const int  LOGN = 25;
 
@@ -83,75 +84,105 @@ string to_bin(T num){
     reverse(binary.begin(), binary.end());
     return binary;
 }
+int to_int(string s){
+    reverse(s.begin(), s.end());
+    int pos = 0;
+    int ans = 0;
+    for(char c : s){
+        ans += (c == '1' ? pow(2,pos) : 0);
+        pos ++;
+    }
+    return ans;
+}
 ///////////////////////////////////////////////////////////////////////////////////
 
-const int N = 2e5+5;
+double pi = 3.141592653589793238462643383279;
 
-int n,k;
-vector<int> G[N];
-vector<int> depth(N,0);
-vector<int> subcnt(N,0);
-vector<int> vis(N,0);
-vector<int> parent(N,0);
-priority_queue<pair<int,int>> pall;
-vector<int> children(N,0);
 
-void dfs(int s,int par){
-    
-    int child= 0;
-    parent[s]  = par;
-    
-    for(int  c: G[s]){
-    
-        if(c ==par) continue;
-        depth[c] = depth[s] + 1;
-        dfs(c,s);
-        subcnt[s] += subcnt[c] + 1;
+int n,q;
+vector<int> arr,tree1,tree2;
+
+
+void build1(int s,int e,int index){
+    if(s == e){
+        tree1[index] = arr[s];
+        return;
+    }
+    int m = (s+e)/2;
+    build1(s,m,2*index);
+    build1(m+1,e,2*index+1);
+    tree1[index] = tree1[2*index] + tree1[2*index+1];
+}
+
+void build2(int s,int e,int index){
+    if(s == e){
+        tree2[index] = (s+1)*arr[s];
+        return;
+    }
+    int m = (s+e)/2;
+    build2(s,m,2*index);
+    build2(m+1,e,2*index+1);
+    tree2[index] = tree2[2*index] + tree2[2*index+1];
+}
+
+int query1(int s,int e,int l,int r,int index){
+    if(s > r || e < l) return 0;
+    if( s >=l && e <= r) return tree1[index];
+
+    int m = (s+e)/2;
+    return query1(s,m,l,r,2*index) + query1(m+1,s,l,r,2*index+1);
+
+}
+int query2(int s,int e,int l,int r,int index){
+    if(s > r || e < l) return 0;
+    if( s >=l && e <= r) return tree2[index];
+
+    int m = (s+e)/2;
+    return query2(s,m,l,r,2*index) + query2(m+1,s,l,r,2*index+1);
+}
+void update(int s,int e,int pos,int val,int index){
+    if(s > pos || e < pos) return;
+    if(s == e){
+        tree1[index] = val;
+        tree2[index] = (s+1)*val;
+        arr[pos] = val;
+        return;
+    }
+    int m = (s+e)/2;
+    tree1[index] = tree1[2*index] + tree1[2*index+1];
+    tree2[index] = tree2[2*index] + tree2[2*index+1];
+}
+void __solve(){
+    cin >> n >> q;
+    arr.resize(n);
+    forn(i,n) cin >> arr[i];
+    tree1.assign(4*n,0);
+    tree2.assign(4*n,0);
+    int s = 0, e = 0, index= 0;
+
+    build1(s,e,index);
+    build2(s,e,index);
+
+    while(q--){
+        char c ;
+        cin >> c;
         
-        ++child;
-    }
-    children[s] = child;
-
-}
-void solve(){
-   
-    cin >> n >> k;
-    forn(i,n-1){
-        int x,y;
-        cin >> x>> y; 
-        G[x].PB(y); G[y].PB(x);
-    }
-    dfs(1,0);
-
-    for(int i =2;i<=n;i++){
-        if(G[i].size() == 1){
-            // trace(depth[i] - 1,i,1);
-            pall.push({depth[i] ,i});
-            
+        if(c == 'Q'){
+            int l,r;
+            cin >> l >> r;
+            l--;r--;
+            int val = query2(s,e,l,r,index) - l*query1(s,e,l,r,index);
+            cout << val << endl;
+        }else{
+            int pos,val;
+            cin >> pos >> val;
+            pos--;
+            update(s,e,pos,val,index);
         }
+        
     }
-    int fans = 0;
-    while(k--){
-        auto t = pall.top();
-        pall.pop();
-        // trace(t);
-        int i = t.second;
-        int gain = t.first;
-        // trace(i,parent[i],depth[i]);
-
-        fans += gain;
-        i = parent[i];
-        children[i]--;
-        if( children[i]==0){
-            pall.push({depth[i] - subcnt[i],i});
-        }
-        // trace("\n");
-    }
-    cout << fans << endl;
-
-
+ 
 }
-
 
 signed main()
 {
@@ -162,12 +193,13 @@ signed main()
  #endif 
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
 	cout<<fixed<<setprecision(12);
-
-   int tt = 1;
-    // cin >> tt;
-   while(tt--){
-       solve();
-   }
+      
+    int t;
+    cin >> t;
+    forn(tt,t){
+        cout << "Case #"<<tt+1<<": "; 
+        __solve();
+    } 
 #ifndef ONLINE_JUDGE
 	cerr<<"Time elapsed: "<<(double)(clock()-clk)/CLOCKS_PER_SEC<<"  seconds" << "\n";
 #endif

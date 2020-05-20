@@ -23,7 +23,7 @@ void __f(const char* names,Arg1&& arg1,Args&&... args){
 #endif
 
 #define FASTIO ios_base::sync_with_stdio(false); cin.tie(NULL);
-#define TC int t; cin >> t;while(t--)
+#define TC int testcase; cin >> testcase;while(testcase--)
 #define forn(i,n) for(int i=0;i<n;i++)
 
 #define ALL(x) x.begin(),x.end()
@@ -85,73 +85,45 @@ string to_bin(T num){
 }
 ///////////////////////////////////////////////////////////////////////////////////
 
-const int N = 2e5+5;
-
-int n,k;
-vector<int> G[N];
-vector<int> depth(N,0);
-vector<int> subcnt(N,0);
-vector<int> vis(N,0);
-vector<int> parent(N,0);
-priority_queue<pair<int,int>> pall;
-vector<int> children(N,0);
-
-void dfs(int s,int par){
-    
-    int child= 0;
-    parent[s]  = par;
-    
-    for(int  c: G[s]){
-    
-        if(c ==par) continue;
-        depth[c] = depth[s] + 1;
-        dfs(c,s);
-        subcnt[s] += subcnt[c] + 1;
-        
-        ++child;
-    }
-    children[s] = child;
-
-}
-void solve(){
-   
-    cin >> n >> k;
-    forn(i,n-1){
-        int x,y;
-        cin >> x>> y; 
-        G[x].PB(y); G[y].PB(x);
-    }
-    dfs(1,0);
-
-    for(int i =2;i<=n;i++){
-        if(G[i].size() == 1){
-            // trace(depth[i] - 1,i,1);
-            pall.push({depth[i] ,i});
-            
-        }
-    }
-    int fans = 0;
-    while(k--){
-        auto t = pall.top();
-        pall.pop();
-        // trace(t);
-        int i = t.second;
-        int gain = t.first;
-        // trace(i,parent[i],depth[i]);
-
-        fans += gain;
-        i = parent[i];
-        children[i]--;
-        if( children[i]==0){
-            pall.push({depth[i] - subcnt[i],i});
-        }
-        // trace("\n");
-    }
-    cout << fans << endl;
-
-
+void minus1(){
+    cout << "-1" << endl;
+    exit(0);
 }
 
+
+const int M = 11;
+ int cnt[M][26];
+
+const int N = 1<<M;
+int dp[M][N];
+
+string s;
+int m,n;
+
+int solve(int pos,int mask){
+    int ans =0 ;
+    if(mask == (1<<m)-1){
+        if(pos == n){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+    if(pos == n){
+        return 1;
+    }
+    if(dp[pos][mask]!=-1){
+        return dp[pos][mask];
+    }
+    for(int i = 0;i<M;i++){
+        if((( 1<<i) & mask) ==  0){
+            if(cnt[i][s[pos]-'a'] >=1){
+                ans += cnt[i][s[pos]-'a'] * solve(pos+1,mask | (1 << i));
+            }
+        }
+    }
+    return dp[pos][mask] = ans%mod;;
+}
 
 signed main()
 {
@@ -163,11 +135,27 @@ signed main()
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
 	cout<<fixed<<setprecision(12);
 
-   int tt = 1;
-    // cin >> tt;
-   while(tt--){
-       solve();
-   }
+  
+
+    
+    cin >> m >> n;
+   
+   memset(dp,-1,sizeof(dp));
+    
+
+    for(int i = 0;i<m;i++){
+        for(int j = 0;j<6;j++){
+            char c ;
+            cin >>c;
+            cnt[i][c-'a']++;
+        }
+        
+    }
+    cin >> s;
+    cout << solve(0,0) << endl;
+
+
+
 #ifndef ONLINE_JUDGE
 	cerr<<"Time elapsed: "<<(double)(clock()-clk)/CLOCKS_PER_SEC<<"  seconds" << "\n";
 #endif

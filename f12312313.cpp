@@ -85,71 +85,56 @@ string to_bin(T num){
 }
 ///////////////////////////////////////////////////////////////////////////////////
 
-const int N = 2e5+5;
 
-int n,k;
-vector<int> G[N];
-vector<int> depth(N,0);
-vector<int> subcnt(N,0);
-vector<int> vis(N,0);
-vector<int> parent(N,0);
-priority_queue<pair<int,int>> pall;
-vector<int> children(N,0);
 
-void dfs(int s,int par){
-    
-    int child= 0;
-    parent[s]  = par;
-    
-    for(int  c: G[s]){
-    
-        if(c ==par) continue;
-        depth[c] = depth[s] + 1;
-        dfs(c,s);
-        subcnt[s] += subcnt[c] + 1;
-        
-        ++child;
-    }
-    children[s] = child;
 
-}
+
 void solve(){
-   
-    cin >> n >> k;
-    forn(i,n-1){
-        int x,y;
-        cin >> x>> y; 
-        G[x].PB(y); G[y].PB(x);
-    }
-    dfs(1,0);
-
-    for(int i =2;i<=n;i++){
-        if(G[i].size() == 1){
-            // trace(depth[i] - 1,i,1);
-            pall.push({depth[i] ,i});
-            
+    int a,b;
+    cin >> a >> b;
+    
+    vector<int> cnt1(1e3+10,0);
+    vector<int> cnt2(1e3+10,0);
+    int A = a,B = b;
+    for(int i = 2;i*i<=a;i++){
+        int cnt = 0;
+        while(A%i == 0){
+            cnt +=1;
+            A/=i;
         }
+        cnt1[i] = cnt;
     }
-    int fans = 0;
-    while(k--){
-        auto t = pall.top();
-        pall.pop();
-        // trace(t);
-        int i = t.second;
-        int gain = t.first;
-        // trace(i,parent[i],depth[i]);
-
-        fans += gain;
-        i = parent[i];
-        children[i]--;
-        if( children[i]==0){
-            pall.push({depth[i] - subcnt[i],i});
+    if(A > 1){
+        cnt1[A] = 1;
+    }
+    for(int i = 2;i*i<=b;i++){
+        int cnt = 0;
+        while(B%i == 0){
+            cnt +=1;
+            B/=i;
         }
-        // trace("\n");
+        cnt1[i] = cnt;
     }
-    cout << fans << endl;
+    if(B > 1){
+        cnt1[B] = 1;
+    }
+    // trace(A,B);
+    int ans = 0;
+    for(int i = 2;i<=cnt1.size();i++){
+        int g = max(cnt1[i],cnt2[i]);
 
-
+        if(g!=0) ++ans;
+    }
+    // for(int i = 0;i<max(a,b)+1;i++){
+    //     cout << i << " " << cnt1[i] << " " << cnt2[i] << endl;
+    // }
+    // trace(ans);
+    bool p = 1;
+    if(ans == 1 || ans == 0) p =0;
+    for(int i = 2;i*i<=ans;i++){
+        if(ans%i == 0) p = 0;
+    }
+    cout << (!p ? "No" :"Yes") << endl;
 }
 
 
@@ -164,7 +149,7 @@ signed main()
 	cout<<fixed<<setprecision(12);
 
    int tt = 1;
-    // cin >> tt;
+    cin >> tt;
    while(tt--){
        solve();
    }

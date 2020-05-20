@@ -23,7 +23,7 @@ void __f(const char* names,Arg1&& arg1,Args&&... args){
 #endif
 
 #define FASTIO ios_base::sync_with_stdio(false); cin.tie(NULL);
-#define TC int t; cin >> t;while(t--)
+#define TC int testcase; cin >> testcase;while(testcase--)
 #define forn(i,n) for(int i=0;i<n;i++)
 
 #define ALL(x) x.begin(),x.end()
@@ -43,7 +43,8 @@ typedef vector<VI> VVI;
 auto clk=clock();
 
 int mod = pow(10,9) +7;
-const long long inf = 2e18;
+const long long inf = 1e9;
+const long long linf = 2e18;
 const double eps = 1e-6;
 const int  LOGN = 25;
 
@@ -83,76 +84,64 @@ string to_bin(T num){
     reverse(binary.begin(), binary.end());
     return binary;
 }
+int to_int(string s){
+    reverse(s.begin(), s.end());
+    int pos = 0;
+    int ans = 0;
+    for(char c : s){
+        ans += (c == '1' ? pow(2,pos) : 0);
+        pos ++;
+    }
+    return ans;
+}
 ///////////////////////////////////////////////////////////////////////////////////
 
-const int N = 2e5+5;
+int MODDY = 212072634227239451;
+int n,m;
+const int N = 1004;
+int arr[N][N];
 
-int n,k;
-vector<int> G[N];
-vector<int> depth(N,0);
-vector<int> subcnt(N,0);
-vector<int> vis(N,0);
-vector<int> parent(N,0);
-priority_queue<pair<int,int>> pall;
-vector<int> children(N,0);
+vector<int> bande ={ 107,1361, 10000019};
+int M = 4;
+int forbi = 1 << M;
 
-void dfs(int s,int par){
-    
-    int child= 0;
-    parent[s]  = par;
-    
-    for(int  c: G[s]){
-    
-        if(c ==par) continue;
-        depth[c] = depth[s] + 1;
-        dfs(c,s);
-        subcnt[s] += subcnt[c] + 1;
-        
-        ++child;
-    }
-    children[s] = child;
-
-}
-void solve(){
-   
-    cin >> n >> k;
-    forn(i,n-1){
-        int x,y;
-        cin >> x>> y; 
-        G[x].PB(y); G[y].PB(x);
-    }
-    dfs(1,0);
-
-    for(int i =2;i<=n;i++){
-        if(G[i].size() == 1){
-            // trace(depth[i] - 1,i,1);
-            pall.push({depth[i] ,i});
-            
-        }
-    }
-    int fans = 0;
-    while(k--){
-        auto t = pall.top();
-        pall.pop();
-        // trace(t);
-        int i = t.second;
-        int gain = t.first;
-        // trace(i,parent[i],depth[i]);
-
-        fans += gain;
-        i = parent[i];
-        children[i]--;
-        if( children[i]==0){
-            pall.push({depth[i] - subcnt[i],i});
-        }
-        // trace("\n");
-    }
-    cout << fans << endl;
+int dp[N][N][3][3][2];
 
 
+void pop(int &val,int &x,int &y,int &z){
+    int ans = 0;
+    x += (val%107 == 0);
+    x += (val%(107*107) == 0);
+    y += (val%1361 == 0);
+    y += (val%(1361*1361) == 0);
+    z += (val%10000019 == 0);
+    if(x > 2) x = 2;
+    if(y > 2) y = 2;
+    if(z > 1) z = 1;
 }
 
-
+bool safe(int &x,int &y,int &z){
+    return !(x>=2 && y>=2 && z>=1) ;
+}
+int solve(int i,int j,int x,int y,int z){
+    if(i == n || j == m){
+        return  0;
+    }
+    pop(arr[i][j],x,y,z);
+    if(!safe(x,y,z)) return 0;
+    if(i == n-1 && j == m-1){
+        if(safe(x,y,z)){
+            return dp[i][j][x][y][z] = 1;
+        }else{
+            return dp[i][j][x][y][z] = 0;
+        }
+    }
+    
+    if(dp[i][j][x][y][z] != -1){
+        return dp[i][j][x][y][z];
+    }
+    return dp[i][j][x][y][z] = (solve(i+1,j,x,y,z) + solve(i,j+1,x,y,z))%mod;
+}
 signed main()
 {
     FASTIO
@@ -163,11 +152,16 @@ signed main()
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
 	cout<<fixed<<setprecision(12);
 
-   int tt = 1;
-    // cin >> tt;
-   while(tt--){
-       solve();
-   }
+    
+        cin >> n >> m;   
+      forn(i,n)forn(j,m) cin >> arr[i][j];
+
+        memset(dp,-1,sizeof(dp));
+      cout << solve(0,0,0,0,0)%mod;
+    
+       
+          
+    
 #ifndef ONLINE_JUDGE
 	cerr<<"Time elapsed: "<<(double)(clock()-clk)/CLOCKS_PER_SEC<<"  seconds" << "\n";
 #endif
