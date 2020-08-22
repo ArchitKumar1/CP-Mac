@@ -8,7 +8,7 @@ using namespace std;
 template<class T> ostream& operator<<(ostream &os,vector<T> V){os<<"[ ";for(auto v:V)os<<v<<" ";return os<<"]";}
 template<class L,class R> ostream& operator<<(ostream &os,pair<L,R> P){return os<<"("<<P.first<<","<<P.second<<")";}
 
-#ifndef TRACE
+#ifdef LOCAL
 #define trace(...) __f(#__VA_ARGS__,__VA_ARGS__)
 template<typename Arg1>
 void __f(const char* name,Arg1&& arg1){
@@ -94,47 +94,70 @@ int to_int(string s){
     }
     return ans;
 }
+
 ///////////////////////////////////////////////////////////////////////////////////
 
-double pi = 3.141592653589793238462643383279;
+
+const int N = 5e3+10;
+int dp[N][N][2];
+int arr[N];
+int pref[N];
+
+int n;
 
 
-
-void __solve(){
-    int n;
-    cin >> n;
-    int arr[n];
-    forn(i,n) cin >> arr[i];
-    int m = -1;
-
-    int ans = 0;
-    for(int i =0 ;i<n;i++){
-        bool ok1 = arr[i] > m;
-        bool ok2 = ((i == n-1) || arr[i] > arr[i+1]);
-        m = max(m,arr[i]);
-        ans += ok1&ok2;
-    }
-    cout << ans << endl;
-
-}
-
-signed main()
+int32_t main()
 {
     FASTIO
-#ifndef ONLINE_JUDGE 
+#ifdef LOCAL 
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
  #endif 
-    srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-	cout<<fixed<<setprecision(12);
-      
-    int t;
-    cin >> t;
-    forn(tt,t){
-        cout << "Case #"<<tt+1<<": "; 
-        __solve();
-    } 
-#ifndef ONLINE_JUDGE
+    // srand(chrono::high_resolution_clock::now().time_since_epoch().count());
+	// cout<<fixed<<setprecision(12);
+
+   
+    cin >> n;
+    forn(i,n) cin >> arr[i],pref[i+1] = pref[i] + arr[i];
+
+
+    auto s = [&](int l,int r){
+        return pref[r+1] - pref[l];
+    };
+    for(int l = 0;l<n;l++){ 
+        for(int i =0;i+l<n;i++){
+            int j = i+l;
+            int t = ((n-1-j) + (i-0))%2 != 0;
+
+            if(i == j){
+                if(t == 0){
+                    dp[i][j] = arr[i];
+
+                }else{
+                    dp[i][j] = 0;
+                }
+            }
+            else {
+                
+                dp[i][j] = INT_MIN;
+                dp[i][j] = max(dp[i][j], arr[i] + dp[i+1][j]);
+                dp[i][j] = max(dp[i][j], arr[j] + dp[i][j-1]);
+
+                if(t ==0){
+                    dp[i][j] = s(i,j) - dp[i][j];
+                }
+            }
+        }
+    }
+    cout << dp[0][n-1] << endl;
+
+    for(int i=0;i<n;i++){
+        for(int j = 0;j<n;j++){
+            cout << dp[i][j] << " ";
+        }
+        cout << endl;
+    }
+#ifdef LOCAL
 	cerr<<"Time elapsed: "<<(double)(clock()-clk)/CLOCKS_PER_SEC<<"  seconds" << "\n";
 #endif
     

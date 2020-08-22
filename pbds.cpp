@@ -1,5 +1,4 @@
 #pragma GCC optimize("O3")
-#pragma comment(linker, "/stack:200000000")
 #pragma GCC optimize("unroll-loops")
 #include<bits/stdc++.h>
 
@@ -8,7 +7,7 @@ using namespace std;
 template<class T> ostream& operator<<(ostream &os,vector<T> V){os<<"[ ";for(auto v:V)os<<v<<" ";return os<<"]";}
 template<class L,class R> ostream& operator<<(ostream &os,pair<L,R> P){return os<<"("<<P.first<<","<<P.second<<")";}
 
-#ifndef TRACE
+#ifdef LOCAL
 #define trace(...) __f(#__VA_ARGS__,__VA_ARGS__)
 template<typename Arg1>
 void __f(const char* name,Arg1&& arg1){
@@ -42,11 +41,31 @@ typedef vector<VI> VVI;
 
 auto clk=clock();
 
-int mod = pow(10,9) +7;
-const long long inf = 1e9;
-const long long linf = 2e18;
+int mod = 7340033;
+const long long inf = 1e17;
 const double eps = 1e-6;
 const int  LOGN = 25;
+
+
+template <class T>
+void RV(vector<T> v){
+    for(T &c : v) cin >> c;
+}
+template <class T>
+void RV(vector<vector<T>> v){
+    int n = v.size();
+    for(vector<T> &c : v) RV(c);
+}
+template <class T>
+vector<T> V(int n,T value = 0){
+    vector<T> v(n,value);
+    return v;
+}
+template <class T>
+vector<vector<T>> V(int n,int m,T value = 0){
+    vector<vector<T>> v(n,vector<T>(m,value));
+    return v;
+}
 
 int pow_mod(int a,int b,int m= mod){
     long long  res = 1;
@@ -84,57 +103,105 @@ string to_bin(T num){
     reverse(binary.begin(), binary.end());
     return binary;
 }
-int to_int(string s){
-    reverse(s.begin(), s.end());
-    int pos = 0;
-    int ans = 0;
-    for(char c : s){
-        ans += (c == '1' ? pow(2,pos) : 0);
-        pos ++;
+////////////////////////////////////////////////////
+
+
+
+const int N = 4;
+vector<int> fact(N,1);
+
+void pre(){
+    for(int i = 1;i<N;i++){
+        fact[i] = i*fact[i-1]%mod;
     }
+}
+
+int inv(int x){
+    return pow_mod(x,mod-2,mod);
+}
+int upd(int c,int num){
+    int ans = pow_mod(c+1,num,mod)*inv(pow_mod(c,num,mod))%mod;
     return ans;
 }
-///////////////////////////////////////////////////////////////////////////////////
 
-double pi = 3.141592653589793238462643383279;
-
-
-
-void __solve(){
+int ncr(int n,int r){
+    fact[n] * inv(fact[n-r]) %mod * inv(fact[r]) %mod;
+}
+void __Solve__(){
     int n;
     cin >> n;
     int arr[n];
     forn(i,n) cin >> arr[i];
-    int m = -1;
-
-    int ans = 0;
-    for(int i =0 ;i<n;i++){
-        bool ok1 = arr[i] > m;
-        bool ok2 = ((i == n-1) || arr[i] > arr[i+1]);
-        m = max(m,arr[i]);
-        ans += ok1&ok2;
+    vector<int> cnt(n+1,0);
+    forn(i,n) cnt[arr[i]]++;
+    vector<vector<int>> v(N);
+    for(int i =1;i<=n;i++){
+        for(int c = 1;c<=cnt[i];c++){
+            v[c].push_back(i);
+        }
     }
-    cout << ans << endl;
+    for(int i = 0;i<N;i++){
+        sort(v[i].begin(),v[i].end());
+    }
+    
+    
+    int back = 1;
+
+    vector<int> fans(n+1,0);
+    int backprep = 1;
+    int forwardprep = 1;
+    for(int i =1;i<N;i++){
+        trace(i,v[i]);
+         for(int j = 0;j<v[i].size();j++){
+            int ele = v[i][j];
+            int tcnt = cnt[ele];
+            forwardprep*= ncr(tcnt,i) * inv(tcnt,i-1)%mod * (i+1) * inv(i) %mod;
+        }
+        for(int j = 0;j<v[i].size();j++){
+            int ele = v[i][j];
+            int tcnt = cnt[ele];
+
+            forwardprep*= (inv(ncr(tcnt,i) * inv(i+1)) %mod;
+              
+            trace(rcnt,back,"BEFORE");
+            int tans2 = pow_mod(i+1,rcnt,mod)*back%mod;
+            trace(rcnt,back,tans2,"AFTER");
+
+            
+            fans[v[i][j]]+=tans2;
+        }
+ 
+    //    int x = upd(i,v[i].size());
+    //    trace(x);
+    //     back = back* x%mod;
+    //     trace(back);
+
+
+    }
+    for(int  i=1;i<=n;i++){
+        cout << fans[i] << " ";
+    }
+    cout << endl;
 
 }
 
+
 signed main()
 {
+    // srand(chrono::high_resolution_clock::now().time_since_epoch().count());
+	// cout<<fixed<<setprecision(12);
     FASTIO
-#ifndef ONLINE_JUDGE 
+#ifdef LOCAL 
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
  #endif 
-    srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-	cout<<fixed<<setprecision(12);
-      
-    int t;
-    cin >> t;
-    forn(tt,t){
-        cout << "Case #"<<tt+1<<": "; 
-        __solve();
-    } 
-#ifndef ONLINE_JUDGE
+    pre();
+    int test_case = 1;
+    cin >> test_case;
+    while(test_case--){
+        __Solve__();
+    }
+#ifdef LOCAL
 	cerr<<"Time elapsed: "<<(double)(clock()-clk)/CLOCKS_PER_SEC<<"  seconds" << "\n";
 #endif
     

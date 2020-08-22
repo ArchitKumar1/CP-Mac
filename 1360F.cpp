@@ -96,27 +96,10 @@ int to_int(string s){
 }
 ///////////////////////////////////////////////////////////////////////////////////
 
-double pi = 3.141592653589793238462643383279;
 
 
 
-void __solve(){
-    int n;
-    cin >> n;
-    int arr[n];
-    forn(i,n) cin >> arr[i];
-    int m = -1;
 
-    int ans = 0;
-    for(int i =0 ;i<n;i++){
-        bool ok1 = arr[i] > m;
-        bool ok2 = ((i == n-1) || arr[i] > arr[i+1]);
-        m = max(m,arr[i]);
-        ans += ok1&ok2;
-    }
-    cout << ans << endl;
-
-}
 
 signed main()
 {
@@ -127,13 +110,44 @@ signed main()
  #endif 
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
 	cout<<fixed<<setprecision(12);
-      
-    int t;
-    cin >> t;
-    forn(tt,t){
-        cout << "Case #"<<tt+1<<": "; 
-        __solve();
-    } 
+
+       
+    
+    TC{
+        int n,m;
+        cin >> n >> m;
+        string ans = "";
+        string ss[n];
+        forn(i,n) cin >> ss[i];
+        for(string s : ss){
+            
+            for(int i =0;i<m;i++){
+                for(int j = 0;j<26;j++){
+                    string t = s;
+                    t[i] = 'a' + (t[i] - 'a' + j)%26;
+                    int cnt = 0;
+                    for(int k = 0;k<n;k++){
+                        int temp = 0;
+                        for(int l = 0;l<m;l++){
+                            temp += ss[k][l]!=t[l];
+                        }
+                        if(temp <=1) cnt += 1;
+                    }
+                    if(cnt == n){
+                        ans = t;
+                        goto A;
+                    }
+                }
+            }
+        }
+        A:
+        cout << (ans == "" ? "-1" : ans ) << endl;
+
+            
+    }
+
+
+    
 #ifndef ONLINE_JUDGE
 	cerr<<"Time elapsed: "<<(double)(clock()-clk)/CLOCKS_PER_SEC<<"  seconds" << "\n";
 #endif

@@ -96,26 +96,73 @@ int to_int(string s){
 }
 ///////////////////////////////////////////////////////////////////////////////////
 
-double pi = 3.141592653589793238462643383279;
+
+
+struct node{
+    int cost ;
+    int u;
+    set<int> se;
+    // bool operator < (const node &o) const{
+    //     return cost < o.cost;
+    // }
+    // bool operator > (const node &o) const{
+    //     return cost > o.cost;
+    // }
+};  
+
+bool cmp (const node &n,const node &o){
+    return n.cost < o.cost ;
+}
 
 
 
-void __solve(){
-    int n;
-    cin >> n;
-    int arr[n];
-    forn(i,n) cin >> arr[i];
-    int m = -1;
+const int N = 1e5+5;
+const int M =5e5+5;
+const int K = 20;
 
-    int ans = 0;
-    for(int i =0 ;i<n;i++){
-        bool ok1 = arr[i] > m;
-        bool ok2 = ((i == n-1) || arr[i] > arr[i+1]);
-        m = max(m,arr[i]);
-        ans += ok1&ok2;
+vector<pair<int,int>>G[N];
+node found[N];
+VI vis(N,0);
+VI dist(N,linf);
+
+int n,m,k;
+
+void dij(){
+    set<pair<int,pair<int,set<int>>>>ss;
+    ss.insert({0,{1,set<int>()}});
+
+    while(ss.size()){
+        pair<int,pair<int,set<int>>> temp = *ss.begin();
+        ss.erase(ss.begin());
+        int u = temp.second.first;
+
+
+        if(dist[u] <=  temp.first) continue;
+        dist[u] = temp.first;
+
+        // trace(dist[u],temp.first);
+        for( pair<int,int> p  : G[u]){
+            int v = p.first;
+            int cost = p.second;
+            
+            
+            set<int> togo = temp.second.second;
+            int tobecost = temp.first;
+
+            togo.insert(cost);
+            while(togo.size() >k){
+                tobecost += *togo.begin();
+                togo.erase(togo.begin());
+            }
+            
+            // trace(u,dist[u],v,dist[v],cost,tobecost);
+            if(dist[v] > tobecost){
+                // trace(tobecost,v);
+                ss.insert({tobecost,{v,togo}});
+            }
+        }
+        // cout << endl;
     }
-    cout << ans << endl;
-
 }
 
 signed main()
@@ -127,13 +174,25 @@ signed main()
  #endif 
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
 	cout<<fixed<<setprecision(12);
+
+    
+      cin >> n >> m >> k;
+      forn(i,m){
+          int x,y,z;
+          cin >> x >> y >> z;
+          G[x].EB(y,z);
+          G[y].EB(x,z);
+      }
+      dij();
+
       
-    int t;
-    cin >> t;
-    forn(tt,t){
-        cout << "Case #"<<tt+1<<": "; 
-        __solve();
-    } 
+      for(int i = 1;i<=n;i++){
+          cout << dist[i] << " ";
+      }
+      cout << endl;
+       
+          
+    
 #ifndef ONLINE_JUDGE
 	cerr<<"Time elapsed: "<<(double)(clock()-clk)/CLOCKS_PER_SEC<<"  seconds" << "\n";
 #endif

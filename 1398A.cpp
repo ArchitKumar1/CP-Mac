@@ -1,6 +1,4 @@
-#pragma GCC optimize("O3")
-#pragma comment(linker, "/stack:200000000")
-#pragma GCC optimize("unroll-loops")
+
 #include<bits/stdc++.h>
 
 using namespace std;
@@ -8,7 +6,7 @@ using namespace std;
 template<class T> ostream& operator<<(ostream &os,vector<T> V){os<<"[ ";for(auto v:V)os<<v<<" ";return os<<"]";}
 template<class L,class R> ostream& operator<<(ostream &os,pair<L,R> P){return os<<"("<<P.first<<","<<P.second<<")";}
 
-#ifndef TRACE
+#ifdef LOCAL
 #define trace(...) __f(#__VA_ARGS__,__VA_ARGS__)
 template<typename Arg1>
 void __f(const char* name,Arg1&& arg1){
@@ -22,7 +20,7 @@ void __f(const char* names,Arg1&& arg1,Args&&... args){
 #define trace(...) 1
 #endif
 
-#define FASTIO ios_base::sync_with_stdio(false); cin.tie(NULL);
+#define FASTIO ios_base::sync_with_stdio(false); cin.tie(NULL);cout.tie(NULL);
 #define TC int testcase; cin >> testcase;while(testcase--)
 #define forn(i,n) for(int i=0;i<n;i++)
 
@@ -42,11 +40,31 @@ typedef vector<VI> VVI;
 
 auto clk=clock();
 
-int mod = pow(10,9) +7;
-const long long inf = 1e9;
-const long long linf = 2e18;
+int mod = 7340033;
+const long long inf = 1e17;
 const double eps = 1e-6;
 const int  LOGN = 25;
+
+
+template <class T>
+void RV(vector<T> v){
+    for(T &c : v) cin >> c;
+}
+template <class T>
+void RV(vector<vector<T>> v){
+    int n = v.size();
+    for(vector<T> &c : v) RV(c);
+}
+template <class T>
+vector<T> V(int n,T value = 0){
+    vector<T> v(n,value);
+    return v;
+}
+template <class T>
+vector<vector<T>> V(int n,int m,T value = 0){
+    vector<vector<T>> v(n,vector<T>(m,value));
+    return v;
+}
 
 int pow_mod(int a,int b,int m= mod){
     long long  res = 1;
@@ -84,57 +102,44 @@ string to_bin(T num){
     reverse(binary.begin(), binary.end());
     return binary;
 }
-int to_int(string s){
-    reverse(s.begin(), s.end());
-    int pos = 0;
-    int ans = 0;
-    for(char c : s){
-        ans += (c == '1' ? pow(2,pos) : 0);
-        pos ++;
-    }
-    return ans;
-}
-///////////////////////////////////////////////////////////////////////////////////
-
-double pi = 3.141592653589793238462643383279;
+////////////////////////////////////////////////////
 
 
+const int N = 2e5+5;
+const int maxN = 1e6+10;
+const int M = 450;
+struct query{
+    int l,r,i;
+};
 
-void __solve(){
+
+void __Solve__(){
     int n;
     cin >> n;
     int arr[n];
     forn(i,n) cin >> arr[i];
-    int m = -1;
-
-    int ans = 0;
-    for(int i =0 ;i<n;i++){
-        bool ok1 = arr[i] > m;
-        bool ok2 = ((i == n-1) || arr[i] > arr[i+1]);
-        m = max(m,arr[i]);
-        ans += ok1&ok2;
+    if(arr[0] + arr[1] <= arr[n-1]){
+        cout << 1 << " " << 2 << " " << n << endl;
+    }else{
+        cout << "-1" <<endl;
     }
-    cout << ans << endl;
-
 }
 
 signed main()
 {
+    // srand(chrono::high_resolution_clock::now().time_since_epoch().count());
+	// cout<<fixed<<setprecision(12);
     FASTIO
-#ifndef ONLINE_JUDGE 
+#ifdef LOCAL 
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
  #endif 
-    srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-	cout<<fixed<<setprecision(12);
-      
-    int t;
-    cin >> t;
-    forn(tt,t){
-        cout << "Case #"<<tt+1<<": "; 
-        __solve();
-    } 
-#ifndef ONLINE_JUDGE
+    int test_case = 1;
+    cin >> test_case;
+    while(test_case--){
+        __Solve__();
+    }
+#ifdef LOCAL
 	cerr<<"Time elapsed: "<<(double)(clock()-clk)/CLOCKS_PER_SEC<<"  seconds" << "\n";
 #endif
     

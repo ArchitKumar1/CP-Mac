@@ -94,30 +94,84 @@ int to_int(string s){
     }
     return ans;
 }
+int LCA(int a,int b){
+    if(depth[a] < depth[b]) swap(a,b);
+    for(int i = LOGN-1;~i;i--){
+        if(depth[anc[a][i]] >= depth[b]) a = anc[a][i];
+    }
+    if(a == b) return a;
+    for(int i = LOGN-1;~i;i--){
+        if(anc[a][i] != anc[b][i]) a = anc[a][i],b=anc[b][i];
+    }
+    return anc[a][0];
+}
 ///////////////////////////////////////////////////////////////////////////////////
 
-double pi = 3.141592653589793238462643383279;
+vector<int> val;
+vector<int> total;
+vector<int> depth;
+vector<vector<int>> G;
+vector<vector<int>> anc;
+vector<vector<int>> dp;
 
+void dfs(int s,int par){
+    dp[s][val[s]]++;
+    for(int c : G[s]){
+        if(c == par) continue;
 
+        anc[c][0] = s;
+        depth[c] = depth[s] + 1;
 
-void __solve(){
-    int n;
-    cin >> n;
-    int arr[n];
-    forn(i,n) cin >> arr[i];
-    int m = -1;
-
-    int ans = 0;
-    for(int i =0 ;i<n;i++){
-        bool ok1 = arr[i] > m;
-        bool ok2 = ((i == n-1) || arr[i] > arr[i+1]);
-        m = max(m,arr[i]);
-        ans += ok1&ok2;
+        for(int i =1;i<=100;i++){
+            dp[c][i] = dp[s][i];
+        }
+        dfs(c,s);        
     }
-    cout << ans << endl;
-
 }
 
+
+int LCA(int a,int b){
+    if(depth[a] < depth[b]) swap(a,b);
+    for(int i = LOGN-1;~i;i--){
+        if(depth[anc[a][i]] >= depth[b]) a = anc[a][i];
+    }
+    if(a == b) return a;
+    for(int i = LOGN-1;~i;i--){
+        if(anc[a][i] != anc[b][i]) a = anc[a][i],b=anc[b][i];
+    }
+    return anc[a][0];
+}
+
+int query(int x,int y){
+    int lca =LCA(x,y);
+    int ans = INT_MAX ;
+    // trace(lca,x,y);
+    int total = 0;
+
+    
+    for(int i = 1;i<=100;i++){
+        total += dp[x][i] + dp[y][i] - 2*dp[lca][i];
+    }
+    total += 1;
+    if(total <= 100){
+        vector<int> cnt(101,0);
+        cnt[val[lca]]++;
+
+        vector<int> diff;
+        for(int i =1 ;i<=100;i++){
+            cnt[i] += dp[x][i] + dp[y][i] - 2*dp[lca][i];
+            // trace(i,dp[lca][i] ,dp[x][i] , dp[y][i],cnt[i]);
+            if(cnt[i] > 1) return 0;
+            if(cnt[i]) diff.push_back(i);
+        }
+        for(int i =0 ;i+1<diff.size();i++){
+            ans = min(ans,diff[i+1]- diff[i]);
+        }
+        return ans;
+    }else{
+        return 0;
+    }  
+}
 signed main()
 {
     FASTIO
@@ -127,13 +181,38 @@ signed main()
  #endif 
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
 	cout<<fixed<<setprecision(12);
-      
-    int t;
-    cin >> t;
-    forn(tt,t){
-        cout << "Case #"<<tt+1<<": "; 
-        __solve();
-    } 
+
+       
+    TC{
+        int n,q;
+        cin >> n >> q;
+        val.assign(n+1,0);
+        total.assign(n+1,0);
+        depth.assign(n+1,0);
+        anc.assign(n+1,vector<int>(LOGN,1));
+        dp.assign(n+1,vector<int>(101,0));
+        G.assign(n+1,vector<int>());
+
+        forn(i,n) cin >> val[i+1];
+        forn(i,n-1) {
+            int x,y;
+            cin >>x >> y;
+            G[x].PB(y);G[y].PB(x);
+        }
+        dfs(1,0);
+        for(int i = 1;i<LOGN;i++){
+            for(int j =1;j<=n;j++){
+                anc[j][i] = anc[anc[j][i-1]][i-1];
+            }
+        }
+        forn(i,q){
+            int x,y;
+            cin >> x>> y;
+            cout << query(x,y) << endl;
+        }
+
+    }
+    
 #ifndef ONLINE_JUDGE
 	cerr<<"Time elapsed: "<<(double)(clock()-clk)/CLOCKS_PER_SEC<<"  seconds" << "\n";
 #endif

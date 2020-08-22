@@ -8,7 +8,7 @@ using namespace std;
 template<class T> ostream& operator<<(ostream &os,vector<T> V){os<<"[ ";for(auto v:V)os<<v<<" ";return os<<"]";}
 template<class L,class R> ostream& operator<<(ostream &os,pair<L,R> P){return os<<"("<<P.first<<","<<P.second<<")";}
 
-#ifndef TRACE
+#ifdef LOCAL
 #define trace(...) __f(#__VA_ARGS__,__VA_ARGS__)
 template<typename Arg1>
 void __f(const char* name,Arg1&& arg1){
@@ -94,47 +94,60 @@ int to_int(string s){
     }
     return ans;
 }
+
 ///////////////////////////////////////////////////////////////////////////////////
 
-double pi = 3.141592653589793238462643383279;
+int n;
+const int N=110,M=N*1100;
 
+int arr[N];
+int dp[N][M];
 
-
-void __solve(){
-    int n;
-    cin >> n;
-    int arr[n];
-    forn(i,n) cin >> arr[i];
-    int m = -1;
-
-    int ans = 0;
-    for(int i =0 ;i<n;i++){
-        bool ok1 = arr[i] > m;
-        bool ok2 = ((i == n-1) || arr[i] > arr[i+1]);
-        m = max(m,arr[i]);
-        ans += ok1&ok2;
-    }
-    cout << ans << endl;
-
-}
-
-signed main()
+int m ;
+int32_t main()
 {
     FASTIO
-#ifndef ONLINE_JUDGE 
+#ifdef LOCAL 
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
  #endif 
-    srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-	cout<<fixed<<setprecision(12);
+    // srand(chrono::high_resolution_clock::now().time_since_epoch().count());
+	// cout<<fixed<<setprecision(12);
+
+   
+    cin >> n;
+    
+    forn(i,n) cin >> arr[i+1];
+    dp[0][0] =1;
+    int sum = accumulate(arr+1,arr+n+1,0);
+    
+    for(int i =1;i<=n;i++){
+        for(int j=0;j<M;j++ ){
+            if(arr[i] + j <=M){
+                dp[i][arr[i] + j] |= dp[i-1][j];
+            }
+            dp[i][j] |= dp[i-1][j]; 
+        }
+    }
+    
+    
+
+    int cnt = 0;
+    for(int j =1;j<M;j++){
       
-    int t;
-    cin >> t;
-    forn(tt,t){
-        cout << "Case #"<<tt+1<<": "; 
-        __solve();
-    } 
-#ifndef ONLINE_JUDGE
+        if(dp[n][j] == 1 && j<=sum){
+            cnt += 1;n
+        }
+    }
+    cout << cnt << endl;
+    for(int j =1;j<M;j++){
+      
+        if(dp[n][j] == 1 && j<=sum){
+            cout << j << " ";
+        }
+    }
+    
+#ifdef LOCAL
 	cerr<<"Time elapsed: "<<(double)(clock()-clk)/CLOCKS_PER_SEC<<"  seconds" << "\n";
 #endif
     

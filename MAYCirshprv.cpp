@@ -96,26 +96,67 @@ int to_int(string s){
 }
 ///////////////////////////////////////////////////////////////////////////////////
 
-double pi = 3.141592653589793238462643383279;
 
 
+struct node{
+    int cost ;
+    int u;
+    set<int> se;
+    
+};
 
-void __solve(){
-    int n;
-    cin >> n;
-    int arr[n];
-    forn(i,n) cin >> arr[i];
-    int m = -1;
+bool cmp (const node &n,const node &o){
+    return n.cost < o.cost ;
+}
 
-    int ans = 0;
-    for(int i =0 ;i<n;i++){
-        bool ok1 = arr[i] > m;
-        bool ok2 = ((i == n-1) || arr[i] > arr[i+1]);
-        m = max(m,arr[i]);
-        ans += ok1&ok2;
+
+const int N = 1e5+5;
+const int M =5e5+5;
+const int K = 20;
+
+vector<pair<int,int>>G[N];
+node found[N];
+VI vis(N,0);
+VI dist(N,linf);
+
+int n,m,k;
+
+void dij(){
+    dist[1] = 0;
+    set<node,decltype(&cmp)> ss(&cmp);;
+    ss.insert({0,1,set<int>()});
+
+    while(ss.size()){
+        node temp = *ss.begin();
+        ss.erase(ss.begin());
+        int u = temp.u;
+
+
+        // trace(u,dist[u],temp.cost);
+        for( pair<int,int> p  : G[u]){
+            int v = p.first;
+            int cost = p.second;
+            
+            
+            set<int> togo = temp.se;
+            int tobecost = temp.cost;
+
+            togo.insert(cost);
+            while(togo.size() >k){
+                tobecost += *togo.begin();
+                togo.erase(togo.begin());
+            }
+            
+            // trace(u,dist[u],v,dist[v],cost,tobecost);
+            if(dist[v] > tobecost){
+                dist[v] =tobecost;
+                node newnode = {tobecost,v,togo};
+                found[v] = newnode;
+                ss.insert(newnode);
+            }
+            
+        }
     }
-    cout << ans << endl;
-
 }
 
 signed main()
@@ -127,13 +168,25 @@ signed main()
  #endif 
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
 	cout<<fixed<<setprecision(12);
-      
-    int t;
-    cin >> t;
-    forn(tt,t){
-        cout << "Case #"<<tt+1<<": "; 
-        __solve();
-    } 
+
+    
+      cin >> n >> m >> k;
+      forn(i,m){
+          int x,y,z;
+          cin >> x >> y >> z;
+          G[x].EB(y,z);
+          G[y].EB(x,z);
+      }
+      dij();
+
+      cout << 0 <<  " ";
+      for(int i = 2;i<=n;i++){
+          cout << dist[i] << " ";
+      }
+      cout << endl;
+       
+          
+    
 #ifndef ONLINE_JUDGE
 	cerr<<"Time elapsed: "<<(double)(clock()-clk)/CLOCKS_PER_SEC<<"  seconds" << "\n";
 #endif

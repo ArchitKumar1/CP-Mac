@@ -8,7 +8,7 @@ using namespace std;
 template<class T> ostream& operator<<(ostream &os,vector<T> V){os<<"[ ";for(auto v:V)os<<v<<" ";return os<<"]";}
 template<class L,class R> ostream& operator<<(ostream &os,pair<L,R> P){return os<<"("<<P.first<<","<<P.second<<")";}
 
-#ifndef TRACE
+#ifdef LOCAL
 #define trace(...) __f(#__VA_ARGS__,__VA_ARGS__)
 template<typename Arg1>
 void __f(const char* name,Arg1&& arg1){
@@ -94,47 +94,112 @@ int to_int(string s){
     }
     return ans;
 }
+
 ///////////////////////////////////////////////////////////////////////////////////
 
-double pi = 3.141592653589793238462643383279;
+int R = 1;
+int O = 2;
+int G = 3;
+
+map<pair<int,int>,int> m1;
+
+int n;
 
 
+map<vector<int>,int>m2;
 
-void __solve(){
-    int n;
-    cin >> n;
-    int arr[n];
-    forn(i,n) cin >> arr[i];
-    int m = -1;
 
-    int ans = 0;
-    for(int i =0 ;i<n;i++){
-        bool ok1 = arr[i] > m;
-        bool ok2 = ((i == n-1) || arr[i] > arr[i+1]);
-        m = max(m,arr[i]);
-        ans += ok1&ok2;
+int solve(vector<int> cnts){
+    int i = cnts[0];
+    if(i == n) return 1;
+    int ans = 0 ;
+
+    cnts[0]++;
+    ans += solve(cnts);
+
+
+    int c = cnts[7];
+    
+    if(c == 1){
+        if(cnts[1] < m1[{1,2}]){
+            cnts[1]++;
+            ans += solve(cnts);
+            cnts[1]--;
+        }
+
+        if(cnts[2] < m1[{1,3}]){
+            cnts[2]++;
+            ans += solve(cnts);
+            cnts[2]--;
+        }
     }
-    cout << ans << endl;
 
+    if(c == 2){
+        if(cnts[3] < m1[{2,1}]){
+            cnts[3]++;
+            ans += solve(cnts);
+            cnts[3]--;
+        }
+
+        if(cnts[4] < m1[{2,3}]){
+            cnts[4]++;
+            ans += solve(cnts);
+            cnts[4]--;
+        }
+    }
+    if(c == 3){
+        if(cnts[5] < m1[{3,1}]){
+            cnts[5]++;
+            ans += solve(cnts);
+            cnts[5]--;
+        }
+
+        if(cnts[6] < m1[{3,2}]){
+            cnts[6]++;
+            ans += solve(cnts);
+            cnts[6]--;
+        }
+    }
+    
+    return ans;
 }
 
-signed main()
+
+int32_t main()
 {
     FASTIO
-#ifndef ONLINE_JUDGE 
+#ifdef LOCAL 
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
  #endif 
-    srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-	cout<<fixed<<setprecision(12);
-      
-    int t;
-    cin >> t;
-    forn(tt,t){
-        cout << "Case #"<<tt+1<<": "; 
-        __solve();
-    } 
-#ifndef ONLINE_JUDGE
+    // srand(chrono::high_resolution_clock::now().time_since_epoch().count());
+	// cout<<fixed<<setprecision(12);
+
+
+     cin >> n;
+     n--;
+     cin >> m1[{1,2}];
+     cin >> m1[{1,3}];
+
+     cin >> m1[{2,1}];
+     cin >> m1[{2,3}];
+
+     cin >> m1[{3,1}];
+     cin >> m1[{3,2}];
+
+     int ans =0 ;
+     vector<int> cnts(8,0);
+    
+     for(int i = 1;i<=3;i++){
+         cnts[7] = i;
+         ans += solve(cnts);
+     }
+     cout << ans << endl;
+
+
+ 
+
+#ifdef LOCAL
 	cerr<<"Time elapsed: "<<(double)(clock()-clk)/CLOCKS_PER_SEC<<"  seconds" << "\n";
 #endif
     

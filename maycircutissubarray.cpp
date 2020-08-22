@@ -96,28 +96,23 @@ int to_int(string s){
 }
 ///////////////////////////////////////////////////////////////////////////////////
 
-double pi = 3.141592653589793238462643383279;
+
+map<int,int> m1;
+const int N = 5e5+10;
+
+int arr[N];
+int n;
 
 
-
-void __solve(){
-    int n;
-    cin >> n;
-    int arr[n];
-    forn(i,n) cin >> arr[i];
-    int m = -1;
-
-    int ans = 0;
-    for(int i =0 ;i<n;i++){
-        bool ok1 = arr[i] > m;
-        bool ok2 = ((i == n-1) || arr[i] > arr[i+1]);
-        m = max(m,arr[i]);
-        ans += ok1&ok2;
+int get(int rsum){
+    for(int i = 1;i<=30000;i++){
+        if(m1[rsum+i] == 0){
+            return i;
+            break;
+        }
     }
-    cout << ans << endl;
-
+    return 0;
 }
-
 signed main()
 {
     FASTIO
@@ -127,13 +122,24 @@ signed main()
  #endif 
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
 	cout<<fixed<<setprecision(12);
-      
-    int t;
-    cin >> t;
-    forn(tt,t){
-        cout << "Case #"<<tt+1<<": "; 
-        __solve();
-    } 
+
+    
+    cin >> n;
+    int rsum = 0;
+    for(int i = 0;i<n;i++){
+        int x = get(rsum);
+        rsum += x;
+        arr[i] = x;
+        m1[rsum] = 1;
+    }
+    forn(i,n){
+        cout << arr[i] << " ";
+    }
+    cout << endl;
+    
+       
+          
+    
 #ifndef ONLINE_JUDGE
 	cerr<<"Time elapsed: "<<(double)(clock()-clk)/CLOCKS_PER_SEC<<"  seconds" << "\n";
 #endif

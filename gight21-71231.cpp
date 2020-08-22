@@ -8,7 +8,7 @@ using namespace std;
 template<class T> ostream& operator<<(ostream &os,vector<T> V){os<<"[ ";for(auto v:V)os<<v<<" ";return os<<"]";}
 template<class L,class R> ostream& operator<<(ostream &os,pair<L,R> P){return os<<"("<<P.first<<","<<P.second<<")";}
 
-#ifndef TRACE
+#ifdef LOCAL
 #define trace(...) __f(#__VA_ARGS__,__VA_ARGS__)
 template<typename Arg1>
 void __f(const char* name,Arg1&& arg1){
@@ -83,63 +83,87 @@ string to_bin(T num){
     reverse(binary.begin(), binary.end());
     return binary;
 }
+/////////////////////////////////////////
+//reading
+// template <class T>
+// void RV(vector<T> v){
+//     for(T &c : v) cin >> c;
+// }
+// template <class T>
+// void RV(vector<vector<T>> v){
+//     int n = v.size();
+//     vector<vector<T>> v(n,vector<T>(m));
+//     for(vector<T> &c : v) RV(c);
+// }
+// //getting
+// template <class T>
+// vector<T> GV(int n,T value = 0){
+//     vector<T> v(n,value);
+//     return v;
+// }
+// template <class T>
+// vector<vector<T>> GV(int n,int m,T value = 0){
+//     vector<vector<T>> v(n,vector<T>(m,value));
+//     return v;
+// }
 ///////////////////////////////////////////////////////////////////////////////////
 
-void minus1(){
-    cout << "-1" << endl;
-    exit(0);
-}
+const int N  = 2.1e5;
+
+vector<int> G[N];
+
+int dp[N],parent[N];
+int in[N];
+
+int n,m;
 
 
-vector<int> a;
-vector<vector<int>> G;
-vector<int> subsum;
-vector<int> dsum;
-vector<int> pare;
-vector<vector<int>> pari;
-
-void dfs(int s,int par,int depth){
-    pare[s] = par;
-    dsum[depth] += a[s];
-    subsum[s] = a[s];
-    for(int c : G[s]){
-        pari[c][0] = s;
-        if(c == par) continue;
-        dfs(c,s,depth+1);
-        subsum[s] += subsum[c];
+void dfs(int s,int par){
+    
+    if(dp[par] + 1 > dp[s]){
+        dp[s] = dp[par] + 1;
+        parent[s] = par;
     }
-}
-
-
-
-
-
-signed main()
-{
-    FASTIO
-#ifndef ONLINE_JUDGE 
-    freopen("input.txt", "r", stdin);
-    freopen("output.txt", "w", stdout);
- #endif 
-    srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-	cout<<fixed<<setprecision(12);
-
-  
-    TC{
-        int n,k,p;
-        cin >> n >> k >> p;
-        if(k+p <=n){
-            cout << k+p << endl;
-        }else{
-            cout << -1 << endl;
+    if(in[s] == 0){
+        for(int c : G[s]){
+            in[c]--;
+            dfs(c,s);
         }
     }
     
+}
+signed main()
+{
+    FASTIO
+#ifdef LOCAL 
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+ #endif 
+    // srand(chrono::high_resolution_clock::now().time_since_epoch().count());
+	// cout<<fixed<<setprecision(12);
 
+    cin >> n >> m;
+    forn(i,m){
+        int a,b;
+        cin >> a >> b;
+        G[a].PB(b);
+        in[b]++;
+    }
 
+    dfs(1,0);
+
+    cout << dp[n] << endl;
+    vector<int> ans;
+    for(int x = n;x != 1;x = parent[x]){
+        ans.push_back(x);
+    }
+    cout << "1 ";
+    reverse(ALL(ans));
+    for(int c : ans ) cout << c  << " ";
+    cout << endl;
 
     
-#ifndef ONLINE_JUDGE
+#ifdef LOCAL
 	cerr<<"Time elapsed: "<<(double)(clock()-clk)/CLOCKS_PER_SEC<<"  seconds" << "\n";
 #endif
     

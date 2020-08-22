@@ -1,5 +1,4 @@
 #pragma GCC optimize("O3")
-#pragma comment(linker, "/stack:200000000")
 #pragma GCC optimize("unroll-loops")
 #include<bits/stdc++.h>
 
@@ -8,7 +7,7 @@ using namespace std;
 template<class T> ostream& operator<<(ostream &os,vector<T> V){os<<"[ ";for(auto v:V)os<<v<<" ";return os<<"]";}
 template<class L,class R> ostream& operator<<(ostream &os,pair<L,R> P){return os<<"("<<P.first<<","<<P.second<<")";}
 
-#ifndef TRACE
+#ifdef LOCAL
 #define trace(...) __f(#__VA_ARGS__,__VA_ARGS__)
 template<typename Arg1>
 void __f(const char* name,Arg1&& arg1){
@@ -42,11 +41,31 @@ typedef vector<VI> VVI;
 
 auto clk=clock();
 
-int mod = pow(10,9) +7;
-const long long inf = 1e9;
-const long long linf = 2e18;
+int mod = 7340033;
+const long long inf = 1e17;
 const double eps = 1e-6;
 const int  LOGN = 25;
+
+
+template <class T>
+void RV(vector<T> v){
+    for(T &c : v) cin >> c;
+}
+template <class T>
+void RV(vector<vector<T>> v){
+    int n = v.size();
+    for(vector<T> &c : v) RV(c);
+}
+template <class T>
+vector<T> V(int n,T value = 0){
+    vector<T> v(n,value);
+    return v;
+}
+template <class T>
+vector<vector<T>> V(int n,int m,T value = 0){
+    vector<vector<T>> v(n,vector<T>(m,value));
+    return v;
+}
 
 int pow_mod(int a,int b,int m= mod){
     long long  res = 1;
@@ -84,57 +103,112 @@ string to_bin(T num){
     reverse(binary.begin(), binary.end());
     return binary;
 }
-int to_int(string s){
-    reverse(s.begin(), s.end());
-    int pos = 0;
+////////////////////////////////////////////////////
+
+
+const int N = 6e5;
+
+int F[N][2];
+
+void add(int i,int x,int c){
+    i++;
+    for(;i<N;i+=(i&-i)){
+        F[i][c] += x;
+    }
+}
+
+int get(int i,int c){
+    i++;
     int ans = 0;
-    for(char c : s){
-        ans += (c == '1' ? pow(2,pos) : 0);
-        pos ++;
+    while(i>0){
+        ans += F[i][c];
+        i-=(i&-i);
     }
     return ans;
 }
-///////////////////////////////////////////////////////////////////////////////////
-
-double pi = 3.141592653589793238462643383279;
 
 
-
-void __solve(){
+void __Solve__(){
     int n;
     cin >> n;
     int arr[n];
     forn(i,n) cin >> arr[i];
-    int m = -1;
-
-    int ans = 0;
-    for(int i =0 ;i<n;i++){
-        bool ok1 = arr[i] > m;
-        bool ok2 = ((i == n-1) || arr[i] > arr[i+1]);
-        m = max(m,arr[i]);
-        ans += ok1&ok2;
+    vector<int> cnt(n+1,0);
+    forn(i,n) cnt[arr[i]]++;
+    vector<pair<int,int>> v;
+    for(int i =1;i<=n;i++){
+        if(cnt[i] > 0){
+            v.emplace_back(cnt[i],i);
+        }
     }
-    cout << ans << endl;
+    sort(v.begin(),v.end());
+    vector<int> fans(n+1,0);
+
+    vector<int> left(n+1,0);
+    vector<int> right(n+1,0);
+
+
+    int m = v.size();
+    for(auto x : v){
+        trace(x);
+    }
+    for(int i = 0;i<m;i++){
+        int curr = v[i].second;
+        left[curr] = get(curr,0);
+        add(curr,1,0);
+    }
+    for(int i = m-1;~i;i--){
+        int curr = v[i].second;
+        right[curr] = get(curr,1);
+        add(curr,1,1);
+    }
+    
+    vector<int> lcounts(n+1,0);
+    for(int i = 0;i<m;i++){
+        int max_cnt = v[i].first;
+        int ele = v[i].second;
+
+        int tans = 0;
+
+        int rtotal = m-i+1;
+        int rsmall = right[ele];
+        int rbig = rtotal-rsmall;
+
+        int ltotal = i;
+        int lsmall = left[ele];
+        int lbig = ltotal-lsmall;
+    
+
+        for(int j = 1;j<=max_cnt;j++){
+            int tans1 =  calc1(j,rbig,rsmall);
+            int tans2 = ?
+
+            tans += tans1*tans2;
+
+        }
+
+        //calc left;
+
+    }
 
 }
 
+
 signed main()
 {
+    // srand(chrono::high_resolution_clock::now().time_since_epoch().count());
+	// cout<<fixed<<setprecision(12);
     FASTIO
-#ifndef ONLINE_JUDGE 
+#ifdef LOCAL 
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
  #endif 
-    srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-	cout<<fixed<<setprecision(12);
-      
-    int t;
-    cin >> t;
-    forn(tt,t){
-        cout << "Case #"<<tt+1<<": "; 
-        __solve();
-    } 
-#ifndef ONLINE_JUDGE
+    int test_case = 1;
+    // cin >> test_case;
+    while(test_case--){
+        __Solve__();
+    }
+#ifdef LOCAL
 	cerr<<"Time elapsed: "<<(double)(clock()-clk)/CLOCKS_PER_SEC<<"  seconds" << "\n";
 #endif
     
