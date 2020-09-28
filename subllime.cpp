@@ -12,7 +12,7 @@ void __f(const char* name,Arg1&& arg1){
 }
 template<typename Arg1,typename... Args>
 void __f(const char* names,Arg1&& arg1,Args&&... args){
-		const char* comma=strchr(names+1,',');cout.write(names,comma-names)<<" : "<<arg1<<" | ";__f(comma+1,args...);
+  const char* comma=strchr(names+1,',');cout.write(names,comma-names)<<" : "<<arg1<<" | ";__f(comma+1,args...);
 }
 #else
 #define trace(...) 1
@@ -38,7 +38,7 @@ typedef vector<VI> VVI;
 
 auto clk=clock();
 
-int mod = 7340033;
+int mod = 1e9+7;
 const long long inf = 1e17;
 const double eps = 1e-6;
 const int  LOGN = 25;
@@ -102,23 +102,30 @@ string to_bin(T num){
 }
 ////////////////////////////////////////////////////
 
+ 
+
 
 
 void __Solve__(){
-    int x;
-    cin >> x;
-    cout <<x << endl;
+
+    int n,m;
+    cin >> n >> m;
+    forn(i,n-1){
+        int u,v;
+        cin >> u >> v;
+        G[u].push_back(v);
+        G[v].push_back(u);
+    }
+    dfs(nt)
 
 }
-
 signed main()
 {
     // srand(chrono::high_resolution_clock::now().time_since_epoch().count());
 	// cout<<fixed<<setprecision(12);
     FASTIO
 #ifdef LOCAL 
-    freopen("input.txt", "r", stdin);
-    freopen("output.txt", "w", stdout);
+    freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);
  #endif 
     int test_case = 1;
     // cin >> test_case;
@@ -126,7 +133,7 @@ signed main()
         __Solve__();
     }
 #ifdef LOCAL
-	cerr<<"Time elapsed: "<<(double)(clock()-clk)/CLOCKS_PER_SEC<<"  seconds" << "\n";
+    cerr<<"Time elapsed: "<<(double)(clock()-clk)/CLOCKS_PER_SEC<<"  seconds" << "\n";
 #endif
     
 }

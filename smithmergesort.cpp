@@ -1,5 +1,4 @@
-#pragma GCC optimize("O3")
-#pragma GCC optimize("unroll-loops")
+
 #include<bits/stdc++.h>
 
 using namespace std;
@@ -21,7 +20,7 @@ void __f(const char* names,Arg1&& arg1,Args&&... args){
 #define trace(...) 1
 #endif
 
-#define FASTIO ios_base::sync_with_stdio(false); cin.tie(NULL);
+#define FASTIO ios_base::sync_with_stdio(false); cin.tie(NULL);cout.tie(NULL);
 #define TC int testcase; cin >> testcase;while(testcase--)
 #define forn(i,n) for(int i=0;i<n;i++)
 
@@ -41,7 +40,7 @@ typedef vector<VI> VVI;
 
 auto clk=clock();
 
-int mod = pow(10,9) +7;
+int mod = 7340033;
 const long long inf = 1e17;
 const double eps = 1e-6;
 const int  LOGN = 25;
@@ -105,72 +104,53 @@ string to_bin(T num){
 }
 ////////////////////////////////////////////////////
 
-const int N = 1e5;
+vector<int> arr;
 
-vector<int> G1[N],G2[N],G3[N];
-vector<int> vis(N,0);
-vector<int> who(N,0);
-stack<int>st;
+void merge(int l,int mid,int r){
+    int p = l;
+    int q = mid+1;
 
+    int temp[r-l+1];
 
-void dfs1(int s){
-    vis[s] = 1;
-    for(int c: G1[s]){
-        if(vis[c] == 0){
-            dfs1(c);
+    int k = r-l+1;
+
+    for(int K = 0;K<k;K++){
+        if( p<=mid && q<=r){
+            if(arr[p] < arr[q]){
+                temp[K] = arr[p++];
+            }else{
+                temp[K] = arr[q++];
+            }
+        }else if(p<=mid){
+            temp[K] = arr[p++];
+        }else{
+            temp[K] = arr[q++];
         }
     }
-    st.push(s);
-}
-void dfs2(int s,int rep,vector<int> &compo){
-    compo.push_back(s);
-    vis[s] = 1;
-    who[s] = rep;
-    for(int c: G2[s]){
-        if(vis[c] == 0){
-            dfs2(c,rep,compo);
-        }
+    forn(i,k){        
+        arr[l+i] = temp[i];
     }
 }
 
+void mergesort(int l,int r){
+    if(l<r){
+        int mid = (l+r)/2;
+        mergesort(l,mid);
+        mergesort(mid+1,r);
+        merge(l,mid,r);
+    }
+}
 void __Solve__(){
-    int n,m;
-    cin >> n >> m;
-    forn(i,m){
-        int a,b;
-        cin >> a >> b;
-        a--;b--;
-        G1[a].PB(b);
-        G2[b].PB(a);
-    }
-    vis.assign(n,0);
-    forn(i,n){
-        if(!vis[i]){
-            dfs1(i);
-        }
-    }
-    vis.assign(n,0);
-    int odd = 0;
-    int even = 0;
+    
+    int n;
+    cin >> n;
+    
 
-    while(st.size()){
-        int u = st.top();
-        st.pop();
-        vector<int> compo;
-        if(!vis[u]){
-            
-            dfs2(u,u,compo);
-            if(compo.size()&1) odd+= compo.size();
-            else even += compo.size();
-        }
-    }
-    cout << odd -even << endl;
 }
-
 
 signed main()
 {
-    // srand(chrono::high_resolution_clock::now().time_since_epoch().count());
+    srand(chrono::high_resolution_clock::now().time_since_epoch().count());
 	// cout<<fixed<<setprecision(12);
     FASTIO
 #ifdef LOCAL 

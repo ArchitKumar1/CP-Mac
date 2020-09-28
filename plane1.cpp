@@ -41,31 +41,32 @@ typedef vector<VI> VVI;
 
 auto clk=clock();
 
-int mod = 7340033;
+int mod = 1e9+7;
 const long long inf = 1e17;
 const double eps = 1e-6;
 const int  LOGN = 25;
 
 
-template <class T>
-void RV(vector<T> v){
-    for(T &c : v) cin >> c;
-}
-template <class T>
-void RV(vector<vector<T>> v){
-    int n = v.size();
-    for(vector<T> &c : v) RV(c);
-}
-template <class T>
-vector<T> V(int n,T value = 0){
-    vector<T> v(n,value);
-    return v;
-}
-template <class T>
-vector<vector<T>> V(int n,int m,T value = 0){
-    vector<vector<T>> v(n,vector<T>(m,value));
-    return v;
-}
+// template <class T>
+// void read(vector<T> v){
+//     for(T &c : v) cin >> c;
+// }
+// template <class T>
+// void read(vector<vector<T>> v){
+//     int n = v.size();
+//     for(vector<T> &c : v) RV(c);
+// }
+
+
+class mod_num{
+
+    int num = 23;
+    bool operator+(const mod_num o){
+        return (num + o.num) % mod;
+    }
+};
+
+
 
 int pow_mod(int a,int b,int m= mod){
     long long  res = 1;
@@ -103,66 +104,18 @@ string to_bin(T num){
     reverse(binary.begin(), binary.end());
     return binary;
 }
+
 ////////////////////////////////////////////////////
 
 
-const int N = 1e5 + 5;
 
-VI G[N],IG[N],vis,who(N),comp,allcomps;
-stack<int> st;
-int n,m;
-
-void dfs1(int s){
-    vis[s] = 1;
-    for(int c : G[s]){
-        if(!vis[c]){
-            dfs1(c);
-        }
-    }
-    st.push(s);
-}
-
-void dfs2(int s,int w){
-    vis[s] = 1;
-    who[s] = w;
-    comp.PB(s);
-    for(int c : IG[s]){
-        if(!vis[c]){
-            dfs2(c,w);
-        }
-    }
-}
 
 void __Solve__(){
-    cin >> n >> m;
-    forn(i,m){
-        int a,b;
-        cin >> a >>b;
-        G[a].PB(b);IG[b].PB(a);
-    }
-    vis = VI(n+1,0);
-    rep(i,1,n){
-        if(!vis[i]){
-            dfs1(i);
-        }
-    }
-    vis = VI(n+1,0);
-    while(st.size()){
-        int s = st.top();st.pop();
-        if(!vis[s]){
-            comp.clear();
-            dfs2(s,s);
-            if(comp.size() == n){
-                cout << "YES" << endl;
-                return;
-            }
-            allcomps.PB(s);
-        }
-    }
-    // trace(allcomps);
-    cout << "NO\n" << allcomps[1] << " " << allcomps[0] << endl;
+
+
 
 }
+
 
 signed main()
 {

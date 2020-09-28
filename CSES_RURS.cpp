@@ -1,3 +1,6 @@
+#pragma GCC optimize("O3")
+//#pragma comment(linker, "/stack:200000000")
+#pragma GCC optimize("unroll-loops")
 
 #include<bits/stdc++.h>
 
@@ -101,67 +104,94 @@ string to_bin(T num){
     string binary = "";
     while (num){binary += (num % 2 == 1 ? "1" : "0");num >>= 1;}
     reverse(binary.begin(), binary.end());
+    binary = string(32-(binary.size()),'0') + binary;
     return binary;
 }
 ////////////////////////////////////////////////////
 
 
-const int N = 1e5 + 5;
-
-VI G[N],IG[N],vis,who(N),comp,allcomps;
-stack<int> st;
-int n,m;
-
-void dfs1(int s){
-    vis[s] = 1;
-    for(int c : G[s]){
-        if(!vis[c]){
-            dfs1(c);
-        }
-    }
-    st.push(s);
-}
-
-void dfs2(int s,int w){
-    vis[s] = 1;
-    who[s] = w;
-    comp.PB(s);
-    for(int c : IG[s]){
-        if(!vis[c]){
-            dfs2(c,w);
-        }
-    }
-}
-
+  
 void __Solve__(){
-    cin >> n >> m;
-    forn(i,m){
-        int a,b;
-        cin >> a >>b;
-        G[a].PB(b);IG[b].PB(a);
-    }
-    vis = VI(n+1,0);
-    rep(i,1,n){
-        if(!vis[i]){
-            dfs1(i);
-        }
-    }
-    vis = VI(n+1,0);
-    while(st.size()){
-        int s = st.top();st.pop();
-        if(!vis[s]){
-            comp.clear();
-            dfs2(s,s);
-            if(comp.size() == n){
-                cout << "YES" << endl;
-                return;
-            }
-            allcomps.PB(s);
-        }
-    }
-    // trace(allcomps);
-    cout << "NO\n" << allcomps[1] << " " << allcomps[0] << endl;
+    int n,q;
+    cin >> n;
+    int arr[n];
+    forn(i,n) cin >> arr[i],trace(to_bin(arr[i]));
+    
+    cin >> q;
 
+    int dp[n+1][32];
+    memset(dp,0,sizeof(dp));
+
+
+    
+    for(int i = 0;i<n;i++){
+        for(int j = 0;j<32;j++){
+            dp[i+1][j] = dp[i][j];
+            if((1LL<<j)&arr[i]){
+                dp[i+1][j] += 1; 
+            }
+        }
+    }
+    int cnts[n+1][32];
+    memset(cnts,0,sizeof(cnts));
+
+    for(int j = 0;j<n;j++){
+        for(int i = 31;i>=0;i--){
+
+            int k = i+1;
+            int cnt = 0;
+            if(((1<<i)&arr[j]) == 0){
+                while(k>=0 && ((1<<k)&arr[i]) >=1){
+                    cnt += 1;
+                    k++;
+                }
+                 cnts[j+1][i] = (1LL<<(i-cnt));
+            }else{
+                cnts[j+1][i] = 0;
+            }
+            
+        }
+    }
+    // for(int i = 1;i<=n;i++){
+    //     for(int j = 0;j<32;j++){
+    //         cout << cnts[i][j] << " ";
+    //     }
+    //     cout << endl;
+    // }
+    for(int i = 1;i<=n;i++){
+        for(int j = 0;j<32;j++){
+            cnts[i][j] += cnts[i-1][j] ; 
+        }
+    }
+    for(int i = 1;i<=n;i++){
+        for(int j = 0;j<32;j++){
+            cout << cnts[i][j] << " ";
+        }
+        cout << endl;
+    }
+
+    while(q--){
+        int l,r;
+        cin >> l >> r;
+        vector<int> cntsq(32,0);
+        bool ok = 0;
+        for(int j = 0;j<32;j++){
+            cntsq[j] = dp[r][j] - dp[l-1][j];
+            ok|=(cntsq[j]==(r-l+1));
+        }
+        //trace(cntsq);
+        if(ok){
+            cout << 0 << endl;
+        }else{
+            int ans = 1e18;
+            for(int j = 0;j<32;j++){
+                int cost = cnts[r][j] - cnts[l-1][j];
+                ans = min(ans,cost);
+            }
+            cout << ans << endl;
+        }
+    }
+   
 }
 
 signed main()
@@ -174,7 +204,7 @@ signed main()
     freopen("output.txt", "w", stdout);
  #endif 
     int test_case = 1;
-    // cin >> test_case;
+    //  cin >> test_case;
     while(test_case--){
         __Solve__();
     }

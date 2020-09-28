@@ -20,6 +20,17 @@
         "set": "cpp",
         "cmath": "cpp",
         "chrono": "cpp",
-        "ios": "cpp"
+        "ios": "cpp",
+        "cassert": "cpp",
+        "optional": "cpp",
+        "ostream": "cpp",
+        "ratio": "cpp",
+        "system_error": "cpp",
+        "array": "cpp",
+        "functional": "cpp",
+        "regex": "cpp",
+        "tuple": "cpp",
+        "type_traits": "cpp",
+        "variant": "cpp"
     }
 }

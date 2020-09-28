@@ -1,3 +1,6 @@
+#pragma GCC optimize("O3")
+//#pragma comment(linker, "/stack:200000000")
+#pragma GCC optimize("unroll-loops")
 
 #include<bits/stdc++.h>
 
@@ -105,63 +108,28 @@ string to_bin(T num){
 }
 ////////////////////////////////////////////////////
 
+const int BASE_4 = 10;
+const int SUM_FOURTH_4 = BASE_4*(BASE_4+1)*(2*BASE_4+1)*((3*BASE_4*BASE_4) +3*BASE_4-1)/30;
 
-const int N = 1e5 + 5;
+vector<int> range(SUM_FOURTH_4+10,0);
 
-VI G[N],IG[N],vis,who(N),comp,allcomps;
-stack<int> st;
-int n,m;
-
-void dfs1(int s){
-    vis[s] = 1;
-    for(int c : G[s]){
-        if(!vis[c]){
-            dfs1(c);
-        }
-    }
-    st.push(s);
-}
-
-void dfs2(int s,int w){
-    vis[s] = 1;
-    who[s] = w;
-    comp.PB(s);
-    for(int c : IG[s]){
-        if(!vis[c]){
-            dfs2(c,w);
-        }
-    }
+void calc3(int v ,int a ,int b,int mv){
+    if(v == mv+1){
+        int val = abs(a-b);
+        range[val] = 1;
+    }else{
+        calc3(v+1,a+v*v*v*v,b,mv);
+        calc3(v+1,a,b+v*v*v*v,mv);
+    }  
 }
 
 void __Solve__(){
-    cin >> n >> m;
-    forn(i,m){
-        int a,b;
-        cin >> a >>b;
-        G[a].PB(b);IG[b].PB(a);
-    }
-    vis = VI(n+1,0);
-    rep(i,1,n){
-        if(!vis[i]){
-            dfs1(i);
-        }
-    }
-    vis = VI(n+1,0);
-    while(st.size()){
-        int s = st.top();st.pop();
-        if(!vis[s]){
-            comp.clear();
-            dfs2(s,s);
-            if(comp.size() == n){
-                cout << "YES" << endl;
-                return;
-            }
-            allcomps.PB(s);
-        }
-    }
-    // trace(allcomps);
-    cout << "NO\n" << allcomps[1] << " " << allcomps[0] << endl;
 
+    calc3(1,0,0,BASE_4);
+
+    for(int i = 1;i<(int)range.size();i++){
+        trace(i,range[i]);
+    }
 }
 
 signed main()
@@ -174,7 +142,7 @@ signed main()
     freopen("output.txt", "w", stdout);
  #endif 
     int test_case = 1;
-    // cin >> test_case;
+    //  cin >> test_case;
     while(test_case--){
         __Solve__();
     }

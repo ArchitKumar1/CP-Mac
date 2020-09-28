@@ -1,3 +1,6 @@
+#pragma GCC optimize("O3")
+//#pragma comment(linker, "/stack:200000000")
+#pragma GCC optimize("unroll-loops")
 
 #include<bits/stdc++.h>
 
@@ -106,62 +109,106 @@ string to_bin(T num){
 ////////////////////////////////////////////////////
 
 
-const int N = 1e5 + 5;
+struct node{
+    int s,val,lazy =0;
+};
 
-VI G[N],IG[N],vis,who(N),comp,allcomps;
-stack<int> st;
-int n,m;
+const int N = 2e5+1;
 
-void dfs1(int s){
-    vis[s] = 1;
-    for(int c : G[s]){
-        if(!vis[c]){
-            dfs1(c);
-        }
-    }
-    st.push(s);
+node tree[4*N];
+int arr[N];
+
+
+void apply(int index,int v,int l,int r){
+    tree[index].s += v;
+    tree[index].val += (r-l+1)*v;
+    tree[index].lazy += v;
 }
 
-void dfs2(int s,int w){
-    vis[s] = 1;
-    who[s] = w;
-    comp.PB(s);
-    for(int c : IG[s]){
-        if(!vis[c]){
-            dfs2(c,w);
-        }
+void push(int index,int l,int r){
+    int mid = (l+r)/2;
+    apply(2*index,tree[index].lazy,l,mid);
+    apply(2*index+1,tree[index].lazy,mid+1,r);
+    tree[index].lazy = 0;
+}
+void build(int s,int e,int index){
+    if(s == e){
+        tree[index].s = arr[s];
+        tree[index].val = arr[s];
+        return;
     }
+    int mid = (s+e)/2;
+    build(s,mid,index*2);
+    build(mid+1,e,index*2+1);
+
+    tree[index].val = tree[2*index].val + tree[2*index+1].val;
 }
 
+void update(int s,int e,int p,int v,int index){
+    if(s > p || e < p) return ;
+    if(s == e && s == p){
+        tree[index].val = v;
+        return ;
+    }
+    int mid = (s+e)/2;
+    update(s,mid,p,v,index*2);
+    update(mid+1,e,p,v,index*2+1);
+    tree[index].val = tree[2*index].val + tree[2*index+1].val;
+}
+
+void update2(int s,int e,int l,int r,int v,int index){
+    if(s > r || e < l)return;
+    if(s >= l && e <=r ) {
+        apply(index,v,s,e);
+        return;
+    }
+    push(index,s,e);
+    int mid = (s+e)/2;
+    update2(s,mid,l,r,v,index*2);
+    update2(mid+1,e,l,r,v,index*2+1);
+    tree[index].val = tree[2*index].val + tree[2*index+1].val;
+}
+
+
+int query(int s,int e,int l,int r,int index){
+
+    if(s > r || e < l) return 0;
+    if(s >= l && e <=r ) return tree[index].val;
+
+    push(index,s,e);
+    int mid = (s+e)/2;
+    int L= query(s,mid,l,r,2*index);
+    int R = query(mid+1,e,l,r,2*index+1);
+    return L+R;
+
+}
+
+int n,q;
+  
 void __Solve__(){
-    cin >> n >> m;
-    forn(i,m){
-        int a,b;
-        cin >> a >>b;
-        G[a].PB(b);IG[b].PB(a);
-    }
-    vis = VI(n+1,0);
-    rep(i,1,n){
-        if(!vis[i]){
-            dfs1(i);
-        }
-    }
-    vis = VI(n+1,0);
-    while(st.size()){
-        int s = st.top();st.pop();
-        if(!vis[s]){
-            comp.clear();
-            dfs2(s,s);
-            if(comp.size() == n){
-                cout << "YES" << endl;
-                return;
-            }
-            allcomps.PB(s);
-        }
-    }
-    // trace(allcomps);
-    cout << "NO\n" << allcomps[1] << " " << allcomps[0] << endl;
+    
+   cin >> n >> q;
+   forn(i,n) cin >> arr[i];
+   build(0,n-1,1);
 
+    while(q--){
+
+       int t;
+       cin >> t;
+       if(t == 1){
+           int a,b,u;
+           cin >> a >>  b >> u;
+           a--,b--;
+            update2(0,n-1,a,b,u,1);
+       }else{
+            int k;
+            cin >> k;
+            k--;
+             cout << query(0,n-1,k,k,1) << endl;
+        }
+
+   }
+   
 }
 
 signed main()
@@ -174,7 +221,7 @@ signed main()
     freopen("output.txt", "w", stdout);
  #endif 
     int test_case = 1;
-    // cin >> test_case;
+    //  cin >> test_case;
     while(test_case--){
         __Solve__();
     }

@@ -152,22 +152,7 @@ VI arr;
 int n;
 
 VVI dp;
-int solve(int i,int t){
     
-    if(i==n){
-        return 0;
-    }
-    if(dp[i][t]!=-1) return dp[i][t];
-    int ans = INT_MAX;
-    if(t){
-        if(i+2<=n)ans = min(ans,solve(i+2,t^1));
-        if(i+1<=n)ans = min(ans,solve(i+1,t^1));
-    }else{
-        if(i+2<=n)ans = min(ans,arr[i]+arr[i+1]+solve(i+2,t^1));
-        if(i+1<=n)ans = min(ans,arr[i]+solve(i+1,t^1));
-    }
-    return dp[i][t] = ans;
-}
 
 int main()
 {
@@ -179,10 +164,23 @@ int main()
    TC{
         cin >> n;
         arr = VI(n);
-        dp = VVI(n,VI(2,-1));
-        forn(i,n) cin >> arr[i];
+        dp = VVI(n+1,VI(2,INT_MAX));
+        
+        dp[0][0] = 0;
+        dp[0][1] = 0;
 
-        cout << solve(0,0) << endl;
+        for(int i = 1;i<=n;i++){
+            for(int j = 0;j<1;j++){
+                if(j){
+                    if(i-1>=0)dp[i][j] = min(dp[i][j],dp[i-1][j^1]);
+                    if(i-2>=0)dp[i][j] = min(dp[i][j],dp[i-2][j^1]);
+                }else{
+                    if(i-1>=0)dp[i][j] = min(dp[i][j],arr[i-1] + dp[i-1][j^1]);
+                    if(i-2>=0)dp[i][j] = min(dp[i][j],arr[i-1]+arr[i-2]+dp[i-2][j^1]);
+                }
+            }
+        }
+        cout << dp[n][0] << " " << dp[n][1] << endl;
    }
 
    

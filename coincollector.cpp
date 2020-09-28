@@ -108,7 +108,7 @@ string to_bin(T num){
 
 const int N = 1e5 + 5;
 
-VI G[N],IG[N],vis,who(N),comp,allcomps;
+VI G[N],IG[N],G3[N],vis,who(N,0),x(N,0),y(N,0),dp(N,0),comp;
 stack<int> st;
 int n,m;
 
@@ -131,10 +131,25 @@ void dfs2(int s,int w){
             dfs2(c,w);
         }
     }
+    y[who[s]] += x[s];
+}
+
+void dfs3(int s){
+    vis[s] = 1;
+    dp[s] = 0;
+    for(int  c: G3[s]){
+        if(!vis[c]){
+            dfs3(c);
+        }
+        dp[s] = max(dp[s],dp[c]);
+    }
+    dp[s] += y[s];
 }
 
 void __Solve__(){
     cin >> n >> m;
+    rep(i,1,n) cin >> x[i];
+
     forn(i,m){
         int a,b;
         cin >> a >>b;
@@ -150,17 +165,30 @@ void __Solve__(){
     while(st.size()){
         int s = st.top();st.pop();
         if(!vis[s]){
-            comp.clear();
             dfs2(s,s);
-            if(comp.size() == n){
-                cout << "YES" << endl;
-                return;
-            }
-            allcomps.PB(s);
+            comp.clear();
         }
     }
-    // trace(allcomps);
-    cout << "NO\n" << allcomps[1] << " " << allcomps[0] << endl;
+    rep(i,1,n){
+        for(int c : G[i]){
+            if(who[i] != who[c]){
+                G3[who[i]].PB(who[c]);
+            }
+        }
+    }
+    int fans = 0;
+    vis = VI(n+1,0);
+
+    rep(i,1,n){
+        if(!vis[i] && who[i] == i){
+            dfs3(i);
+            fans = max(dp[i],fans);
+        }
+    }
+    cout << fans << endl;
+
+
+
 
 }
 

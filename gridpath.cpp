@@ -41,7 +41,7 @@ typedef vector<VI> VVI;
 
 auto clk=clock();
 
-int mod = 7340033;
+int mod = 1e9+7;
 const long long inf = 1e17;
 const double eps = 1e-6;
 const int  LOGN = 25;
@@ -106,61 +106,30 @@ string to_bin(T num){
 ////////////////////////////////////////////////////
 
 
-const int N = 1e5 + 5;
+const int N = 5050;
 
-VI G[N],IG[N],vis,who(N),comp,allcomps;
-stack<int> st;
-int n,m;
+int arr[N],dp[N][N][2];
+int n;
 
-void dfs1(int s){
-    vis[s] = 1;
-    for(int c : G[s]){
-        if(!vis[c]){
-            dfs1(c);
-        }
-    }
-    st.push(s);
-}
 
-void dfs2(int s,int w){
-    vis[s] = 1;
-    who[s] = w;
-    comp.PB(s);
-    for(int c : IG[s]){
-        if(!vis[c]){
-            dfs2(c,w);
-        }
+int solve(int i,int j,int t){
+    if(dp[i][j][t]!=0) return dp[i][j][t];
+    if(i== j){
+        return dp[i][j][t] = (t==1?0:arr[i]);
+    }else{
+        if(t)
+            return dp[i][j][t] =  min(solve(i+1,j,t^1),solve(i,j-1,t^1));
+        else
+            return dp[i][j][t]= max(arr[i]+solve(i+1,j,t^1),arr[j]+solve(i,j-1,t^1));
     }
 }
+
 
 void __Solve__(){
-    cin >> n >> m;
-    forn(i,m){
-        int a,b;
-        cin >> a >>b;
-        G[a].PB(b);IG[b].PB(a);
-    }
-    vis = VI(n+1,0);
-    rep(i,1,n){
-        if(!vis[i]){
-            dfs1(i);
-        }
-    }
-    vis = VI(n+1,0);
-    while(st.size()){
-        int s = st.top();st.pop();
-        if(!vis[s]){
-            comp.clear();
-            dfs2(s,s);
-            if(comp.size() == n){
-                cout << "YES" << endl;
-                return;
-            }
-            allcomps.PB(s);
-        }
-    }
-    // trace(allcomps);
-    cout << "NO\n" << allcomps[1] << " " << allcomps[0] << endl;
+    cin >> n;
+    forn(i,n) cin >> arr[i];
+
+    cout << solve(0,n-1,0);
 
 }
 

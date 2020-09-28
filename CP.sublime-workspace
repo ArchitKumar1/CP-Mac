@@ -1,0 +1,535 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"c",
+				"class\tclass-..-(class)"
+			],
+			[
+				"m",
+				"my-ctr"
+			],
+			[
+				"v",
+				"VPII"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "subllime.cpp",
+			"settings":
+			{
+				"buffer_size": 3281,
+				"encoding": "UTF-8",
+				"line_ending": "Unix",
+				"name": "#include<bits/stdc++.h>"
+			}
+		},
+		{
+			"file": "1398D.cpp",
+			"settings":
+			{
+				"buffer_size": 3868,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "\n#include<bits/stdc++.h>\n\nusing namespace std;\n\ntemplate<class T> ostream& operator<<(ostream &os,vector<T> V){os<<\"[ \";for(auto v:V)os<<v<<\" \";return os<<\"]\";}\ntemplate<class L,class R> ostream& operator<<(ostream &os,pair<L,R> P){return os<<\"(\"<<P.first<<\",\"<<P.second<<\")\";}\n\n#ifdef LOCAL\n#define trace(...) __f(#__VA_ARGS__,__VA_ARGS__)\ntemplate<typename Arg1>\nvoid __f(const char* name,Arg1&& arg1){\n\tcout<<name<<\" : \"<<arg1<<endl;\n}\ntemplate<typename Arg1,typename... Args>\nvoid __f(const char* names,Arg1&& arg1,Args&&... args){\n\t\tconst char* comma=strchr(names+1,',');cout.write(names,comma-names)<<\" : \"<<arg1<<\" | \";__f(comma+1,args...);\n}\n#else\n#define trace(...) 1\n#endif\n\n#define FASTIO ios_base::sync_with_stdio(false); cin.tie(NULL);cout.tie(NULL);\n#define TC int testcase; cin >> testcase;while(testcase--)\n#define forn(i,n) for(int i=0;i<n;i++)\n\n#define ALL(x) x.begin(),x.end()\n#define int long long int\n// #define LL long long int\n#define PB push_back\n#define EB emplace_back\n#define F first\n#define S second\n#define endl \"\\n\"\n\ntypedef pair<int,int>PII;\ntypedef vector<PII> VPII;\ntypedef vector<int> VI;\ntypedef vector<VI> VVI;\n\nauto clk=clock();\n\nint mod = 7340033;\nconst long long inf = 1e17;\nconst double eps = 1e-6;\nconst int  LOGN = 25;\n\n\ntemplate <class T>\nvoid RV(vector<T> v){\n    for(T &c : v) cin >> c;\n}\ntemplate <class T>\nvoid RV(vector<vector<T>> v){\n    int n = v.size();\n    for(vector<T> &c : v) RV(c);\n}\ntemplate <class T>\nvector<T> V(int n,T value = 0){\n    vector<T> v(n,value);\n    return v;\n}\ntemplate <class T>\nvector<vector<T>> V(int n,int m,T value = 0){\n    vector<vector<T>> v(n,vector<T>(m,value));\n    return v;\n}\n\nint pow_mod(int a,int b,int m= mod){\n    long long  res = 1;\n    while(b){ if(b&1) res =((long long)res*a)%m; a = ((long long)a*a)%m;b >>=1;}\n    return res;\n}\ntemplate <typename T> \nT gcd(T a,T b){\n    if(b == 0) return a;return gcd(b,a%b);\n}\ntemplate <typename T> \nT lcm(T a,T b){ \n    return a*b /gcd(a,b);\n}\ntemplate <typename T,typename U>\nT add(T a, U b){\n    a = (long long)a+b;a = (a+mod)%mod;return a;\n}\ntemplate <typename T,typename U>\nT mul(T a, U b){\n    a = ((long long)a*b)%mod;return a;\n}\ntemplate <typename T>\nT add(vector<T> v){\n    long long sum=0; for(T x : v) sum = (sum + x)%mod;return (T)sum;\n}\ntemplate <typename T> \nT mul(vector<T> v){ \n    long long  sum = 1LL;for(T x : v)sum = (sum * x)%mod;return (T)sum;\n}\ntemplate <typename T>\nstring to_bin(T num){\n    string binary = \"\";\n    while (num){binary += (num % 2 == 1 ? \"1\" : \"0\");num >>= 1;}\n    reverse(binary.begin(), binary.end());\n    return binary;\n}\n////////////////////////////////////////////////////\n\nvector<int> arr;\n\nvoid merge(int l,int mid,int r){\n    int p = l;\n    int q = mid+1;\n\n    int temp[r-l+1];\n\n    int k = r+l-1;\n\n    for(int K = 0;K<k;K++){\n        if( p<mid && q<r){\n            if(arr[p] < arr[q]){\n                temp[K] = arr[p++];\n            }else{\n                temp[K] = arr[q++];\n            }\n        }else if(p<l){\n            temp[K] = arr[p++];\n        }else{\n            temp[K] = arr[q++];\n        }\n    }\n    forn(i,k){\n        arr[p+k] = temp[i];\n    }\n}\n\nvoid mergesort(int l,int r){\n    while(l<r){\n        int mid = (l+r)/2;\n        mergesort(l,mid);\n        mergesort(mid+1,r);\n        merge(l,mid,r);\n    }\n}\nvoid __Solve__(){\n    \n    // 1 2 4 5 6 7 \n    // p     q.  r\n    // l\n    arr = vector<int>{4,1,9,8,2,5};\n    int n = arr.size();\n    mergesort(0,n-1);\n    for(int c : arr){\n        cout << c << \" \";\n    }\n    cout << endl;\n\n}\n\nsigned main()\n{\n    // srand(chrono::high_resolution_clock::now().time_since_epoch().count());\n\t// cout<<fixed<<setprecision(12);\n    FASTIO\n#ifdef LOCAL \n    freopen(\"input.txt\", \"r\", stdin);\n    freopen(\"output.txt\", \"w\", stdout);\n #endif \n    int test_case = 1;\n    // cin >> test_case;\n    while(test_case--){\n        __Solve__();\n    }\n#ifdef LOCAL\n\tcerr<<\"Time elapsed: \"<<(double)(clock()-clk)/CLOCKS_PER_SEC<<\"  seconds\" << \"\\n\";\n#endif\n    \n}",
+			"file": "sample22.cpp",
+			"file_size": 3977,
+			"file_write_time": 132433577483855217,
+			"settings":
+			{
+				"buffer_size": 3977,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "import pandas as pd\nfrom statistics import mode\nimport math\n\n# Install These\n# pip install pandas\n# pip install xlrd\n\nexcel_file = 'cereal_data.xls'\n\ncereals = pd.read_excel(excel_file)\n\nprint(cereals.head())\n\nmfr_values = mode(cereals[\"mfr\"].values)\ntypes = mode(cereals[\"type\"].values)\n\ncalories = cereals[\"calories\"].mean()\nprotein = cereals[\"protein\"].mean()\nfat = cereals[\"fat\"].mean()\nsodium = cereals[\"sodium\"].mean()\nfibre = cereals[\"fiber\"].mean()\ncarbo = cereals[\"carbo\"].mean()\nsugars = cereals[\"sugars\"].mean()\npotassium = cereals[\"potass\"].mean()rit \nvitamins = cereals[\"vitamins\"].mean()\nshelf = cereals[\"shelf\"].mean()\nweight = cereals[\"weight\"].mean()\ncups = cereals[\"cups\"].mean()\nrating = cereals[\"rating\"].mean()\n\ncategory_1 = []\ncategory_2 = []\ncategory_3 = []\n\nn, m = cereals.shape\n\nfor i in range(1, n):\n    calorie_value = cereals.loc[cereals.index[i], 'calories']\n    if math.isnan(calorie_value):\n        calorie_value = calories\n\n    protein_value = cereals.loc[cereals.index[i], 'protein']\n    if math.isnan(protein_value):\n        protein_value = calories\n\n    vitamin_value = cereals.loc[cereals.index[i], 'vitamins']\n    if math.isnan(vitamin_value):\n        vitamin_value = calories\n\n    sodium_value = cereals.loc[cereals.index[i], 'sodium']\n    if math.isnan(sodium_value):\n        sodium_value = calories\n\n    sugar_value = cereals.loc[cereals.index[i], 'sugars']\n    if math.isnan(sugar_value):\n        sugar_value = calories\n\n    fat_value = cereals.loc[cereals.index[i], 'fat']\n    if math.isnan(fat_value):\n        fat_value = calories\n\n    positive_nutrition_index = calorie_value + protein_value + vitamin_value\n    negative_nutrition_index = 1 + sodium_value + sugar_value + fat_value\n\n    global_nutrition_index = positive_nutrition_index / negative_nutrition_index\n\n    if global_nutrition_index > 2:\n        category_1.append(cereals.loc[cereals.index[i], 'name'])\n    elif global_nutrition_index <= 2 and global_nutrition_index > 0.5:\n        category_2.append(cereals.loc[cereals.index[i], 'name'])\n    else:\n        category_3.append(cereals.loc[cereals.index[i], 'name'])\n\nprint(category_1)\nprint(category_2)\nprint(category_3)\n",
+			"file": "/Users/archit.ext/Downloads/pranjal.py",
+			"file_size": 2171,
+			"file_write_time": 132436382079851234,
+			"settings":
+			{
+				"buffer_size": 2175,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "input.txt",
+			"settings":
+			{
+				"buffer_size": 13,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "<snippet>\n\t<content><![CDATA[\nHello, ${1:this} is a ${2:snippet}.\n]]></content>\n\t<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->\n\t<!-- <tabTrigger>hello</tabTrigger> -->\n\t<!-- Optional: Set a scope to limit where the snippet will trigger -->\n\t<!-- <scope>source.python</scope> -->\n</snippet>\n",
+			"settings":
+			{
+				"buffer_size": 317,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/archit.ext/Library/Application Support/Sublime Text 3/Packages/User/graph.sublime-snippet",
+			"settings":
+			{
+				"buffer_size": 295,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+		[
+			[
+				[
+					"Packages/C++/C++ Single File.sublime-build",
+					""
+				],
+				[
+					"Packages/C++/C++ Single File.sublime-build",
+					"Run"
+				]
+			],
+			[
+				"Packages/C++/C++ Single File.sublime-build",
+				"Run"
+			]
+		]
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"Snippet: ",
+				"Snippet: std::map"
+			],
+			[
+				"inde",
+				"Indentation: Reindent Lines"
+			],
+			[
+				"V",
+				"Convert Case: Lower Case"
+			],
+			[
+				"VIEW",
+				"View Package File"
+			],
+			[
+				"",
+				"Build With: c++17"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Users/archit.ext/Library/Application Support/Sublime Text 3/Packages/User/graph.sublime-snippet",
+		"/Users/archit.ext/Library/Application Support/Sublime Text 3/Packages/C++/C++ Single File.sublime-build",
+		"/Users/archit.ext/Library/Application Support/Sublime Text 3/Packages/User/c++ 17",
+		"/Users/archit.ext/Library/Application Support/Sublime Text 3/Packages/User/c++17.sublime-build",
+		"/Users/archit.ext/Library/Application Support/Sublime Text 3/Packages/C++/C++.sublime-syntax",
+		"/Users/archit.ext/Library/Application Support/Sublime Text 3/Packages/User/C++custom.sublime-build",
+		"/Users/archit.ext/Library/Application Support/Sublime Text 3/Packages/C++/C.sublime-syntax",
+		"/Users/archit.ext/Desktop/IndoEuropeanTree.svg",
+		"/Users/archit.ext/.zshrc",
+		"/Users/archit.ext/.bash_profile",
+		"/Users/archit.ext/.bashrc",
+		"/Users/archit.ext/Desktop/api_error.log",
+		"/Users/archit.ext/Desktop/kubeyamlfiles/rc.yml",
+		"/Users/archit.ext/Desktop/kubeyamlfiles/pod.yml",
+		"/Users/archit.ext/Downloads/weekend/content.js",
+		"/Users/archit.ext/Downloads/weekend/manifest.json",
+		"/Users/archit.ext/Desktop/retail_2020-04-30.sql",
+		"/Users/archit.ext/Desktop/rpc_2020-04-28.sql",
+		"/Users/archit.ext/Downloads/auto-fil 5/manifest.json",
+		"/Users/archit.ext/Downloads/auto-fil 4/manifest.json",
+		"/Users/archit.ext/Downloads/auto-fil 4/popup.html",
+		"/Users/archit.ext/Downloads/auto-fil 4/popup.js",
+		"/Users/archit.ext/Downloads/auto-fil/popup.js",
+		"/Users/archit.ext/Downloads/auto-fil/manifest.json",
+		"/Users/archit.ext/Downloads/auto-fil/popup.html",
+		"/Users/archit.ext/Desktop/as.py",
+		"/Users/archit.ext/Desktop/input.txt",
+		"/Users/archit.ext/Desktop/first.cpp",
+		"/Users/archit.ext/Desktop/output.txt",
+		"/Users/archit.ext/Library/Application Support/Sublime Text 3/Packages/User/test.sublime-build",
+		"/Users/archit.ext/Library/Application Support/Sublime Text 3/Cache/C++/C++.sublime-syntax.cache",
+		"/Users/archit.ext/Library/Application Support/Sublime Text 3/C++17.sublime-build"
+	],
+	"find":
+	{
+		"height": 26.0
+	},
+	"find_in_files":
+	{
+		"height": 101.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			";\n"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 3,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "subllime.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3281,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2827,
+								2827
+							]
+						],
+						"settings":
+						{
+							"auto_name": "#include<bits/stdc++.h>",
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "1398D.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3868,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3210,
+								3210
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "sample22.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3977,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1333,
+								1333
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "/Users/archit.ext/Downloads/pranjal.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2175,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								280,
+								280
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 30.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "input.txt",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 13,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 317,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								317,
+								317
+							]
+						],
+						"settings":
+						{
+							"default_dir": "/Users/archit.ext/Library/Application Support/Sublime Text 3/Packages/User",
+							"default_extension": "sublime-snippet",
+							"syntax": "Packages/XML/XML.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "/Users/archit.ext/Library/Application Support/Sublime Text 3/Packages/User/graph.sublime-snippet",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 295,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								140,
+								140
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/XML/XML.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 26.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 170.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "Packages/User/c++17.sublime-build",
+	"project": "CP.sublime-project",
+	"replace":
+	{
+		"height": 48.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"~/Desktop/c++ sample/subllime.cpp"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 392.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 592.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+		"last_automatic_layout":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		]
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 180.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+		"max_columns": 2
+	}
+}

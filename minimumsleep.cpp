@@ -1,3 +1,6 @@
+#pragma GCC optimize("O3")
+//#pragma comment(linker, "/stack:200000000")
+#pragma GCC optimize("unroll-loops")
 
 #include<bits/stdc++.h>
 
@@ -101,67 +104,62 @@ string to_bin(T num){
     string binary = "";
     while (num){binary += (num % 2 == 1 ? "1" : "0");num >>= 1;}
     reverse(binary.begin(), binary.end());
+    binary = string(32-(binary.size()),'0') + binary;
     return binary;
 }
 ////////////////////////////////////////////////////
 
+const int N = 1.1e3;
+  
+int n,m,a,b;
 
-const int N = 1e5 + 5;
+vector<vector<pair<int,int>>> G(N);
+int level[N][3];
+int cost[N][2];
 
-VI G[N],IG[N],vis,who(N),comp,allcomps;
-stack<int> st;
-int n,m;
+map<pair<int,int>,int>m1;
 
-void dfs1(int s){
-    vis[s] = 1;
-    for(int c : G[s]){
-        if(!vis[c]){
-            dfs1(c);
-        }
+int solve(int stamina,int level){
+    trace(stamina,level);
+    if(stamina < 0){
+        return 1e18;
     }
-    st.push(s);
-}
-
-void dfs2(int s,int w){
-    vis[s] = 1;
-    who[s] = w;
-    comp.PB(s);
-    for(int c : IG[s]){
-        if(!vis[c]){
-            dfs2(c,w);
-        }
+    if(level == b){
+        return 0;
     }
+    int ans = INT_MAX;
+    for(auto inc : G[level]){
+        // if(m1[{inc.first,level}] == 1) continue;
+        m1[{inc.first,level}] = 1;
+        if(stamina >= inc.second){
+            ans = min(ans,solve(stamina - inc.second,inc.first));
+        }
+        
+    }
+    if(cost[level][0] > stamina){
+        ans = min(ans,cost[level][1] + solve(cost[level][0],level));
+    }
+    return  m1[{stamina,level}] = ans;
+    
 }
-
 void __Solve__(){
-    cin >> n >> m;
+    
+    cin >> n >> m >> a >> b;
+    a--;b--;
     forn(i,m){
-        int a,b;
-        cin >> a >>b;
-        G[a].PB(b);IG[b].PB(a);
-    }
-    vis = VI(n+1,0);
-    rep(i,1,n){
-        if(!vis[i]){
-            dfs1(i);
-        }
-    }
-    vis = VI(n+1,0);
-    while(st.size()){
-        int s = st.top();st.pop();
-        if(!vis[s]){
-            comp.clear();
-            dfs2(s,s);
-            if(comp.size() == n){
-                cout << "YES" << endl;
-                return;
-            }
-            allcomps.PB(s);
-        }
-    }
-    // trace(allcomps);
-    cout << "NO\n" << allcomps[1] << " " << allcomps[0] << endl;
+        int x,y,z;
+        cin >> x >> y >> z;
+        x--;y--;
+        level[i][0] = x ;
+        level[i][1] = y;
+        level[i][2] = z;
+        G[x].EB(y,z);
+        G[y].EB(x,z);
+    } 
+    forn(i,m) cin >> cost[i][0] >> cost[i][1];
 
+    cout << solve(0,a) << endl;
+   
 }
 
 signed main()
@@ -174,7 +172,7 @@ signed main()
     freopen("output.txt", "w", stdout);
  #endif 
     int test_case = 1;
-    // cin >> test_case;
+    //  cin >> test_case;
     while(test_case--){
         __Solve__();
     }

@@ -106,63 +106,33 @@ string to_bin(T num){
 ////////////////////////////////////////////////////
 
 
-const int N = 1e5 + 5;
+const int N = 2.1e5;
+VVI G(N);
+VI dp(N,0);
 
-VI G[N],IG[N],vis,who(N),comp,allcomps;
-stack<int> st;
-int n,m;
-
-void dfs1(int s){
-    vis[s] = 1;
+void dfs(int s,int par){
+    dp[s] = 1;
     for(int c : G[s]){
-        if(!vis[c]){
-            dfs1(c);
-        }
-    }
-    st.push(s);
-}
-
-void dfs2(int s,int w){
-    vis[s] = 1;
-    who[s] = w;
-    comp.PB(s);
-    for(int c : IG[s]){
-        if(!vis[c]){
-            dfs2(c,w);
-        }
+        if(c == par) continue;
+        dfs(c,s);
+        dp[s] += dp[c];
     }
 }
 
 void __Solve__(){
-    cin >> n >> m;
-    forn(i,m){
-        int a,b;
-        cin >> a >>b;
-        G[a].PB(b);IG[b].PB(a);
-    }
-    vis = VI(n+1,0);
-    rep(i,1,n){
-        if(!vis[i]){
-            dfs1(i);
-        }
-    }
-    vis = VI(n+1,0);
-    while(st.size()){
-        int s = st.top();st.pop();
-        if(!vis[s]){
-            comp.clear();
-            dfs2(s,s);
-            if(comp.size() == n){
-                cout << "YES" << endl;
-                return;
-            }
-            allcomps.PB(s);
-        }
-    }
-    // trace(allcomps);
-    cout << "NO\n" << allcomps[1] << " " << allcomps[0] << endl;
+   int n;
+   cin >> n;
+   for(int  i=2;i<=n;i++){
+       int x;
+       cin >> x;
+       G[x].push_back(i);
+   }
+   dfs(1,0);
+   rep(i,1,n) cout << dp[i]-1 << " ";
+   cout << endl;
 
 }
+
 
 signed main()
 {

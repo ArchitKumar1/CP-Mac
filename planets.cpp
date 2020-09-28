@@ -147,20 +147,19 @@ void __Solve__(){
         }
     }
     vis = VI(n+1,0);
+    int x = 1;
     while(st.size()){
         int s = st.top();st.pop();
         if(!vis[s]){
             comp.clear();
-            dfs2(s,s);
-            if(comp.size() == n){
-                cout << "YES" << endl;
-                return;
-            }
-            allcomps.PB(s);
+            dfs2(s,x);
+            x++;
         }
     }
-    // trace(allcomps);
-    cout << "NO\n" << allcomps[1] << " " << allcomps[0] << endl;
+    cout << x-1 << endl;
+    rep(i,1,n) cout << who[i] << " ";
+
+
 
 }
 

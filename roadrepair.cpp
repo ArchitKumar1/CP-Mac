@@ -108,59 +108,58 @@ string to_bin(T num){
 
 const int N = 1e5 + 5;
 
-VI G[N],IG[N],vis,who(N),comp,allcomps;
-stack<int> st;
+struct edge{
+    int a,b,c;
+    bool operator <(const edge o) const{
+        return c < o.c;
+    }
+    
+};
+
+VI par(N),sz(N,0);
+vector<edge> E;
 int n,m;
 
-void dfs1(int s){
-    vis[s] = 1;
-    for(int c : G[s]){
-        if(!vis[c]){
-            dfs1(c);
-        }
-    }
-    st.push(s);
+int find(int v){
+    return (par[v] == v ? v : par[v] = find(par[v]));
 }
 
-void dfs2(int s,int w){
-    vis[s] = 1;
-    who[s] = w;
-    comp.PB(s);
-    for(int c : IG[s]){
-        if(!vis[c]){
-            dfs2(c,w);
-        }
-    }
-}
 
 void __Solve__(){
     cin >> n >> m;
+
+    edge e;
     forn(i,m){
-        int a,b;
-        cin >> a >>b;
-        G[a].PB(b);IG[b].PB(a);
+        int a,b,c;
+        cin >> e.a >> e.b >> e.c;
+        E.PB(e);
     }
-    vis = VI(n+1,0);
+    sort(ALL(E));
+    int ans = 0;
+
     rep(i,1,n){
-        if(!vis[i]){
-            dfs1(i);
+        par[i] = i;
+        sz[i] = 1;
+    }
+    for(auto e : E){
+        int x = e.a;
+        int y = e.b;
+        x = find(x),y = find(y);
+        if(x!=y){
+            ans += e.c;
+            par[x] = y;
         }
     }
-    vis = VI(n+1,0);
-    while(st.size()){
-        int s = st.top();st.pop();
-        if(!vis[s]){
-            comp.clear();
-            dfs2(s,s);
-            if(comp.size() == n){
-                cout << "YES" << endl;
-                return;
-            }
-            allcomps.PB(s);
-        }
+    set<int> ss;
+    rep(i,1,n) ss.insert(find(i));
+    if(ss.size()!=1){
+        cout << "IMPOSSIBLE";
+        return;
     }
-    // trace(allcomps);
-    cout << "NO\n" << allcomps[1] << " " << allcomps[0] << endl;
+    cout <<ans << endl;
+    
+    
+
 
 }
 

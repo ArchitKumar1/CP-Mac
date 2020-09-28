@@ -41,7 +41,7 @@ typedef vector<VI> VVI;
 
 auto clk=clock();
 
-int mod = 7340033;
+int mod = 1e9+7;
 const long long inf = 1e17;
 const double eps = 1e-6;
 const int  LOGN = 25;
@@ -106,63 +106,91 @@ string to_bin(T num){
 ////////////////////////////////////////////////////
 
 
-const int N = 1e5 + 5;
+VVI G;
+VPII E;
+VI primes,in,np;
 
-VI G[N],IG[N],vis,who(N),comp,allcomps;
-stack<int> st;
-int n,m;
+int n;
+int m;
 
-void dfs1(int s){
-    vis[s] = 1;
+void dfs(int s,int par){
+    in[s] = 1;
     for(int c : G[s]){
-        if(!vis[c]){
-            dfs1(c);
-        }
+        if(c == par )continue;
+        dfs(c,s);
+        in[s] += in[c];
     }
-    st.push(s);
 }
 
-void dfs2(int s,int w){
-    vis[s] = 1;
-    who[s] = w;
-    comp.PB(s);
-    for(int c : IG[s]){
-        if(!vis[c]){
-            dfs2(c,w);
-        }
-    }
-}
+
 
 void __Solve__(){
-    cin >> n >> m;
+
+    
+    cin >> n;
+    G = vector<vector<int>>(n+1);
+    E.clear();
+    primes.clear();
+    in = VI(n+1,0);
+
+    forn(i,n-1){
+        int u,v;
+        cin >> u >> v;
+        G[u].PB(v);G[v].PB(u);
+        E.PB({u,v});
+    }
+    int m;
+    cin >> m;
     forn(i,m){
-        int a,b;
-        cin >> a >>b;
-        G[a].PB(b);IG[b].PB(a);
+        int p;
+        cin >> p;
+        primes.push_back(p);
     }
-    vis = VI(n+1,0);
-    rep(i,1,n){
-        if(!vis[i]){
-            dfs1(i);
+    sort(ALL(primes));
+    reverse(ALL(primes));
+
+    np =VI();
+    if(m<=n-1){
+        np =primes;
+    }else{
+        int beg = 1;
+        int diff = m - n+2;
+        for(int i=0;i<diff;i++){
+            beg*=primes[i];
+            beg%=mod;
+        }
+        np.push_back(beg);
+        for(int i=diff;i<m;i++){
+            np.push_back(primes[i]);
         }
     }
-    vis = VI(n+1,0);
-    while(st.size()){
-        int s = st.top();st.pop();
-        if(!vis[s]){
-            comp.clear();
-            dfs2(s,s);
-            if(comp.size() == n){
-                cout << "YES" << endl;
-                return;
-            }
-            allcomps.PB(s);
-        }
+    
+    
+
+    dfs(1,0);
+
+    VI prods;
+
+    forn(i,n-1){
+        int x = E[i].first;
+        int y = E[i].second;
+        if(in[x] > in[y]) swap(x,y);
+        prods.PB(in[x] * (n-in[x]));
     }
-    // trace(allcomps);
-    cout << "NO\n" << allcomps[1] << " " << allcomps[0] << endl;
+    sort(ALL(prods));
+    reverse(ALL(prods));
+
+    int fans =0 ;
+    forn(i,n-1){
+        int x = (i>=np.size() ? 1 : np[i]);
+        int y = prods[i] %mod;
+        fans += (x*y %mod);
+        fans%=mod;
+    }
+    cout << fans << endl;
 
 }
+
 
 signed main()
 {
@@ -174,7 +202,7 @@ signed main()
     freopen("output.txt", "w", stdout);
  #endif 
     int test_case = 1;
-    // cin >> test_case;
+    cin >> test_case;
     while(test_case--){
         __Solve__();
     }

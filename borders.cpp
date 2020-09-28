@@ -106,61 +106,95 @@ string to_bin(T num){
 ////////////////////////////////////////////////////
 
 
-const int N = 1e5 + 5;
 
-VI G[N],IG[N],vis,who(N),comp,allcomps;
-stack<int> st;
-int n,m;
 
-void dfs1(int s){
-    vis[s] = 1;
-    for(int c : G[s]){
-        if(!vis[c]){
-            dfs1(c);
-        }
-    }
-    st.push(s);
-}
 
-void dfs2(int s,int w){
-    vis[s] = 1;
-    who[s] = w;
-    comp.PB(s);
-    for(int c : IG[s]){
-        if(!vis[c]){
-            dfs2(c,w);
-        }
-    }
-}
 
 void __Solve__(){
+    int n,m;
     cin >> n >> m;
-    forn(i,m){
-        int a,b;
-        cin >> a >>b;
-        G[a].PB(b);IG[b].PB(a);
-    }
-    vis = VI(n+1,0);
+    vector<vector<char>> g(n+2,vector<char>(m+2,'.'));
+
+    forn(i,n)forn(j,m) cin >> g[i+1][j+1];
+
+    auto safe_x_up = [&](int i,int j){
+        return ( g[i-1][j] == '.');
+    };
+    auto safe_x_down = [&](int i,int j){
+        return ( g[i+1][j] == '.');
+    };
+    auto safe_y_left = [&](int i,int j){
+        return ( g[i][j-1] == '.');
+    };
+    auto safe_y_right = [&](int i,int j){
+        return ( g[i][j+1] == '.');
+    };
+
+
+    int ans = 0;
+    int cnt = 0;
+
     rep(i,1,n){
-        if(!vis[i]){
-            dfs1(i);
-        }
-    }
-    vis = VI(n+1,0);
-    while(st.size()){
-        int s = st.top();st.pop();
-        if(!vis[s]){
-            comp.clear();
-            dfs2(s,s);
-            if(comp.size() == n){
-                cout << "YES" << endl;
-                return;
+        cnt = 0;
+        rep(j,1,m){
+            if(g[i][j] == '#'){
+                if(safe_x_up(i,j)){
+                    cnt += 1;
+                }else{
+                    cnt = 0;
+                }
+            }else{
+                cnt = 0;
             }
-            allcomps.PB(s);
+            ans = max(ans,cnt);
         }
     }
-    // trace(allcomps);
-    cout << "NO\n" << allcomps[1] << " " << allcomps[0] << endl;
+    rep(i,1,n){
+         cnt = 0;
+        rep(j,1,m){
+            if(g[i][j] == '#'){
+                if(safe_x_down(i,j)){
+                    cnt += 1;
+                }else{
+                    cnt = 0;
+                }
+            }else{
+                cnt = 0;
+            }
+            ans = max(ans,cnt);
+        }
+    }
+    rep(j,1,m){
+         cnt = 0;
+        rep(i,1,n){
+            if(g[i][j] == '#'){
+                if(safe_y_left(i,j)){
+                    cnt += 1;
+                }else{
+                    cnt = 0;
+                }
+            }else{
+                cnt = 0;
+            }
+            ans = max(ans,cnt);
+        }
+    }
+    rep(j,1,m){
+         cnt = 0;
+        rep(i,1,n){
+            if(g[i][j] == '#'){
+                if(safe_y_right(i,j)){
+                    cnt += 1;
+                }else{
+                    cnt = 0;
+                }
+            }else{
+                cnt = 0;
+            }
+            ans = max(ans,cnt);
+        }
+    }
+    cout << ans << endl;
 
 }
 
@@ -174,7 +208,7 @@ signed main()
     freopen("output.txt", "w", stdout);
  #endif 
     int test_case = 1;
-    // cin >> test_case;
+    cin >> test_case;
     while(test_case--){
         __Solve__();
     }

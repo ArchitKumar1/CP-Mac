@@ -106,61 +106,66 @@ string to_bin(T num){
 ////////////////////////////////////////////////////
 
 
-const int N = 1e5 + 5;
 
-VI G[N],IG[N],vis,who(N),comp,allcomps;
-stack<int> st;
-int n,m;
-
-void dfs1(int s){
-    vis[s] = 1;
-    for(int c : G[s]){
-        if(!vis[c]){
-            dfs1(c);
-        }
-    }
-    st.push(s);
+bool bit(int x,int pos){
+    int y = (1LL<<pos)&x;
+    return (y>0);
 }
 
-void dfs2(int s,int w){
-    vis[s] = 1;
-    who[s] = w;
-    comp.PB(s);
-    for(int c : IG[s]){
-        if(!vis[c]){
-            dfs2(c,w);
-        }
-    }
-}
 
 void __Solve__(){
-    cin >> n >> m;
-    forn(i,m){
-        int a,b;
-        cin >> a >>b;
-        G[a].PB(b);IG[b].PB(a);
-    }
-    vis = VI(n+1,0);
+    int n; cin >> n;
+    VI arr(n+1);
+    rep(i,1,n) cin >> arr[i];
+
+    int q; cin >> q;
+
+    VVI cnts(n+1,VI(32,0));
+    VVI costs(n+1,VI(32,0));
+
     rep(i,1,n){
-        if(!vis[i]){
-            dfs1(i);
-        }
-    }
-    vis = VI(n+1,0);
-    while(st.size()){
-        int s = st.top();st.pop();
-        if(!vis[s]){
-            comp.clear();
-            dfs2(s,s);
-            if(comp.size() == n){
-                cout << "YES" << endl;
-                return;
+        int psum = 0;
+        int x = arr[i];
+        forn(j,32){
+            if(!bit(x,j)){
+                int diff =  (1LL<<j) - psum;
+                costs[i][j] = diff;
             }
-            allcomps.PB(s);
+            if(bit(x,j)){
+                cnts[i][j] = 1;
+                psum += (1LL<<j);
+            }
         }
     }
-    // trace(allcomps);
-    cout << "NO\n" << allcomps[1] << " " << allcomps[0] << endl;
+    rep(j,0,31){
+        rep(i,1,n){
+            cnts[i][j] += cnts[i-1][j];
+            costs[i][j] += costs[i-1][j];
+        }
+    }
+    for(auto x : cnts){
+        trace(x);
+    }
+    for(auto x : costs){
+        trace(x);
+    }
+    while(q--){
+        int l,r;
+        cin >> l >> r;
+        bool pos = 0;
+        forn(j,32){
+            pos |= ((cnts[r][j]-cnts[l-1][j]) == (r-l+1));
+        }
+        if(pos){
+            cout << 0 << endl;
+            continue;
+        }
+        int ans = 1e18;
+        forn(j,32){
+            ans = min(ans,(costs[r][j]-costs[l-1][j]));
+        }
+        cout << ans << endl;
+    }
 
 }
 
@@ -174,7 +179,7 @@ signed main()
     freopen("output.txt", "w", stdout);
  #endif 
     int test_case = 1;
-    // cin >> test_case;
+   // cin >> test_case;
     while(test_case--){
         __Solve__();
     }

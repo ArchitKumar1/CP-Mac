@@ -1,3 +1,6 @@
+#pragma GCC optimize("O3")
+//#pragma comment(linker, "/stack:200000000")
+#pragma GCC optimize("unroll-loops")
 
 #include<bits/stdc++.h>
 
@@ -24,7 +27,8 @@ void __f(const char* names,Arg1&& arg1,Args&&... args){
 #define TC int testcase; cin >> testcase;while(testcase--)
 #define forn(i,n) for(int i=0;i<n;i++)
 #define rep(i,a,b) for(int i = a;i<=b;i++)
-
+#define sz(a) (int) a.size();
+ 
 #define ALL(x) x.begin(),x.end()
 #define int long long int
 // #define LL long long int
@@ -41,7 +45,7 @@ typedef vector<VI> VVI;
 
 auto clk=clock();
 
-int mod = 7340033;
+int mod = 1e9+7;
 const long long inf = 1e17;
 const double eps = 1e-6;
 const int  LOGN = 25;
@@ -106,61 +110,69 @@ string to_bin(T num){
 ////////////////////////////////////////////////////
 
 
-const int N = 1e5 + 5;
+const int N = 2e5+5;
 
-VI G[N],IG[N],vis,who(N),comp,allcomps;
-stack<int> st;
-int n,m;
+VVI G(N);
+VI dp(N,0);
+VI vis(N,0),vis2(N);
+VI par(N,0);
 
-void dfs1(int s){
+
+
+void dfs(int s){
     vis[s] = 1;
     for(int c : G[s]){
-        if(!vis[c]){
-            dfs1(c);
+        if(vis[c] == 1){
+            cout << "IMPOSSIBLE" << endl;
+            exit(0);
+        }
+        if(dp[s] < dp[s]+ 1){
+            dp[c] = dp[s] + 1;
         }
     }
-    st.push(s);
+    vis[s] = 0;
 }
-
-void dfs2(int s,int w){
-    vis[s] = 1;
-    who[s] = w;
-    comp.PB(s);
-    for(int c : IG[s]){
-        if(!vis[c]){
-            dfs2(c,w);
-        }
-    }
-}
-
+   
 void __Solve__(){
-    cin >> n >> m;
-    forn(i,m){
-        int a,b;
-        cin >> a >>b;
-        G[a].PB(b);IG[b].PB(a);
+
+   int n,m;cin >> n >>m;
+   forn(i,m){
+       int u,v; cin >> u >> v;
+       G[u].PB(v);
+       in[v]++;
+   }
+   dp[1] = 1;
+    for(int i = 1;i<=n;i++){
+        dfs(i);
     }
-    vis = VI(n+1,0);
-    rep(i,1,n){
-        if(!vis[i]){
-            dfs1(i);
+   
+
+    vector<int> sans;
+    
+    int safe = 1;
+
+    int i = n;
+    while(1){
+        if(i == 0){
+            safe = 0;
+            break;
         }
-    }
-    vis = VI(n+1,0);
-    while(st.size()){
-        int s = st.top();st.pop();
-        if(!vis[s]){
-            comp.clear();
-            dfs2(s,s);
-            if(comp.size() == n){
-                cout << "YES" << endl;
-                return;
-            }
-            allcomps.PB(s);
+        if(i == 1){
+            sans.PB(i);
+            break;
         }
+        sans.PB(i);
+        i = par[i];
     }
-    // trace(allcomps);
-    cout << "NO\n" << allcomps[1] << " " << allcomps[0] << endl;
+    if(!safe){
+        cout << "IMPOSSIBLE" << endl;
+    }
+    cout << dp[n] << endl;
+    reverse(ALL(sans));
+    for(int c : sans){
+        cout <<c << " ";
+    }
+    cout << endl;
 
 }
 
@@ -174,7 +186,7 @@ signed main()
     freopen("output.txt", "w", stdout);
  #endif 
     int test_case = 1;
-    // cin >> test_case;
+    //  cin >> test_case;
     while(test_case--){
         __Solve__();
     }

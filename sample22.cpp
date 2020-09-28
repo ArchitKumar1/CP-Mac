@@ -23,7 +23,6 @@ void __f(const char* names,Arg1&& arg1,Args&&... args){
 #define FASTIO ios_base::sync_with_stdio(false); cin.tie(NULL);cout.tie(NULL);
 #define TC int testcase; cin >> testcase;while(testcase--)
 #define forn(i,n) for(int i=0;i<n;i++)
-#define rep(i,a,b) for(int i = a;i<=b;i++)
 
 #define ALL(x) x.begin(),x.end()
 #define int long long int
@@ -105,62 +104,54 @@ string to_bin(T num){
 }
 ////////////////////////////////////////////////////
 
+vector<int> arr;
 
-const int N = 1e5 + 5;
+void merge(int l,int mid,int r){
+    int p = l;
+    int q = mid+1;
 
-VI G[N],IG[N],vis,who(N),comp,allcomps;
-stack<int> st;
-int n,m;
+    int temp[r-l+1];
 
-void dfs1(int s){
-    vis[s] = 1;
-    for(int c : G[s]){
-        if(!vis[c]){
-            dfs1(c);
-        }
-    }
-    st.push(s);
-}
+    int k = r+l-1;
 
-void dfs2(int s,int w){
-    vis[s] = 1;
-    who[s] = w;
-    comp.PB(s);
-    for(int c : IG[s]){
-        if(!vis[c]){
-            dfs2(c,w);
-        }
-    }
-}
-
-void __Solve__(){
-    cin >> n >> m;
-    forn(i,m){
-        int a,b;
-        cin >> a >>b;
-        G[a].PB(b);IG[b].PB(a);
-    }
-    vis = VI(n+1,0);
-    rep(i,1,n){
-        if(!vis[i]){
-            dfs1(i);
-        }
-    }
-    vis = VI(n+1,0);
-    while(st.size()){
-        int s = st.top();st.pop();
-        if(!vis[s]){
-            comp.clear();
-            dfs2(s,s);
-            if(comp.size() == n){
-                cout << "YES" << endl;
-                return;
+    for(int K = 0;K<k;K++){
+        if( p<mid && q<r){
+            if(arr[p] < arr[q]){
+                temp[K] = arr[p++];
+            }else{
+                temp[K] = arr[q++];
             }
-            allcomps.PB(s);
+        }else if(p<l){
+            temp[K] = arr[p++];
+        }else{
+            temp[K] = arr[q++];
         }
     }
-    // trace(allcomps);
-    cout << "NO\n" << allcomps[1] << " " << allcomps[0] << endl;
+    forn(i,k){
+        arr[p+k] = temp[i];
+    }
+}
+
+void mergesort(int l,int r){
+    while(l<r){
+        int mid = (l+r)/2;
+        mergesort(l,mid);
+        mergesort(mid+1,r);
+        merge(l,mid,r);
+    }
+}
+void __Solve__(){
+    
+    // 1 2 4 5 6 7 
+    // p     q.  r
+    // l
+    arr = vector<int>{4,1,9,8,2,5};
+    int n = arr.size();
+    mergesort(0,n-1);
+    for(int c : arr){
+        cout << c << " ";
+    }
+    cout << endl;
 
 }
 

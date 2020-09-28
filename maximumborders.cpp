@@ -1,3 +1,6 @@
+#pragma GCC optimize("O3")
+//#pragma comment(linker, "/stack:200000000")
+#pragma GCC optimize("unroll-loops")
 
 #include<bits/stdc++.h>
 
@@ -106,62 +109,35 @@ string to_bin(T num){
 ////////////////////////////////////////////////////
 
 
-const int N = 1e5 + 5;
-
-VI G[N],IG[N],vis,who(N),comp,allcomps;
-stack<int> st;
-int n,m;
-
-void dfs1(int s){
-    vis[s] = 1;
-    for(int c : G[s]){
-        if(!vis[c]){
-            dfs1(c);
-        }
-    }
-    st.push(s);
-}
-
-void dfs2(int s,int w){
-    vis[s] = 1;
-    who[s] = w;
-    comp.PB(s);
-    for(int c : IG[s]){
-        if(!vis[c]){
-            dfs2(c,w);
-        }
-    }
-}
-
+  
 void __Solve__(){
+    
+    int n,m;
     cin >> n >> m;
-    forn(i,m){
-        int a,b;
-        cin >> a >>b;
-        G[a].PB(b);IG[b].PB(a);
-    }
-    vis = VI(n+1,0);
-    rep(i,1,n){
-        if(!vis[i]){
-            dfs1(i);
-        }
-    }
-    vis = VI(n+1,0);
-    while(st.size()){
-        int s = st.top();st.pop();
-        if(!vis[s]){
-            comp.clear();
-            dfs2(s,s);
-            if(comp.size() == n){
-                cout << "YES" << endl;
-                return;
-            }
-            allcomps.PB(s);
-        }
-    }
-    // trace(allcomps);
-    cout << "NO\n" << allcomps[1] << " " << allcomps[0] << endl;
 
+    string g[n];
+    forn(i,n) cin >> g[i];
+
+    int dp[n][m][2];
+    memset(dp,0,sizeof(dp));
+    dp[0][0][0] = dp[0][0][1] = g[0][0] == '#';
+
+    int ans = 0;
+    forn(i,n){
+        forn(j,m){
+            
+            if(i+1<n){
+                if(g[i+1][j] == '#') dp[i+1][j] = max(dp[i+1][j],1+dp[i][j]);
+            }
+            if(j+1<n){
+                if(g[i][j+1] == '#') dp[i][j+1] = max(dp[i][j+1],1+dp[i][j]);
+            }
+            ans = max(ans,dp[i][j]);
+        }
+    }
+    cout << ans << endl;
+
+   
 }
 
 signed main()
@@ -174,7 +150,7 @@ signed main()
     freopen("output.txt", "w", stdout);
  #endif 
     int test_case = 1;
-    // cin >> test_case;
+    cin >> test_case;
     while(test_case--){
         __Solve__();
     }

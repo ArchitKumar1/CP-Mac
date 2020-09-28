@@ -106,61 +106,42 @@ string to_bin(T num){
 ////////////////////////////////////////////////////
 
 
-const int N = 1e5 + 5;
+const int N = 100;
 
-VI G[N],IG[N],vis,who(N),comp,allcomps;
-stack<int> st;
-int n,m;
+int G[N][N];
+int n;
 
-void dfs1(int s){
-    vis[s] = 1;
-    for(int c : G[s]){
-        if(!vis[c]){
-            dfs1(c);
-        }
-    }
-    st.push(s);
+
+int dx[8] = {1,2,2,1,-1,-2,-2,-1};
+int dy[8] = {2,1,-1,-2,-2,-1,1,2};
+
+bool safe(int i,int j){
+    return i>=0 && j>=0 && i<n && j<n;
 }
 
-void dfs2(int s,int w){
-    vis[s] = 1;
-    who[s] = w;
-    comp.PB(s);
-    for(int c : IG[s]){
-        if(!vis[c]){
-            dfs2(c,w);
-        }
-    }
-}
+
 
 void __Solve__(){
-    cin >> n >> m;
-    forn(i,m){
-        int a,b;
-        cin >> a >>b;
-        G[a].PB(b);IG[b].PB(a);
-    }
-    vis = VI(n+1,0);
-    rep(i,1,n){
-        if(!vis[i]){
-            dfs1(i);
-        }
-    }
-    vis = VI(n+1,0);
-    while(st.size()){
-        int s = st.top();st.pop();
-        if(!vis[s]){
-            comp.clear();
-            dfs2(s,s);
-            if(comp.size() == n){
-                cout << "YES" << endl;
-                return;
+    int n,c;
+    cin >> n >> c;
+
+    int cost[n];
+    forn(i,n) cin >> cost[i];
+
+    int dp[c+1];
+    rep(i,1,c)  dp[i] = 1e18;
+    dp[0] = 0;
+
+    for(int i = 1;i<=c;i++){
+        for(int j : cost){
+            if(i-j>=0){
+                dp[i] = min(dp[i],dp[i-j]+1);
             }
-            allcomps.PB(s);
         }
     }
-    // trace(allcomps);
-    cout << "NO\n" << allcomps[1] << " " << allcomps[0] << endl;
+
+    cout << (dp[c]==1e18 ? -1 : dp[c]) << endl;
+
 
 }
 

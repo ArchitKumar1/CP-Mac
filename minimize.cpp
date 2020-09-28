@@ -1,3 +1,6 @@
+#pragma GCC optimize("O3")
+//#pragma comment(linker, "/stack:200000000")
+#pragma GCC optimize("unroll-loops")
 
 #include<bits/stdc++.h>
 
@@ -41,7 +44,7 @@ typedef vector<VI> VVI;
 
 auto clk=clock();
 
-int mod = 7340033;
+int mod = 1e9+7;
 const long long inf = 1e17;
 const double eps = 1e-6;
 const int  LOGN = 25;
@@ -106,61 +109,50 @@ string to_bin(T num){
 ////////////////////////////////////////////////////
 
 
-const int N = 1e5 + 5;
-
-VI G[N],IG[N],vis,who(N),comp,allcomps;
-stack<int> st;
-int n,m;
-
-void dfs1(int s){
-    vis[s] = 1;
-    for(int c : G[s]){
-        if(!vis[c]){
-            dfs1(c);
-        }
-    }
-    st.push(s);
-}
-
-void dfs2(int s,int w){
-    vis[s] = 1;
-    who[s] = w;
-    comp.PB(s);
-    for(int c : IG[s]){
-        if(!vis[c]){
-            dfs2(c,w);
-        }
-    }
-}
-
+  
 void __Solve__(){
-    cin >> n >> m;
-    forn(i,m){
-        int a,b;
-        cin >> a >>b;
-        G[a].PB(b);IG[b].PB(a);
-    }
-    vis = VI(n+1,0);
-    rep(i,1,n){
-        if(!vis[i]){
-            dfs1(i);
+    int n;
+    cin >> n;
+    int v[3][n];
+    vector<pair<double,int>> v1;
+    for(int i =0;i<3;i++){
+        for(int j = 0;j<n;j++){
+            cin >> v[i][j];
         }
     }
-    vis = VI(n+1,0);
-    while(st.size()){
-        int s = st.top();st.pop();
-        if(!vis[s]){
-            comp.clear();
-            dfs2(s,s);
-            if(comp.size() == n){
-                cout << "YES" << endl;
-                return;
-            }
-            allcomps.PB(s);
-        }
+    for(int j = 0;j<n;j++){
+        v1.PB({v[1][j]*v[2][j]*1.0/v[0][j],j});
     }
-    // trace(allcomps);
-    cout << "NO\n" << allcomps[1] << " " << allcomps[0] << endl;
+    sort(ALL(v1));
+    reverse(ALL(v1));
+
+    for(auto x : v1){
+        trace(x);
+    }
+    int backtotal = 0;
+    for(int j = 0;j<n;j++){
+        backtotal += v[1][j]*v[2][j];
+        backtotal%=mod;
+    }
+    int ans = 0;
+    // for(int j = 0;j<n-1;j++){
+    //     for(int k = j+1;k<n;k++){
+    //         int J = v1[j].second;
+    //         int K = v1[k].second;
+    //         trace(J,K);
+    //         ans += v[0][J] *v[1][K]*v[2][K];
+    //         ans%=mod;
+    //     }
+    // }
+    trace(backtotal);
+     for(int j = 0;j<n-1;j++){
+        
+        int J = v1[j].second;
+        backtotal -= (v[1][J]*v[2][J])%mod ;
+        backtotal = (backtotal+mod)%mod;
+        (ans += v[0][J]*backtotal%mod)%=mod;
+    }
+    cout << ans << endl;
 
 }
 
@@ -174,7 +166,7 @@ signed main()
     freopen("output.txt", "w", stdout);
  #endif 
     int test_case = 1;
-    // cin >> test_case;
+    cin >> test_case;
     while(test_case--){
         __Solve__();
     }

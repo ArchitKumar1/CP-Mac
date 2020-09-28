@@ -106,61 +106,66 @@ string to_bin(T num){
 ////////////////////////////////////////////////////
 
 
-const int N = 1e5 + 5;
 
-VI G[N],IG[N],vis,who(N),comp,allcomps;
-stack<int> st;
-int n,m;
 
-void dfs1(int s){
-    vis[s] = 1;
-    for(int c : G[s]){
-        if(!vis[c]){
-            dfs1(c);
-        }
-    }
-    st.push(s);
-}
-
-void dfs2(int s,int w){
-    vis[s] = 1;
-    who[s] = w;
-    comp.PB(s);
-    for(int c : IG[s]){
-        if(!vis[c]){
-            dfs2(c,w);
-        }
-    }
-}
 
 void __Solve__(){
-    cin >> n >> m;
-    forn(i,m){
-        int a,b;
-        cin >> a >>b;
-        G[a].PB(b);IG[b].PB(a);
-    }
-    vis = VI(n+1,0);
-    rep(i,1,n){
-        if(!vis[i]){
-            dfs1(i);
+    
+    set<int> s;
+    multiset<int> gaps;
+
+    auto Add = [&](int x){
+        s.insert(x);
+        auto it = s.find(x);
+        if(it!=s.begin() && next(it)!=s.end()){
+            gaps.erase(gaps.find(*next(it) - *prev(it)));
         }
-    }
-    vis = VI(n+1,0);
-    while(st.size()){
-        int s = st.top();st.pop();
-        if(!vis[s]){
-            comp.clear();
-            dfs2(s,s);
-            if(comp.size() == n){
-                cout << "YES" << endl;
-                return;
-            }
-            allcomps.PB(s);
+        if(it!=s.begin()){
+            gaps.insert(*(it) - *prev(it));
         }
+        if(next(it)!=s.end()){
+            gaps.insert(*next(it) - *(it));
+        }
+    };
+    auto Erase = [&](int x){
+        auto it = s.find(x); 
+        if(it!=s.begin() && next(it)!=s.end()){
+            gaps.insert(*next(it) - *prev(it));
+        }
+        if(it!=s.begin()){
+            gaps.erase(gaps.find(*(it) - *prev(it)));
+        }
+        if(next(it)!=s.end()){
+            gaps.erase(gaps.find(*next(it) - *(it)));
+        }
+    };
+    auto Comp = [&](){
+        auto maxi = *s.rbegin();
+        auto mini = *s.begin();
+        auto gap = *gaps.rbegin();
+        return maxi - mini -gap;
+    };
+
+    int n,q;
+    cin >> n >> q;
+    int arr[n];
+    forn(i,n) cin >> arr[i];
+
+    for(int i = 0;i<n;i++){
+        Add(arr[i]);
     }
-    // trace(allcomps);
-    cout << "NO\n" << allcomps[1] << " " << allcomps[0] << endl;
+    cout << Comp() << endl;
+    while(q--){
+        int t,x;
+        cin >> t >> x;
+        if(t == 0){
+            Erase(x);
+        }else{
+            Add(x);
+        }
+        cout << Comp() << endl;
+    }
+    
 
 }
 

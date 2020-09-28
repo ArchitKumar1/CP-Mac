@@ -1,3 +1,6 @@
+#pragma GCC optimize("O3")
+//#pragma comment(linker, "/stack:200000000")
+#pragma GCC optimize("unroll-loops")
 
 #include<bits/stdc++.h>
 
@@ -24,7 +27,8 @@ void __f(const char* names,Arg1&& arg1,Args&&... args){
 #define TC int testcase; cin >> testcase;while(testcase--)
 #define forn(i,n) for(int i=0;i<n;i++)
 #define rep(i,a,b) for(int i = a;i<=b;i++)
-
+#define sz(a) (int) a.size();
+ 
 #define ALL(x) x.begin(),x.end()
 #define int long long int
 // #define LL long long int
@@ -106,62 +110,29 @@ string to_bin(T num){
 ////////////////////////////////////////////////////
 
 
-const int N = 1e5 + 5;
 
-VI G[N],IG[N],vis,who(N),comp,allcomps;
-stack<int> st;
-int n,m;
-
-void dfs1(int s){
-    vis[s] = 1;
-    for(int c : G[s]){
-        if(!vis[c]){
-            dfs1(c);
-        }
-    }
-    st.push(s);
-}
-
-void dfs2(int s,int w){
-    vis[s] = 1;
-    who[s] = w;
-    comp.PB(s);
-    for(int c : IG[s]){
-        if(!vis[c]){
-            dfs2(c,w);
-        }
-    }
-}
-
+    
+  
 void __Solve__(){
-    cin >> n >> m;
-    forn(i,m){
-        int a,b;
-        cin >> a >>b;
-        G[a].PB(b);IG[b].PB(a);
-    }
-    vis = VI(n+1,0);
-    rep(i,1,n){
-        if(!vis[i]){
-            dfs1(i);
-        }
-    }
-    vis = VI(n+1,0);
-    while(st.size()){
-        int s = st.top();st.pop();
-        if(!vis[s]){
-            comp.clear();
-            dfs2(s,s);
-            if(comp.size() == n){
-                cout << "YES" << endl;
-                return;
-            }
-            allcomps.PB(s);
-        }
-    }
-    // trace(allcomps);
-    cout << "NO\n" << allcomps[1] << " " << allcomps[0] << endl;
+    
+    int n;
+    cin >> n;
+    int ans = 0;
 
+    n++;
+    forn(i,64){
+        
+        int c = pow(2LL,i);
+        int nc = n/c;
+        ans += nc/2 * c;
+
+        if(nc&1){
+            ans += (n-nc*c);
+        }
+    }
+    cout << ans << endl;
+
+   
 }
 
 signed main()
@@ -174,7 +145,7 @@ signed main()
     freopen("output.txt", "w", stdout);
  #endif 
     int test_case = 1;
-    // cin >> test_case;
+    //  cin >> test_case;
     while(test_case--){
         __Solve__();
     }
