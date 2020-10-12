@@ -78,66 +78,57 @@ template <typename T> string to_bin(T num){string binary = "";while (num){binary
 ////////////////////////////////////////////////////
 
 
-const int N = 12000;
-VI par(N);
-VPII eans;
-int f(int v){
-    return (v == par[v] ? v : par[v] = f(par[v]));
-}
-void merge(int a,int b){
-    a = f(a),b = f(b);
-    if(a == b) return;
-    par[a] = b;
-}
-struct edge{
-    int u,v,cost;
-    bool operator< (edge e) const{
-        return cost > e.cost;
-    }
-};
-// 3411957299
-int vec[N][6];
-int n,d;
-vector<edge> all;
 
-int dist(int i,int j){
-    int di = 0;
-    for(int k = 0;k<d;k++){
-        di += abs(vec[i][k] - vec[j][k]);
-    }
-    return di;
-}
+const int N = 1e5+10;
+const int M = 8;
+bitset<N> bit[M+1];
 
 
 void __Solve__(){
     
-    cin >> n >> d;
-    forn(i,n) forn(j,d) cin >> vec[i][j];
-    for(int i = 0;i<n;i++){
-        for(int j = i+1;j<n;j++){
-            edge e ;
-            e.u = i,e.v = j,e.cost = dist(i,j);
-            all.PB(e);
-        }
+   int w,h,n,m;
+   cin >> w >> h >>  n >> m;
+
+   VI x(n),y(m);
+   forn(i,n) cin >> x[i];
+   forn(i,m) cin >> y[i];
+   sort(ALL(x)),sort(ALL(y));
+   sort(ALL(x)),sort(ALL(y));
+
+    bit[M][0] = 1;
+
+    forn(i,n){
+        if(i == 0) continue;
+        bit[M] = (bit[M]<<(x[i]-x[i-1]));
+        bit[M][0] = 1;
+        bit[0] = bit[0]|bit[M];
     }
-    int fans =0 ;
-
-    forn(i,n) par[i] = i;
-    
-    sort(ALL(all));
-
-    for(auto e : all){
-        int u = e.u,v=e.v;
-        if(f(u) == f(v)) continue;
-        fans += e.cost;
-        eans.EB(e.u+1,e.v+1);
-        merge(u,v);
+    bit[M-1][0] = 1;
+    forn(i,m){
+        if(i == 0) continue;
+        bit[M-1] = (bit[M-1]<<(y[i]-y[i-1]));
+        bit[M-1][0] = 1;
+        bit[1] = bit[1] | bit[M-1];
     }
-    trace(eans);
-
-    cout << fans << endl;
-
-    
+   
+    forn(i,m) {
+        bit[M-6].set(y[i],1);
+    }
+    forn(j,N){
+        if(j == 0) continue;
+        bit[M-3].set(j,1);
+    }
+    sort(ALL(x)),sort(ALL(y));
+    sort(ALL(x)),sort(ALL(y));
+    int fans = 0;;
+    forn(i,h+1)
+    {
+        bit[M-4]<<=1;
+        bit[M-4].set(0,bit[M-6][i]);
+        if(bit[M-6][i]) continue;
+        fans = max(fans , (int)((bit[0] &( bit[1] | (bit[M-6]>>i) | bit[M-4] ) & bit[M-3]).count()));
+    }
+    cout<<fans<<endl;
 }
 
 signed main()
@@ -149,7 +140,7 @@ signed main()
     freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);
 #endif 
     int test_case = 1;
-   // cin >> test_case;
+    //cin >> test_case;
     forn(i,test_case){
         //cout << "Case #" << i+1<<": ";
         __Solve__();

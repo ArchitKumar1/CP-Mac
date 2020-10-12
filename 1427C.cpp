@@ -1,6 +1,5 @@
 
 #pragma GCC optimize("O3")
-#pragma comment(linker, "/stack:200000000")
 #pragma GCC optimize("unroll-loops")
 #include<bits/stdc++.h>
 using namespace std;
@@ -78,83 +77,111 @@ template <typename T> string to_bin(T num){string binary = "";while (num){binary
 ////////////////////////////////////////////////////
 
 
-const int N = 12000;
-VI par(N);
-VPII eans;
-int f(int v){
-    return (v == par[v] ? v : par[v] = f(par[v]));
+const int N = 2e5+10;
+const int D = 6;
+int points[N][D] = {0};
+
+int par[N];
+int sz[N];
+vector<pair<int,PII>>G;
+
+int p(int ch){
+    return par[ch] == -1 ?  ch : par[ch] = p(par[ch]);
 }
-void merge(int a,int b){
-    a = f(a),b = f(b);
-    if(a == b) return;
-    par[a] = b;
-}
-struct edge{
-    int u,v,cost;
-    bool operator< (edge e) const{
-        return cost > e.cost;
+int distance(int x, int y, int d){
+    int man_dist = 0;
+    forn(i,d){
+        man_dist += abs(points[x][i] - points[y][i]);
     }
-};
-// 3411957299
-int vec[N][6];
-int n,d;
-vector<edge> all;
-
-int dist(int i,int j){
-    int di = 0;
-    for(int k = 0;k<d;k++){
-        di += abs(vec[i][k] - vec[j][k]);
-    }
-    return di;
+    return man_dist;
 }
 
 
-void __Solve__(){
-    
+signed main(){
+    FASTIO
+    #ifdef LOCAL 
+        freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);
+    #endif
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+    srand(chrono::high_resolution_clock::now().time_since_epoch().count());
+
+    int n, d;
     cin >> n >> d;
-    forn(i,n) forn(j,d) cin >> vec[i][j];
-    for(int i = 0;i<n;i++){
-        for(int j = i+1;j<n;j++){
-            edge e ;
-            e.u = i,e.v = j,e.cost = dist(i,j);
-            all.PB(e);
+    int bits[2<<d];
+
+    forn(i,n) forn(j,d) cin >> points[i][j];
+    
+    forn(j,1<<d){
+        int total[6] = {0};
+        for (int l = 0; l < d; l++){
+            if (j & 1 << l){
+                total[l] = 1;
+            }
+
+        }
+        int mini = -1e18; int pos = 0;
+        forn(i,n){
+            int val = 0;
+            forn(k,d){
+                val += (1 - 2 * total[k]) * points[i][k];
+            }
+            if (val > mini){
+                mini = val;
+                pos = i;
+            }
+        }
+        bits[j] = pos;
+    }
+    forn(i,n){
+        forn(j,(1<<d)){
+            int x = distance(i, bits[j], d);
+            G.push_back({x, {i, bits[j]}});
         }
     }
-    int fans =0 ;
-
-    forn(i,n) par[i] = i;
-    
-    sort(ALL(all));
-
-    for(auto e : all){
-        int u = e.u,v=e.v;
-        if(f(u) == f(v)) continue;
-        fans += e.cost;
-        eans.EB(e.u+1,e.v+1);
-        merge(u,v);
+     int fans = 0;
+     sort(ALL(G));
+     reverse(ALL(G));
+     memset(par, -1, sizeof(par));
+    int mcnt = n-1;
+    for(int i = 0;i<G.size() && mcnt > 0;i++ ){
+            
+        int u = p(G[i].S.F);
+        int v = p(G[i].S.S);
+        if (u != v){
+            mcnt--;
+            fans += G[i].F;
+            if(sz[u] > sz[v]){
+                swap(v,u);
+            }
+            par[v] = u;
+        }
     }
-    trace(eans);
-
     cout << fans << endl;
-
+    #ifdef LOCAL
+        cerr<<"Time elapsed: "<<(double)(clock()-clk)/CLOCKS_PER_SEC<<"  seconds" << "\n";
+    #endif
+    return 0;
     
 }
 
-signed main()
-{
-    srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-	cout<<fixed<<setprecision(12);
-    FASTIO
-#ifdef LOCAL 
-    freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);
-#endif 
-    int test_case = 1;
-   // cin >> test_case;
-    forn(i,test_case){
-        //cout << "Case #" << i+1<<": ";
-        __Solve__();
-    }
-#ifdef LOCAL
-	cerr<<"Time elapsed: "<<(double)(clock()-clk)/CLOCKS_PER_SEC<<"  seconds" << "\n";
-#endif
-}
+
+// signed main()
+// {
+//     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
+// 	cout<<fixed<<setprecision(12);
+//     FASTIO
+// #ifdef LOCAL 
+//     freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);
+// #endif 
+//     int test_case = 1;
+//    // cin >> test_case;
+//     forn(i,test_case){
+//         //cout << "Case #" << i+1<<": ";
+//         __Solve__();
+//     }
+// #ifdef LOCAL
+// 	cerr<<"Time elapsed: "<<(double)(clock()-clk)/CLOCKS_PER_SEC<<"  seconds" << "\n";
+// #endif
+// }

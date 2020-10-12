@@ -78,64 +78,99 @@ template <typename T> string to_bin(T num){string binary = "";while (num){binary
 ////////////////////////////////////////////////////
 
 
-const int N = 12000;
-VI par(N);
-VPII eans;
-int f(int v){
-    return (v == par[v] ? v : par[v] = f(par[v]));
-}
-void merge(int a,int b){
-    a = f(a),b = f(b);
-    if(a == b) return;
-    par[a] = b;
-}
-struct edge{
-    int u,v,cost;
-    bool operator< (edge e) const{
-        return cost > e.cost;
-    }
-};
-// 3411957299
-int vec[N][6];
-int n,d;
-vector<edge> all;
+const int N = 1.1e5;
 
-int dist(int i,int j){
-    int di = 0;
-    for(int k = 0;k<d;k++){
-        di += abs(vec[i][k] - vec[j][k]);
+VVI G1(N),G2(N),G3(N),comps(N);
+VI vis(N),who(N),in(N),fans,seq;
+
+stack<int> st;
+
+void dfs1(int s){
+    if(vis[s] == 1) return;
+    vis[s] = 1;
+    for(int c : G1[s]){
+        if(!vis[c])
+            dfs1(c);
     }
-    return di;
+    st.push(s);
+}
+
+void dfs2(int s,int w){
+    if(vis[s] == 1) return;
+    vis[s] = 1;
+    who[s] = w;
+    comps[w].push_back(s);
+    for(int c : G2[s]){
+        if(!vis[c])
+            dfs2(c,w);
+    }
+}
+
+void dfs3(int s){
+    if(vis[s] == 1) return;
+    vis[s] = 1;
+    seq.PB(s);
+    for(int c : G3[s]){
+        if(!vis[c])
+            dfs3(c);
+    }
 }
 
 
 void __Solve__(){
     
-    cin >> n >> d;
-    forn(i,n) forn(j,d) cin >> vec[i][j];
-    for(int i = 0;i<n;i++){
-        for(int j = i+1;j<n;j++){
-            edge e ;
-            e.u = i,e.v = j,e.cost = dist(i,j);
-            all.PB(e);
+    int n,m,k;
+    cin >> n >> m >> k;
+    vis = VI(N);
+
+    forn(i,m){
+        int x,y; cin >> x >> y;
+        G1[x].PB(y);G2[y].PB(x);
+    }
+    vis = VI(N);
+    rep(i,n){
+        if(!vis[i]) dfs1(i);
+    }
+
+    vis = VI(N);
+    while(st.size()){
+        int u = st.top(); st.pop();
+        if(!vis[u]) dfs2(u,u);
+    }
+
+    rep(i,n){
+        for(int c : G1[i]){
+            if(who[i] !=  who[c] ){
+                G3[who[i]].push_back(who[c]);
+                in[c]++;
+            }
         }
     }
-    int fans =0 ;
-
-    forn(i,n) par[i] = i;
-    
-    sort(ALL(all));
-
-    for(auto e : all){
-        int u = e.u,v=e.v;
-        if(f(u) == f(v)) continue;
-        fans += e.cost;
-        eans.EB(e.u+1,e.v+1);
-        merge(u,v);
+    VI zcnt;
+    rep(i,n) if(in[i] == 0){
+        zcnt.PB(i);
     }
-    trace(eans);
+    sort(ALL(zcnt));
+    vis = VI(N);
+    for(int x : zcnt){
+        if(!vis[x]){
+            seq.clear();
+            dfs3(x);
+            sort(ALL(seq));
+            for(int c : seq){
+                fans.PB(c);
+            }
+        }
+    }
+    if(zcnt.size() >k+1){
+        cout << -1 << endl;
+        return;
+    }
+    for(int c : fans){
+        cout << c << " ";
+    }
+    cout << endl;
 
-    cout << fans << endl;
 
     
 }

@@ -74,70 +74,114 @@ template <class T,class U>T pow_mod(T a,T b,int m= mod){long long  res = 1;while
 template <typename T> T inv(T a){return pow_mod(a,mod-2,mod);}
 template <typename T> T gcd(T a,T b){if(b == 0) return a;return gcd(b,a%b);}
 template <typename T> T lcm(T a,T b){ return a*b /gcd(a,b);}
-template <typename T> string to_bin(T num){string binary = "";while (num){binary += (num % 2 == 1 ? "1" : "0");num >>= 1;}reverse(binary.begin(), binary.end());return binary;}
+template <typename T> string to_bin(T num,int pad = 32){string binary = "";while (num){binary += (num % 2 == 1 ? "1" : "0");num >>= 1;}reverse(binary.begin(), binary.end());binary = string(pad-binary.size(),'0')+binary;return binary;}
 ////////////////////////////////////////////////////
+VI arr;
 
-
-const int N = 12000;
-VI par(N);
-VPII eans;
-int f(int v){
-    return (v == par[v] ? v : par[v] = f(par[v]));
-}
-void merge(int a,int b){
-    a = f(a),b = f(b);
-    if(a == b) return;
-    par[a] = b;
-}
-struct edge{
-    int u,v,cost;
-    bool operator< (edge e) const{
-        return cost > e.cost;
-    }
-};
-// 3411957299
-int vec[N][6];
-int n,d;
-vector<edge> all;
-
-int dist(int i,int j){
-    int di = 0;
-    for(int k = 0;k<d;k++){
-        di += abs(vec[i][k] - vec[j][k]);
-    }
-    return di;
-}
-
-
-void __Solve__(){
-    
-    cin >> n >> d;
-    forn(i,n) forn(j,d) cin >> vec[i][j];
-    for(int i = 0;i<n;i++){
-        for(int j = i+1;j<n;j++){
-            edge e ;
-            e.u = i,e.v = j,e.cost = dist(i,j);
-            all.PB(e);
+int get_highest_bit(int x){
+    for(int i = 30;~i;i--){
+        if(x&(1<<i)){
+            return (1<<i);
         }
     }
-    int fans =0 ;
+    return 0;
+}
 
-    forn(i,n) par[i] = i;
-    
-    sort(ALL(all));
-
-    for(auto e : all){
-        int u = e.u,v=e.v;
-        if(f(u) == f(v)) continue;
-        fans += e.cost;
-        eans.EB(e.u+1,e.v+1);
-        merge(u,v);
+int ghb(int x){
+    for(int i = 30;~i;i--){
+        if(x&(1<<i)){
+            return i;
+        }
     }
-    trace(eans);
+}
+map<multiset<int>,int> m1;
+map<multiset<int>,int> m2;
 
-    cout << fans << endl;
+int solve(multiset<int> vals){
+    //trace(vals);
+    if(vals.size() == 1){
+        //trace(*vals.begin());
+        return *vals.begin();
+    }
+    if(m2[vals] != 0){
+        return m1[vals];
+    }
+    int ans = INT_MAX;
+    vector<int> vvals(ALL(vals));
+    int sz= vals.size();
+    for(int i =0 ;i<sz;i++){
+        for(int j = i+1;j<sz;j++){
+            vals.erase(vals.find(vvals[i]));
+            vals.erase(vals.find(vvals[j]));
+            int Xor = get_highest_bit(vvals[i] ^ vvals[j]);
+            vals.insert(Xor);
+            
+            ans = min(ans,solve(vals));
 
+            vals.insert(vvals[i]);
+            vals.insert(vvals[j]);
+            vals.erase(vals.find(Xor));
+        }
+    }
+    m2[vals] = 1;
+    return m1[vals] = ans;
+
+}
+
+
+int solve2(int i,int j){
+    if(i == j) return arr[i];
+    int tans = 0;
+    int mb = 0;
+    int vis = 0;
+    for(int k= i;k<=j;k++){
+        vis |=vis;
+        tans ^= arr[k];
+        mb = ghb(arr[k]);
+    }
+    return tans&(1<<mb);
+    // for(int i = 31;~i;i--){
+    //     if(vis&(1<<i)){
+    //         if(tans&(1<<i)){
+    //             return 1<<i;
+    //         }
+    //     }else{
+            
+    //     }
+    // }
+}
+void __Solve__(){
     
+    int n;
+    cin >> n;
+    arr = VI(n);
+    RV(arr);
+    int fans = 0;
+    int fans2 = 0;
+
+    forn(i,n){
+        multiset<int> ms;
+        forn(j,n){
+            if(j>=i){
+                ms.insert(arr[j]);
+                m1.clear();
+                m2.clear();
+                
+                int x = solve(ms);
+                int y = solve2(i,j);
+                fans += x;
+                fans2 += y;
+                for(auto p: ms){
+                     trace(to_bin(p,7),p);
+                }
+                trace(x,y);
+            }
+        }
+    }
+    
+    cout << fans << endl;
+    cout << fans2 << endl;
+
 }
 
 signed main()

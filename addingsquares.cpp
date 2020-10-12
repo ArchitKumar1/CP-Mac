@@ -78,66 +78,79 @@ template <typename T> string to_bin(T num){string binary = "";while (num){binary
 ////////////////////////////////////////////////////
 
 
-const int N = 12000;
-VI par(N);
-VPII eans;
-int f(int v){
-    return (v == par[v] ? v : par[v] = f(par[v]));
-}
-void merge(int a,int b){
-    a = f(a),b = f(b);
-    if(a == b) return;
-    par[a] = b;
-}
-struct edge{
-    int u,v,cost;
-    bool operator< (edge e) const{
-        return cost > e.cost;
-    }
-};
-// 3411957299
-int vec[N][6];
-int n,d;
-vector<edge> all;
-
-int dist(int i,int j){
-    int di = 0;
-    for(int k = 0;k<d;k++){
-        di += abs(vec[i][k] - vec[j][k]);
-    }
-    return di;
-}
 
 
 void __Solve__(){
+     
+    int w,h,n,m;
+    cin >> w >> h >> n >> m;
     
-    cin >> n >> d;
-    forn(i,n) forn(j,d) cin >> vec[i][j];
-    for(int i = 0;i<n;i++){
-        for(int j = i+1;j<n;j++){
-            edge e ;
-            e.u = i,e.v = j,e.cost = dist(i,j);
-            all.PB(e);
+    VI a(n),b(m);
+    RV(a);RV(b);
+    int ml = 0;
+
+    set<int> s1,s2,s3;
+
+    forn(i,n) forn(j,n){
+        if(j>i){
+            s1.insert(abs(a[i]-a[j]));
         }
     }
-    int fans =0 ;
-
-    forn(i,n) par[i] = i;
-    
-    sort(ALL(all));
-
-    for(auto e : all){
-        int u = e.u,v=e.v;
-        if(f(u) == f(v)) continue;
-        fans += e.cost;
-        eans.EB(e.u+1,e.v+1);
-        merge(u,v);
+    forn(i,m) forn(j,m){
+        if(j>i){
+            s2.insert(abs(b[i]-b[j]));
+        }
     }
-    trace(eans);
 
-    cout << fans << endl;
-
+    for(auto x : s1){
+        if(s2.find(x)!=s2.end()){
+            s3.insert(x);
+        }
+    }
     
+    for(int i = 0;i<=h;i++){
+        int currans = 0;
+        set<int> st1;
+        for(int j = 0;j<m;j++){
+            st1.insert(abs(b[j]-i));
+        }
+        set<int> st2;
+        for(auto x: st1){
+            if(s1.find(x)!= s1.end()){
+                st2.insert(x);
+            }
+        }
+        for(auto x: st2){
+            if(s3.find(x)== s3.end()){
+                currans++;
+            }
+        }
+        ml = max(ml,currans);
+    }
+    for(int i = 0;i<=h;i++){
+        int currans = 0;
+        set<int> st1;
+        for(int j = 0;j<m;j++){
+            st1.insert(abs(b[j]-i));
+        }
+        set<int> st2;
+        for(auto x: st1){
+            if(s1.find(x)!= s1.end()){
+                st2.insert(x);
+            }
+        }
+        for(auto x: st2){
+            if(s3.find(x)== s3.end()){
+                currans++;
+            }
+        }
+        ml = max(ml,currans);
+    }
+    cout << s3.size() + ml << endl;
+    
+
+
+   
 }
 
 signed main()

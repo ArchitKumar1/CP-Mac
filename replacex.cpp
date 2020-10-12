@@ -78,65 +78,43 @@ template <typename T> string to_bin(T num){string binary = "";while (num){binary
 ////////////////////////////////////////////////////
 
 
-const int N = 12000;
-VI par(N);
-VPII eans;
-int f(int v){
-    return (v == par[v] ? v : par[v] = f(par[v]));
-}
-void merge(int a,int b){
-    a = f(a),b = f(b);
-    if(a == b) return;
-    par[a] = b;
-}
-struct edge{
-    int u,v,cost;
-    bool operator< (edge e) const{
-        return cost > e.cost;
-    }
-};
-// 3411957299
-int vec[N][6];
-int n,d;
-vector<edge> all;
-
-int dist(int i,int j){
-    int di = 0;
-    for(int k = 0;k<d;k++){
-        di += abs(vec[i][k] - vec[j][k]);
-    }
-    return di;
-}
 
 
 void __Solve__(){
     
-    cin >> n >> d;
-    forn(i,n) forn(j,d) cin >> vec[i][j];
-    for(int i = 0;i<n;i++){
-        for(int j = i+1;j<n;j++){
-            edge e ;
-            e.u = i,e.v = j,e.cost = dist(i,j);
-            all.PB(e);
+    int n,x,p,k;
+    cin >> n >> x >> p >> k;p--;k--;
+    VI v(n);RV(v);sort(ALL(v));sort(ALL(v));
+
+    if(v[p] == x){
+        cout << 0 << endl; 
+        return;
+    }
+    sort(ALL(v));
+    if(v[p] >= x && p<=k){
+        int c = 1;
+        for(int i = p-1;~i;i--){
+            if(v[i] > x){
+                c++;
+            }
         }
+        cout << c << endl; 
+        return;
     }
-    int fans =0 ;
-
-    forn(i,n) par[i] = i;
-    
-    sort(ALL(all));
-
-    for(auto e : all){
-        int u = e.u,v=e.v;
-        if(f(u) == f(v)) continue;
-        fans += e.cost;
-        eans.EB(e.u+1,e.v+1);
-        merge(u,v);
+    else if(v[p] <= x && p>=k){
+        int c = 1;
+        
+        for(int i = p+1;i<n;i++){
+            if(v[i] < x){
+                c++;
+            }
+        }
+        cout << c << endl;
+         return;
     }
-    trace(eans);
-
-    cout << fans << endl;
-
+    else{   
+        cout << -1 << endl;
+    }
     
 }
 
@@ -149,7 +127,7 @@ signed main()
     freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);
 #endif 
     int test_case = 1;
-   // cin >> test_case;
+    cin >> test_case;
     forn(i,test_case){
         //cout << "Case #" << i+1<<": ";
         __Solve__();
