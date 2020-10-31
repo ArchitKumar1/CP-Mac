@@ -78,22 +78,58 @@ template <typename T> string to_bin(T num){string binary = "";while (num){binary
 ////////////////////////////////////////////////////
 
 
+bool gb(int x,int pos){
+    return ((1<<pos)&x)>0;
+}
 
 
+const int N = 1.1e6;
 
+int BIT[N];
+
+void add(int i,int val){
+    while(i<N){
+        BIT[i] += val;
+        i += (i&-i);
+    }
+}
+
+int sum(int i){
+    int ans = 0;
+    while(i>0){
+        ans += BIT[i];
+        i -= (i&-i);
+    }
+    return ans;
+}
 void __Solve__(){
-    
+    int n;
+    cin >> n;
 
-    
-    
+    forn(i,n){
+        int m;
+        cin >> m;
+        forn(j,m){
+            int l,r;
+            cin >> l >> r;
+            add(l,1);
+            add(r+1,-1);
+        }
+    }
+    for(int i = 1;i<N;i++){
+        if(sum(i) == 0){
+            cout << i << endl;
+            return;
+        }
+    }
+    cout << -1 << endl;
 
-            
 }
 
 signed main()
 {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-	cout<<fixed<<setprecision(12);
+	cout<<fixed<<setprecision(2);
     FASTIO
 #ifdef LOCAL 
     freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);

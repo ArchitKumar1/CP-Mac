@@ -1,3 +1,7 @@
+
+
+
+
 #pragma GCC optimize("O3")
 //#pragma comment(linker, "/stack:200000000")
 #pragma GCC optimize("unroll-loops")
@@ -110,27 +114,25 @@ string to_bin(T num){
 
 
 
+  
 void __Solve__(){
-    int n;
-    cin >> n;
-    int sum = n * (n + 1) / 2;
+     
+    string s;
+    cin >> s;
+    int n = s.size();
     
-    if(sum&1){
-        cout << 0 << endl;
-        return;
-    }
-    sum/=2;
-    vector<int> dp(sum + 1, 0);
-
-    dp[0] = 1;
-    for (int j = 1; j <= n; j++){
-        for (int i = sum+1; ~i; i--) {
-            if (i - j >= 0) {
-                dp[i] += dp[i-j];
-            }
+    int ans = 0;
+    int cnt1 = 0;
+    for(int i = 0;i<n;i++){
+        if(i+3 < n && s.substr(i,4) == "KICK") cnt1 += 1;
+        if(i+4 < n && s.substr(i,5) == "START"){
+            ans += cnt1;
         }
+        
     }
-    cout << mul(dp[sum],pow_mod(2,mod-2,mod) ) << endl;
+    cout <<ans << endl;
+        
+
     
 }
 
@@ -144,9 +146,9 @@ signed main()
     freopen("output.txt", "w", stdout);
  #endif 
     int test_case = 1;
-   // cin >> test_case;
+    cin >> test_case;
     forn(i,test_case){
-        //cout << "Case #" << i+1<<": ";
+        cout << "Case #" << i+1<<": ";
         __Solve__();
     }
 #ifdef LOCAL

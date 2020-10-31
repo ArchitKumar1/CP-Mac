@@ -80,20 +80,33 @@ template <typename T> string to_bin(T num){string binary = "";while (num){binary
 
 
 
-
 void __Solve__(){
-    
+    int n;
+    cin >> n;
+    VI pref(n+2,0),arr(n+2,0),suff(n+2,0);
+    rep(i,n) cin >> arr[i];
 
-    
-    
+    int ans = 0;
 
-            
+    for(int i = 1;i<=n;i++){
+        pref[i] = pref[i-1]/2 + arr[i];
+    }
+    for(int i = n;i>=1;i--){
+        suff[i] = suff[i+1]/2 + arr[i];
+    }
+    int fans = 0;
+    for(int i =1;i<=n;i++){
+        fans = max(fans,arr[i] + pref[i-1]/2 + suff[i+1]/2);
+    }
+    cout <<fans << endl;
+    trace(pref);
+    trace(suff);
 }
 
 signed main()
 {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-	cout<<fixed<<setprecision(12);
+	cout<<fixed<<setprecision(2);
     FASTIO
 #ifdef LOCAL 
     freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);

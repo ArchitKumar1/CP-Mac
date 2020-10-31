@@ -1,17 +1,21 @@
 from random import *
-
-M = 100000
-N = 100000
-D = 5
 import sys
-file = open('ddmistinput.txt', 'a')
+
+file = open('input.txt', 'w')
 sys.stdout = file
-print("")
-print(N,D)
+
+N = 200
+Q = 200
+
+
+print(N)
 for i in range(N):
-    for j in range(D):
-        print(randint(1,M))
+    print(randint(1,1e9),end= " ")
 
-
+print(Q)
+for i in range(Q):
+    L = randint(1,N)
+    R = randint(L,N)
+    print(L,R)
 
 file.close()

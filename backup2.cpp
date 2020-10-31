@@ -36,9 +36,16 @@ void __f(const char* names,Arg1&& arg1,Args&&... args){
 #define trace(...) 1
 #endif
 
+
+//make vectors
+template <typename T> vector<T> GV(int n){return vector<T>(n);}
+template <typename T> vector<vector<T>> GV(int n,int m){return vector<vector<T>>(n,vector<T>(m));}
+template <typename T> vector<vector<vector<T>>> GV(int n,int m,int o){return vector<vector<vector<T>>>(n,vector<vector<T>>(m,vector<T>(o)));}
+
 //reading vectors
 template <class T> void RV(vector<T> &v){for(auto &c : v) cin >> c;}
 template <class T> void RV(vector<vector<T>> &v){for(auto &c : v) RV(c);}
+template <class T> void RV(vector<vector<vector<T>>> &v){for(auto &c : v) RV(c);}
 
 
 //defines and typedefs
@@ -78,22 +85,17 @@ template <typename T> string to_bin(T num){string binary = "";while (num){binary
 ////////////////////////////////////////////////////
 
 
-
-
-
 void __Solve__(){
     
-
-    
     
 
-            
+
 }
 
 signed main()
 {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-	cout<<fixed<<setprecision(12);
+	cout<<fixed<<setprecision(2);
     FASTIO
 #ifdef LOCAL 
     freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);

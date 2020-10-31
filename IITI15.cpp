@@ -79,21 +79,130 @@ template <typename T> string to_bin(T num){string binary = "";while (num){binary
 
 
 
+struct Q{
+    int L,R,id;
+};
 
+const int N = 21000;
+const int block = 150;
+
+
+unordered_map<int,int>BIT;
+int arr[N+1];
+int ans[N+1];
+Q queries[N+1];
+
+int INF = 1e9+10;
+bool cmp(Q a,Q b){
+    if( (a.L/block) == (b.L/block)){
+        if((a.L/block) &1){
+            return a.R < b.R;
+        }else{
+            return a.R > b.R;
+        }
+    }else{
+        return a.L/block < b.L/block;
+    }
+}
+
+void add_f(int i,int val){
+    while(i < INF){
+        BIT[i] += val;
+        i += (i&-i);
+    }
+}
+int sum_f( int i){
+    int ans = 0LL;
+    while(i > 0){
+        ans += BIT[i];
+        i -= (i&-i);
+    }
+    return ans;
+}
+
+int fans = 0;
+
+void add(int i,int type){
+    //trace(i,type,1);
+    if(type == 0){
+        fans += sum_f(arr[i]-1);
+    }else{
+        fans += (sum_f(INF) -sum_f(arr[i]));
+    }
+    add_f(arr[i],1);
+}
+void remove(int i,int type){
+    //trace(i,type,2);
+    add_f(arr[i],-1);
+    if(type == 0){
+        fans -= sum_f(arr[i]-1);
+    }else{
+        fans -= (sum_f(INF) -sum_f(arr[i]));
+    }
+    
+}
 
 void __Solve__(){
+    int n;
+    cin >> n;
+    forn(i,n) {
+        cin >> arr[i];
+        arr[i]+=3;
+    }
+    map<int,int> m1;
+    map<int,int> val;
+    int pos = 2;
     
+    for(int c : arr){
+        if(m1[c] == 0){
+            m1[c] += 1;
+            val[c] = pos++;
+        }else{
+            continue;
+        }
+    }
 
-    
-    
+    int q;
+    cin >> q;
+    forn(i,q){
+        cin >> queries[i].L >> queries[i].R;
+        queries[i].L--,queries[i].R--;
+        queries[i].id = i;
+    }
+    sort(queries,queries+q,cmp);
 
-            
+    int L = 0;
+    int R = -1;
+
+    for(int i = 0;i<q;i++){
+        Q query = queries[i];
+        int l = query.L;
+        int r = query.R;
+        int id = query.id;
+        while(L < l){
+            remove(L++,0);
+        }
+        while(L > l){
+            add(--L,0);
+        }
+        while(R < r){
+            add(++R,1);
+        }
+        while(R > r){
+            remove(R--,1);
+        }
+        ans[id] = fans;
+    }
+    forn(i,q){
+        cout << ans[i] << endl;
+    }
+    
 }
 
 signed main()
 {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-	cout<<fixed<<setprecision(12);
+	cout<<fixed<<setprecision(2);
     FASTIO
 #ifdef LOCAL 
     freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);

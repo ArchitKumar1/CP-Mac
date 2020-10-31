@@ -79,21 +79,62 @@ template <typename T> string to_bin(T num){string binary = "";while (num){binary
 
 
 
+const int N =1e3 + 5;
+int BIT[N][N];
+string s[N];
 
+void upd(int y,int x,int value){
+    for(int i = x+1;i<N;i+=(i&-i)){
+        for(int j = y+1;j<N;j+=(j&-j)){
+            BIT[i][j] += value;
+        }
+    }
+}
 
+int qry(int y,int x){
+    int ans = 0;
+    for(int i = x;i;i-=(i&-i)){
+        for(int j = y;j;j-=(j&-j)){
+            ans += BIT[i][j];
+        }
+    }
+    return ans;
+}
 void __Solve__(){
-    
+   
+    int n;
+    cin >> n;
+    int q;
+    cin >> q;
+    forn(i,n) cin >> s[i];
+    forn(i,n) forn(j,n) upd(i,j,s[i][j] == '*'?1:0);
 
     
-    
+    while(q--){
+        int t; cin >> t;
+        if(t == 1){
+            int a,b;
+            cin >> a >> b;
+            a--;b--;
+            upd(a,b,s[a][b] == '*'?-1:1);
+            if(s[a][b] == '*') s[a][b] = '.';
+            else s[a][b] = '*';
+        }else{
+            int y1,x1,y2,x2;
+            cin >> y1 >> x1 >> y2 >> x2;
 
-            
+            cout << qry(y2,x2) - qry(y1-1,x2)- qry(y2,x1-1) + qry(y1-1,x1-1) << endl;
+        }
+        
+    }
+
+    
 }
 
 signed main()
 {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-	cout<<fixed<<setprecision(12);
+	cout<<fixed<<setprecision(2);
     FASTIO
 #ifdef LOCAL 
     freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);

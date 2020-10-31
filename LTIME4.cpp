@@ -79,27 +79,50 @@ template <typename T> string to_bin(T num){string binary = "";while (num){binary
 
 
 
+const int N =  1e5+10;
+
+vector<vector<pair<int,int>>>p(N);
+
+void pre(){
+    
+    for(int i =2;i<N;i++){
+        int m = i;
+        for(int j =2;j*j<=i;j++){
+            int cnt = 0;
+            while(m % j == 0){
+                m = m/j;
+                cnt += 1;
+            }
+            if(cnt > 0){
+                p[i].push_back({j,cnt});
+            }
+        }
+        if(m > 1){
+            p[i].push_back({m,1});
+        }
+    }
+}
+
+
 
 
 void __Solve__(){
-    
+    int l,r;
+    cin >> l >> r;
+    cout << r*(r+1)/2 << endl;
 
-    
-    
-
-            
 }
-
 signed main()
 {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-	cout<<fixed<<setprecision(12);
+	cout<<fixed<<setprecision(2);
     FASTIO
 #ifdef LOCAL 
     freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);
 #endif 
+pre();
     int test_case = 1;
-    //cin >> test_case;
+    cin >> test_case;
     forn(i,test_case){
         //cout << "Case #" << i+1<<": ";
         __Solve__();

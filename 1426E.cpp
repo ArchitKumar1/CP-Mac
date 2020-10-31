@@ -115,33 +115,15 @@ string to_bin(T num){
   
 void __Solve__(){
      
+    int x1,y1,x2,y2;
+    cin >> x1 >> y1 >> x2 >> y2;
+    int ans = 0;
+    if(x1 ^ x2 ) ans += abs(x2-x1);
+    if(y1^y2 ) ans += abs(y2-y1);
+
+    if(x1^x2 && y1^y2 ) ans +=2;
+    cout << ans << endl;
     
-    VI a(3),b(3);
-    forn(i,3) cin >> a[i];
-    forn(i,3) cin >> b[i];
-
-    int mi = 0;
-    int ma = 0;
-
-
-    map<int,int> m1 = {{0,1},{1,2},{2,0}};
-
-    VPII aa(3);
-    forn(i,3){
-        aa[i].first = a[i] - b[m1[i]],aa[i].second = i;
-    }
-    sort(ALL(aa));
-    reverse(ALL(aa));
-
-    
-
-
-
-
-
-
-
-
 }
 
 signed main()
@@ -154,7 +136,7 @@ signed main()
     freopen("output.txt", "w", stdout);
  #endif 
     int test_case = 1;
-    //cin >> test_case;
+    cin >> test_case;
     forn(i,test_case){
         //cout << "Case #" << i+1<<": ";
         __Solve__();

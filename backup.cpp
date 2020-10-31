@@ -1,3 +1,7 @@
+
+
+
+
 #pragma GCC optimize("O3")
 //#pragma comment(linker, "/stack:200000000")
 #pragma GCC optimize("unroll-loops")
@@ -108,29 +112,77 @@ string to_bin(T num){
 }
 ////////////////////////////////////////////////////
 
+VVI G;
 
+VI ans;
 
+void dfs(int s,int par,int val){
+    ans[s] = val;
+    for(int c :G[s]){
+        if(c == par) continue;
+        dfs(c,s,val ==1 ? 2 : 1);
+    }
+}
+  
 void __Solve__(){
-    int n;
-    cin >> n;
-    int sum = n * (n + 1) / 2;
+     
     
-    if(sum&1){
-        cout << 0 << endl;
+     
+    int d;
+    cin >> d;
+
+    if(d == 0){
+        cout << 1 << endl;
+        cout << "1" << endl;
         return;
     }
-    sum/=2;
-    vector<int> dp(sum + 1, 0);
-
-    dp[0] = 1;
-    for (int j = 1; j <= n; j++){
-        for (int i = sum+1; ~i; i--) {
-            if (i - j >= 0) {
-                dp[i] += dp[i-j];
-            }
-        }
+    if(d == 1){
+        cout << 2 << endl;
+        cout << "3 2" << endl;
+        return;
     }
-    cout << mul(dp[sum],pow_mod(2,mod-2,mod) ) << endl;
+    vector<int> ans;
+
+    int X= 3e4;
+    int q = d/X;
+    int r = d%X;
+
+    forn(i,q){
+        ans.push_back(2*X);
+        ans.push_back(3*X);
+        ans.push_back(1);
+    }
+    if(r > 0){
+        ans.push_back(2*r);
+        ans.push_back(3*r);
+        ans.push_back(1);
+    }
+
+
+    if(ans.size() <=1e5){
+        cout << ans.size() << endl;
+        for(int c : ans){
+            cout <<c << " ";
+        }
+         cout << endl;
+    }
+    else{
+        vector<int> newans;
+        newans.push_back(2*X);
+        newans.push_back(3*X);
+        newans.push_back(2*X);
+        newans.push_back(1);
+        for(int i = 9;i<(int)ans.size();i++){
+            newans.push_back(ans[i]);
+        }
+        cout << newans.size() << endl;
+        for(int c : newans){
+            cout <<c << " ";
+        }
+        cout << endl;
+    
+    }
+    
     
 }
 
@@ -144,7 +196,7 @@ signed main()
     freopen("output.txt", "w", stdout);
  #endif 
     int test_case = 1;
-   // cin >> test_case;
+    cin >> test_case;
     forn(i,test_case){
         //cout << "Case #" << i+1<<": ";
         __Solve__();

@@ -79,27 +79,91 @@ template <typename T> string to_bin(T num){string binary = "";while (num){binary
 
 
 
+const int N =  1e5+10;
+
+vector<vector<pair<int,int>>>p(N);
+
+void pre(){
+    
+    for(int i =2;i<N;i++){
+        int m = i;
+        for(int j =2;j*j<=i;j++){
+            int cnt = 0;
+            while(m % j == 0){
+                m = m/j;
+                cnt += 1;
+            }
+            if(cnt > 0){
+                p[i].push_back({j,cnt});
+            }
+        }
+        if(m > 1){
+            p[i].push_back({m,1});
+        }
+    }
+}
+
+
 
 
 void __Solve__(){
     
+    int n;
+    cin >> n;
+    int arr[n];
+    forn(i,n) cin >> arr[i];
 
-    
-    
+    int fans = 0;
 
-            
+    VI F(N),B(N);
+
+    // for(int i = 1;i<=10;i++){
+    //     trace(i,p[i]);
+    // }
+    for(int i = n-1;i>=0;i--){
+        int c = arr[i];
+        for(PII x : p[c]){
+            B[x.first]+= (x.second);
+        }
+    }
+    int safe = 0;
+    set<int> active; 
+
+    for(int i = 0;i<n;i++){
+        int c = arr[i];
+        for(PII x : p[c]){
+            F[x.first]+= (x.second);
+            B[x.first] -= x.second;
+            if(active.find(x.first) != active.end()){
+                active.erase(x.first);
+            }
+            if(F[x.first] * B[x.first] != 0){
+                active.insert(x.first);
+            }
+        }
+        if(active.size() == 0){
+            fans = i+1;
+            break;
+        }
+    }
+
+    // for(int i = 0;i<n;i++){
+    //     trace(F[i],B[i]);
+    // }
+    cout << fans << endl;
 }
 
 signed main()
 {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-	cout<<fixed<<setprecision(12);
+	cout<<fixed<<setprecision(2);
     FASTIO
 #ifdef LOCAL 
     freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);
 #endif 
+pre();
     int test_case = 1;
-    //cin >> test_case;
+    cin >> test_case;
     forn(i,test_case){
         //cout << "Case #" << i+1<<": ";
         __Solve__();

@@ -78,16 +78,32 @@ template <typename T> string to_bin(T num){string binary = "";while (num){binary
 ////////////////////////////////////////////////////
 
 
+const int N = 2e6+1;
 
+vector<int> prime(N,1);
 
+void p(){
+    prime[0] = prime[1] = 0;
+
+    for(int i =2;i<N;i++){
+        if(prime[i] == 1){
+            for(int j = i*i;j<N;j+=i){
+                if(prime[j] == 1){
+                    prime[j] = 0;
+                }
+            }
+        } 
+    }
+    for(int i = 1;i<N;i++){
+        prime[i] += prime[i-1];
+    }
+}
 
 void __Solve__(){
-    
-
-    
-    
-
-            
+    p();
+    int n,m;
+    cin  >> n >> m;
+    cout << prime[n+m] << endl;
 }
 
 signed main()
@@ -99,7 +115,7 @@ signed main()
     freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);
 #endif 
     int test_case = 1;
-    //cin >> test_case;
+   // cin >> test_case;
     forn(i,test_case){
         //cout << "Case #" << i+1<<": ";
         __Solve__();

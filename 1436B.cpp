@@ -77,29 +77,71 @@ template <typename T> T lcm(T a,T b){ return a*b /gcd(a,b);}
 template <typename T> string to_bin(T num){string binary = "";while (num){binary += (num % 2 == 1 ? "1" : "0");num >>= 1;}reverse(binary.begin(), binary.end());return binary;}
 ////////////////////////////////////////////////////
 
+const int N = 20000;
+
+
+int p[N];
+VI primes;
 
 
 
-
+void pre(){
+    p[0] = p[1] = 1;
+    for(int i = 2;i*i<=N;i++){
+        if(p[i] == 0){
+            for(int j = i*i;j<N;j+=i){
+                p[j] = 1;
+            }
+        }
+    }
+    
+    forn(i,N){
+        if(p[i] == 0 ){
+            primes.push_back(i);
+        }
+    }
+    trace(primes);
+}
 void __Solve__(){
+    int n;
+    cin >> n;
+    int arr[n][n];
     
+    forn(i,n){
+        forn(j,n){
+            if(i!=j){
+                arr[i][j] = 1;
+            }else{
 
-    
-    
+                for(int c : primes){
+                    if((c - (n-1)) >= 1){
+                        if(p[c - (n-1)] == 1){
+                            arr[i][j] = c - (n-1);
+                            break;
+                        }
+                    }
+                }
+                
+            }
+            cout << arr[i][j] << " ";
+        }
+        cout << endl;
+    }
 
-            
+
 }
 
 signed main()
 {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-	cout<<fixed<<setprecision(12);
+	cout<<fixed<<setprecision(2);
     FASTIO
 #ifdef LOCAL 
     freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);
 #endif 
     int test_case = 1;
-    //cin >> test_case;
+    cin >> test_case;
+    pre();
     forn(i,test_case){
         //cout << "Case #" << i+1<<": ";
         __Solve__();

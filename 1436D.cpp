@@ -77,29 +77,52 @@ template <typename T> T lcm(T a,T b){ return a*b /gcd(a,b);}
 template <typename T> string to_bin(T num){string binary = "";while (num){binary += (num % 2 == 1 ? "1" : "0");num >>= 1;}reverse(binary.begin(), binary.end());return binary;}
 ////////////////////////////////////////////////////
 
+const int N = 2e5;
 
 
+VVI G(N);
 
+int dp1[N],dp2[N];
+int arr[N];
+
+
+void dfs(int s,int par){
+    int fans = 0;
+
+    for(int c : G[s]){
+        if(c == par) continue;
+        dfs(c,s);
+        dp1[s] = min(dp1[s],dp1[c]);
+    }
+}
 
 void __Solve__(){
+   
+    int n;
+    cin >> n;
+    forn(i,n) cin >> arr[i];
     
-
-    
-    
-
-            
+    for(int i = 2;i<=n;i++){
+        int x ;
+        cin >> x;
+        G[x-1].PB(i-1);
+        G[i-1].PB(x-1);
+    }
+    dfs(0,-1);
+    cout << dp1[0] << endl;
 }
 
 signed main()
 {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-	cout<<fixed<<setprecision(12);
+	cout<<fixed<<setprecision(2);
     FASTIO
 #ifdef LOCAL 
     freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);
 #endif 
     int test_case = 1;
-    //cin >> test_case;
+    cin >> test_case;
+    pre();
     forn(i,test_case){
         //cout << "Case #" << i+1<<": ";
         __Solve__();

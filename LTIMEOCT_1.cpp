@@ -79,27 +79,82 @@ template <typename T> string to_bin(T num){string binary = "";while (num){binary
 
 
 
+const int N =  1e5+10;
+
+vector<vector<int>>p(N);
+
+void pre(){
+    
+    for(int i =2;i<N;i++){
+        int m = i;
+        for(int j =2;j*j<=i;j++){
+            int cnt = 0;
+            while(m % j == 0){
+                m = m/j;
+                cnt += 1;
+            }
+            if(cnt > 0){
+                p[i].push_back(j);
+            }
+        }
+        if(m > 1){
+            p[i].push_back(m);
+        }
+    }
+}
 
 
+
+bitset<N> F[N],B[N];
 void __Solve__(){
     
+    int n;
+    cin >> n;
+    int arr[n];
+    forn(i,n) cin >> arr[i];
+
+    int fans = 0;
 
     
-    
 
-            
+    for(int i = 0;i<n;i++){
+        int c = arr[i];
+        for(int x : p[c]){
+            F[i].set(x);
+        }
+        F[i] |= F[i-1];
+    }
+    for(int i = n-1;i>=0;i--){
+        int c = arr[i];
+        for(int x : p[c]){
+            B[i].set(x);
+        }
+        B[i] |= B[i+1];
+    }
+
+    for(int i = 0;i<n-1;i++){
+        if((F[i] & B[i+1]) == 0){
+            fans = i+1;
+            break;
+        }
+    }
+    // for(int i = 0;i<n;i++){
+    //     trace(F[i],B[i]);
+    // }
+    cout << fans << endl;
 }
 
 signed main()
 {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-	cout<<fixed<<setprecision(12);
+	cout<<fixed<<setprecision(2);
     FASTIO
 #ifdef LOCAL 
     freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);
 #endif 
+pre();
     int test_case = 1;
-    //cin >> test_case;
+    cin >> test_case;
     forn(i,test_case){
         //cout << "Case #" << i+1<<": ";
         __Solve__();

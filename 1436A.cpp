@@ -78,28 +78,27 @@ template <typename T> string to_bin(T num){string binary = "";while (num){binary
 ////////////////////////////////////////////////////
 
 
-
-
-
 void __Solve__(){
-    
+    int n,k;
+    cin >> n >> k;
+    int arr[n];
+    forn(i,n) cin >> arr[i];
 
-    
-    
-
-            
+    int sum = 0;
+    for(int c : arr)sum += c;
+     cout << (sum == k ? "YES" : "NO") << endl;
 }
 
 signed main()
 {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-	cout<<fixed<<setprecision(12);
+	cout<<fixed<<setprecision(2);
     FASTIO
 #ifdef LOCAL 
     freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);
 #endif 
     int test_case = 1;
-    //cin >> test_case;
+    cin >> test_case;
     forn(i,test_case){
         //cout << "Case #" << i+1<<": ";
         __Solve__();

@@ -78,28 +78,54 @@ template <typename T> string to_bin(T num){string binary = "";while (num){binary
 ////////////////////////////////////////////////////
 
 
-
-
+bool gb(int x,int pos){
+    return ((1<<pos)&x)>0;
+}
 
 void __Solve__(){
-    
+    int n;
+    cin >> n;
+    int arr[n];
+    forn(i,n) cin >> arr[i];
+
+    if(*max_element(arr,arr+n) == *min_element(arr,arr+n)){
+        cout << "NO" << endl;
+        return;
+    }
+    cout << "YES" << endl;
+    map<int,vector<int>> m1;
+    forn(i,n){
+        m1[arr[i]].push_back(i+1);
+    }
+    vector<pair<int,vector<int>>> v;
+    for(auto x: m1){
+        v.push_back(x);
+    }
+    int st = v[0].second[0];
+    for(int i = 1;i<v.size();i++){
+        for(int c : v[i].second){
+            cout << st << " " << c << endl;
+        }
+        st = v[i].second.back();
+    }
+    for(int i = 1;i<v[0].second.size();i++){
+        cout << st << " " << v[0].second[i] << endl;
+    }
 
     
-    
 
-            
 }
 
 signed main()
 {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-	cout<<fixed<<setprecision(12);
+	cout<<fixed<<setprecision(2);
     FASTIO
 #ifdef LOCAL 
     freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);
 #endif 
     int test_case = 1;
-    //cin >> test_case;
+    cin >> test_case;
     forn(i,test_case){
         //cout << "Case #" << i+1<<": ";
         __Solve__();

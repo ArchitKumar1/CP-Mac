@@ -81,25 +81,52 @@ template <typename T> string to_bin(T num){string binary = "";while (num){binary
 
 
 
+
+
+
 void __Solve__(){
     
-
     
-    
-
+    int n;
+    cin >> n;
+    int arr[n];
+    forn(i,n) cin >> arr[i];
+    VI cnt(32,0);
+    for(int c : arr){
+        forn(j,32){
+            int x = c&(1LL<<j);
+            if( x > 0){
+                cnt[j] += 1;
+            }
+        }
+    }
+    int ans = 0;
+    for(int i = 0;i<32;i++){
+        
+        int curr = 0;
+        for(int j = 0;j<=i;j++){
+            curr = curr/2;
+            curr += cnt[j];
             
+        }        
+        if(curr > 0){
+            ans |= (1LL << i);
+        }
+        
+    }
+    cout << ans << endl;
 }
 
 signed main()
 {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-	cout<<fixed<<setprecision(12);
+	cout<<fixed<<setprecision(2);
     FASTIO
 #ifdef LOCAL 
     freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);
 #endif 
     int test_case = 1;
-    //cin >> test_case;
+    cin >> test_case;
     forn(i,test_case){
         //cout << "Case #" << i+1<<": ";
         __Solve__();

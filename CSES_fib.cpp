@@ -1,3 +1,7 @@
+
+
+
+
 #pragma GCC optimize("O3")
 //#pragma comment(linker, "/stack:200000000")
 #pragma GCC optimize("unroll-loops")
@@ -109,29 +113,54 @@ string to_bin(T num){
 ////////////////////////////////////////////////////
 
 
-
-void __Solve__(){
-    int n;
-    cin >> n;
-    int sum = n * (n + 1) / 2;
-    
-    if(sum&1){
-        cout << 0 << endl;
-        return;
-    }
-    sum/=2;
-    vector<int> dp(sum + 1, 0);
-
-    dp[0] = 1;
-    for (int j = 1; j <= n; j++){
-        for (int i = sum+1; ~i; i--) {
-            if (i - j >= 0) {
-                dp[i] += dp[i-j];
+VVI mul(VVI a,VVI b){
+    int n = a.size();
+    VVI c(n,VI(n,0));
+    forn(i,n){
+        forn(j,n){
+            forn(k,n){
+                c[i][j] += a[i][k] * b[k][j];
+                c[i][j] %= mod;
             }
         }
     }
-    cout << mul(dp[sum],pow_mod(2,mod-2,mod) ) << endl;
-    
+    return c;
+}
+
+
+const int N = 2;
+void __Solve__(){
+     
+
+    int n;
+    cin >> n;
+
+
+    VVI u(N,VI(N,0));
+    u[0][0] = 1;
+
+    VVI a(N,VI(N,0));
+
+    a[0][0] = a[0][1] = a[1][0] = 1;
+
+
+    VVI res = u;
+
+    if( n == 0) {
+        cout << 0 << endl;
+        return ;
+    }
+    n--;
+    while(n){
+        if(n&1){
+            res  = mul(res,a);
+        }
+        n = n/2;
+        a = mul(a,a);
+    }
+    cout << res[0][0] << endl;
+
+
 }
 
 signed main()
@@ -144,7 +173,7 @@ signed main()
     freopen("output.txt", "w", stdout);
  #endif 
     int test_case = 1;
-   // cin >> test_case;
+    //cin >> test_case;
     forn(i,test_case){
         //cout << "Case #" << i+1<<": ";
         __Solve__();

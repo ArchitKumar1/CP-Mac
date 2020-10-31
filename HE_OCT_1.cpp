@@ -80,20 +80,26 @@ template <typename T> string to_bin(T num){string binary = "";while (num){binary
 
 
 
-
 void __Solve__(){
-    
-
-    
-    
-
-            
+    int n;
+    cin >> n;
+    string s;
+    cin >> s;
+    map<char, int> m1;
+    for(int c : s){
+        m1[c]+= 1;
+    }
+    int ans =0 ;
+    for(auto x : m1){
+        ans = max(x.second,ans);
+    }
+    cout << ans << endl;
 }
 
 signed main()
 {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-	cout<<fixed<<setprecision(12);
+	cout<<fixed<<setprecision(2);
     FASTIO
 #ifdef LOCAL 
     freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);

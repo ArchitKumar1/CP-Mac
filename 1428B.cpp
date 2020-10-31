@@ -1,3 +1,7 @@
+
+
+
+
 #pragma GCC optimize("O3")
 //#pragma comment(linker, "/stack:200000000")
 #pragma GCC optimize("unroll-loops")
@@ -110,27 +114,51 @@ string to_bin(T num){
 
 
 
+  
 void __Solve__(){
+     
     int n;
     cin >> n;
-    int sum = n * (n + 1) / 2;
-    
-    if(sum&1){
-        cout << 0 << endl;
-        return;
-    }
-    sum/=2;
-    vector<int> dp(sum + 1, 0);
+    string s;
+    cin >> s;
 
-    dp[0] = 1;
-    for (int j = 1; j <= n; j++){
-        for (int i = sum+1; ~i; i--) {
-            if (i - j >= 0) {
-                dp[i] += dp[i-j];
-            }
+    bool cycle1 = 1;
+
+    int beg = 0;
+    for(int i = 0;i<n;i++){
+        if(s[beg] == '<'){
+            trace(i,"b1");
+            cycle1 = 0;
+            break;
+        }else{
+            beg = (beg+1)%n;
         }
     }
-    cout << mul(dp[sum],pow_mod(2,mod-2,mod) ) << endl;
+    bool cycle2 = 1;
+    beg = 0;
+    for(int i = 0;i<n;i++){
+        if(s[beg] == '>'){
+            trace(i,"b2");
+            cycle2 = 0;
+            break;
+        }else{
+            beg = (beg+1)%n;
+        }
+    }
+    trace(cycle1,cycle2);
+    if(cycle1 == 1 || cycle2 == 1){
+        trace("CYCLE");
+        cout << n << endl;
+    }else{
+        int ans = 0;
+        for(int i = 0;i<n;i++){
+            int l = (i-1 +n)%n;
+            int r = i;
+            if( s[l] == '-' || s[r] == '-')ans += 1;
+        }
+        cout << ans << endl;
+    }
+
     
 }
 
@@ -144,7 +172,7 @@ signed main()
     freopen("output.txt", "w", stdout);
  #endif 
     int test_case = 1;
-   // cin >> test_case;
+    cin >> test_case;
     forn(i,test_case){
         //cout << "Case #" << i+1<<": ";
         __Solve__();

@@ -79,15 +79,40 @@ template <typename T> string to_bin(T num){string binary = "";while (num){binary
 
 
 
-
-
 void __Solve__(){
+    int n,m;
+    cin >> n >> m;
     
+    int arr[n+1][m+1];
+    VVI dp(n+1,VI(m+1));
 
-    
-    
-
-            
+    forn(i,n) forn(j,m) cin >> arr[i][j];
+    string s;
+    cin >> s;
+    int p,q;
+    cin >> p >> q;
+    map<int,int> m0;
+    vector<int> total(n+m-1);
+    int fans = 0;
+    forn(i,n){
+        forn(j,m){
+            total[i+j]++;
+            if(arr[i][j] == 0){
+                m0[i+j]+=1;
+            }
+        }
+    }
+    forn(i,n+m-1){
+        
+        if(s[i] == '1'){
+            fans += min(m0[i]*p,q+(total[i]-m0[i])*p);
+        }else{
+            fans += min(q + m0[i]*p,(total[i]-m0[i])*p);
+        }
+    }
+       
+   cout << fans  << endl;
+ 
 }
 
 signed main()
@@ -99,7 +124,7 @@ signed main()
     freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);
 #endif 
     int test_case = 1;
-    //cin >> test_case;
+    cin >> test_case;
     forn(i,test_case){
         //cout << "Case #" << i+1<<": ";
         __Solve__();

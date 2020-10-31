@@ -78,28 +78,71 @@ template <typename T> string to_bin(T num){string binary = "";while (num){binary
 ////////////////////////////////////////////////////
 
 
+const int N = 1e5;
 
+VI par(N),sz(N);
 
+int f(int v){
+    return par[v] == v ? v : par[v] = f(par[v]);
+}
 
 void __Solve__(){
+   
+    int n;
+    cin >> n;
+    int q;
+    cin >> q;
+    int arr[n];
+    forn(i,n) cin >> arr[i];
     
+    int ans = 0;
+    for(int i =1;i<n;i++){
+        if(arr[i]!= arr[i-1]){
+            ans += 1;
+        }
+    }
+    ans += 1;
+    while(q--){
+        int x,y;
+        
+        cin >> x >> y;
+        x--;
+        if(x -1 >= 0){
+            if(arr[x] == arr[x-1] && arr[x-1] != y){
+                ans +=1;
+            }
+            if(arr[x] != arr[x-1] && arr[x-1] == y){
+                ans -=1;
+            }
+        }
+        if(x + 1 <n){
+            if(arr[x] == arr[x+1] && arr[x+1] != y){
+                ans +=1;
+            }
+            if(arr[x] != arr[x+1] && arr[x+1] == y){
+                ans -=1;
+            }
+        }
+        arr[x] = y;
+        
+        
+        
+        cout << ans << endl;
 
-    
-    
+    }
 
-            
 }
 
 signed main()
 {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-	cout<<fixed<<setprecision(12);
+	cout<<fixed<<setprecision(2);
     FASTIO
 #ifdef LOCAL 
     freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);
 #endif 
     int test_case = 1;
-    //cin >> test_case;
+    cin >> test_case;
     forn(i,test_case){
         //cout << "Case #" << i+1<<": ";
         __Solve__();

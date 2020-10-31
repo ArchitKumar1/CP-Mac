@@ -1,3 +1,7 @@
+
+
+
+
 #pragma GCC optimize("O3")
 //#pragma comment(linker, "/stack:200000000")
 #pragma GCC optimize("unroll-loops")
@@ -111,40 +115,40 @@ string to_bin(T num){
 
 
 void __Solve__(){
-    int n;
-    cin >> n;
-    int sum = n * (n + 1) / 2;
-    
-    if(sum&1){
-        cout << 0 << endl;
-        return;
-    }
-    sum/=2;
-    vector<int> dp(sum + 1, 0);
+     
+    int n,k;
+    cin >> n >> k;
+    int ans =1 ;
 
-    dp[0] = 1;
-    for (int j = 1; j <= n; j++){
-        for (int i = sum+1; ~i; i--) {
-            if (i - j >= 0) {
-                dp[i] += dp[i-j];
-            }
+    int curr = 0;
+
+    int arr[n];
+    forn(i,n) cin >> arr[i];
+    forn(i,n){
+        int x= arr[i];
+        trace(curr);
+        if(curr + x > k){
+            curr = x;
+            ans += 1;
+        }else{
+            curr += x;
         }
     }
-    cout << mul(dp[sum],pow_mod(2,mod-2,mod) ) << endl;
+    cout << ans << endl;
     
 }
 
 signed main()
 {
-    // srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-	// cout<<fixed<<setprecision(12);
+    srand(chrono::high_resolution_clock::now().time_since_epoch().count());
+	cout<<fixed<<setprecision(6);
     FASTIO
 #ifdef LOCAL 
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
  #endif 
     int test_case = 1;
-   // cin >> test_case;
+    //cin >> test_case;
     forn(i,test_case){
         //cout << "Case #" << i+1<<": ";
         __Solve__();
