@@ -1,22 +1,19 @@
 
-#pragma GCC optimize("O3")
-#pragma comment(linker, "/stack:200000000")
-#pragma GCC optimize("unroll-loops")
 #include<bits/stdc++.h>
 using namespace std;
 
-// #include "ext/pb_ds/assoc_container.hpp"
-// #include "ext/pb_ds/tree_policy.hpp"
-// using namespace __gnu_pbds;
-// template<class T> 
-// using ordered_set = tree<T, null_type,less<T>, rb_tree_tag,tree_order_statistics_node_update> ;
-// template<class key, class value, class cmp = std::less<key>>
-// using ordered_map = tree<key, value, cmp, rb_tree_tag, tree_order_statistics_node_update>;
+#include "ext/pb_ds/assoc_container.hpp"
+#include "ext/pb_ds/tree_policy.hpp"
+using namespace __gnu_pbds;
+template<class T> 
+using ordered_set = tree<T, null_type,less<T>, rb_tree_tag,tree_order_statistics_node_update> ;
+template<class key, class value, class cmp = std::less<key>>
+using ordered_map = tree<key, value, cmp, rb_tree_tag, tree_order_statistics_node_update>;
 
 template<class T> ostream& operator<<(ostream &os, set<T> S){os << "{ ";for(auto s:S) os<<s<<" ";return os<<"}";}
 template<class T> ostream& operator<<(ostream &os, unordered_set<T> S){os << "{ ";for(auto s:S) os<<s<<" ";return os<<"}";}
 template<class T> ostream& operator << (ostream& os, multiset<T> S){os << "{ ";for(auto s:S) os<<s<<" ";return os<<"}";}
-//template<class T> ostream& operator<<(ostream &os, ordered_set<T> S){os << "{ ";for(auto s:S) os<<s<<" ";return os<<"}";}
+template<class T> ostream& operator<<(ostream &os, ordered_set<T> S){os << "{ ";for(auto s:S) os<<s<<" ";return os<<"}";}
 template<class L, class R> ostream& operator<<(ostream &os, pair<L,R> P) {return os << "(" << P.first << "," << P.second << ")";}
 template<class L, class R> ostream& operator<<(ostream &os, map<L,R> M) {os << "{ ";for(auto m:M) os<<"("<<m.first<<":"<<m.second<<") ";return os<<"}";}
 template<class T> ostream& operator<<(ostream &os,vector<T> V){os<<"[ ";for(auto v:V)os<<v<<" ";return os<<"]";}
@@ -78,41 +75,39 @@ template <typename T> string to_bin(T num){string binary = "";while (num){binary
 ////////////////////////////////////////////////////
 
 
+const int N = 1e3;
 
-const int N =  1e5+10;
-
-vector<vector<int>>p(N);
-
-void pre(){
-    
-    for(int i =2;i<N;i++){
-        int m = i;
-        for(int j =2;j*j<=i;j++){
-            int cnt = 0;
-            while(m % j == 0){
-                m = m/j;
-                cnt += 1;
-            }
-            if(cnt > 0){
-                p[i].push_back(j);
-            }
-        }
-        if(m > 1){
-            p[i].push_back(m);
-        }
-    }
-}
+int arr[N];
 
 
 
 void __Solve__(){
-    
-    
-    int fans;
-    cin >> fans;
-    cout << fans << endl;
-}
+    int n,x;
+    cin >> n >> x;
+    forn(i,n){
+        int y;
+        cin >> y;
+        arr[i] = y;
+    }
+    unordered_map<int,pair<int,int>> m1(1<<24);
 
+    for(int i = 0;i<n;i++){
+
+        for(int j = i+1;j<n;j++){
+            auto p = m1.find(x-arr[i]-arr[j]);
+            if( p != m1.end()){
+                PII y = m1[x-arr[i]-arr[j]];
+                cout << y.first+1<< " " << y.second+1<< " " << i+1 << " " << j+1 << endl;
+                return ;
+            }
+        }
+        for(int j = i-1;j>=0;j--){
+            m1[arr[i]+arr[j]] = {i,j};
+        }
+    }
+    cout << "IMPOSSIBLE" << endl;
+      
+}
 signed main()
 {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
@@ -121,9 +116,8 @@ signed main()
 #ifdef LOCAL 
     freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);
 #endif 
-pre();
     int test_case = 1;
-    cin >> test_case;
+   // cin >> test_case;
     forn(i,test_case){
         //cout << "Case #" << i+1<<": ";
         __Solve__();

@@ -5,13 +5,13 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-// #include "ext/pb_ds/assoc_container.hpp"
-// #include "ext/pb_ds/tree_policy.hpp"
-// using namespace __gnu_pbds;
-// template<class T> 
-// using ordered_set = tree<T, null_type,less<T>, rb_tree_tag,tree_order_statistics_node_update> ;
-// template<class key, class value, class cmp = std::less<key>>
-// using ordered_map = tree<key, value, cmp, rb_tree_tag, tree_order_statistics_node_update>;
+#include "ext/pb_ds/assoc_container.hpp"
+#include "ext/pb_ds/tree_policy.hpp"
+using namespace __gnu_pbds;
+template<class T> 
+using ordered_set = tree<T, null_type,less<T>, rb_tree_tag,tree_order_statistics_node_update> ;
+template<class key, class value, class cmp = std::less<key>>
+using ordered_map = tree<key, value, cmp, rb_tree_tag, tree_order_statistics_node_update>;
 
 template<class T> ostream& operator<<(ostream &os, set<T> S){os << "{ ";for(auto s:S) os<<s<<" ";return os<<"}";}
 template<class T> ostream& operator<<(ostream &os, unordered_set<T> S){os << "{ ";for(auto s:S) os<<s<<" ";return os<<"}";}
@@ -67,7 +67,7 @@ auto clk=clock();
 int mod = 1e9+7;
 const long long inf = 1e17;
 const double eps = 1e-6;
-const int  LOGN = 25;
+const int  LOGN = 20;
 
 // maths stuff
 template <class T,class U>T pow_mod(T a,T b,int m= mod){long long  res = 1;while(b){ if(b&1) res =((long long)res*a)%m; a = ((long long)a*a)%m;b >>=1;}return res;}
@@ -77,137 +77,121 @@ template <typename T> T lcm(T a,T b){ return a*b /gcd(a,b);}
 template <typename T> string to_bin(T num){string binary = "";while (num){binary += (num % 2 == 1 ? "1" : "0");num >>= 1;}reverse(binary.begin(), binary.end());return binary;}
 ////////////////////////////////////////////////////
 
-
-
-struct node{
-    int s,val,lazy1= 0,lazy2 =0,mini = 1e9;
-    bool lz2 = 0;
-};
- 
-const int N = 2e5+1;
- 
-node tree[4*N];
-int arr[N];
-int rooms[N];
-int ans[N];
-
-
- 
- 
-void apply1(int index,int v,int s,int e){
-    tree[index].s += v;
-    tree[index].val += (e-s+1)*v;
-    tree[index].lazy1 += v;
-}
-void apply2(int index,int v,int s,int e){
-    tree[index].s = v;
-    tree[index].val = (e-s+1)*v;
-    tree[index].lazy2 = v;
-    tree[index].lazy1 = 0;
-}
- 
-void push(int index,int l,int r){
-    int mid = (l+r)/2;
-    
-    if(tree[index].lazy2){
-        apply2(2*index,tree[index].lazy2,l,mid);
-        apply2(2*index+1,tree[index].lazy2,mid+1,r);
-        tree[index].lazy2 = 0;
-    }
-    
-    if(tree[index].lazy1){
-        apply1(2*index,tree[index].lazy1,l,mid);
-        apply1(2*index+1,tree[index].lazy1,mid+1,r);
-        tree[index].lazy1 = 0;
-    }
-    
-    
-    
-}
-void build(int s,int e,int index){
-    if(s == e){
-        tree[index].s = arr[s];
-        tree[index].mini = arr[s];
-        return;
-    }
-    int mid = (s+e)/2;
-    build(s,mid,index*2);
-    build(mid+1,e,index*2+1);
- 
-    //tree[index].val = tree[2*index].val + tree[2*index+1].val;
-    tree[index].mini = max(tree[2*index].mini, tree[2*index+1].mini);
-}
- 
-void update(int s,int e,int p,int v,int index){
-    if( s > p || e < p) return;
-    if(s == e){
-        arr[p] = v;
-        tree[index].s = v;
-        tree[index].mini = v;
-        return;
-    }
-    int mid = (s+e)/2;
-    update(s,mid,p,v,index*2);
-    update(mid+1,e,p,v,index*2+1);
-    tree[index].mini = max(tree[2*index].mini, tree[2*index+1].mini);
-}
-void update2(int s,int e,int l,int r,int v,int index, int t){
-    if(s > r || e < l)return;
-    if(s >= l && e <=r ) {
-        if(t == 2) apply2(index,v,s,e);
-        else apply1(index,v,s,e);
-        return;
-    }
-    push(index,s,e);
-    int mid = (s+e)/2;
-    update2(s,mid,l,r,v,index*2,t);
-    update2(mid+1,e,l,r,v,index*2+1,t);
-    tree[index].val = tree[2*index].val + tree[2*index+1].val;
-}
- 
- 
-int query(int s,int e,int l,int r,int index){
- 
-    if(s > r || e < l) return 0;
-    if(s >= l && e <=r ) return tree[index].mini;
- 
-    int mid = (s+e)/2;
-    int L = query(s,mid,l,r,2*index);
-    int R = query(mid+1,e,l,r,2*index+1);
-    return max(L,R);
- 
-}
- 
+const int N= 3e5+1;
+const int K = 26;
 int n,q;
-  
-void __Solve__(){
-    
-   cin >> n >> q;
-   forn(i,n) cin >> arr[i];
-   forn(i,q) cin >> rooms[i];
-   build(0,n-1,1);
+int arr[N];
+
+int tin[N],tout[N];
+int BIT[N][K];
+
+void add(int i,int val,int k){
+    for(;i<N;i+=(i&-i)){
+        BIT[i][k] += val;
+    }
+}
+int sum(int i,int k){
+    int fans = 0;
+    for(;i>0;i-=(i&-i)){
+        fans += BIT[i][k];
+    }
+    return fans;
+}
+
+vector<vector<int>> G(N);
+vector<int> depth(N,0);
+vector<vector<int>> p(N,vector<int>(LOGN,1));
  
-   for(int i = 0;i<q;i++){
-       int l = 0;int h = n-1;
+int timer = 1;
+void dfs(int s,int par){
+    
+    depth[s] = depth[par] + 1;
+    tin[s] = timer;
+    timer+=1;
+    p[s][0] = par; 
+    for(int c : G[s]){    
+        if(c == par) continue;
+        dfs(c,s);
+    }
+    
+    tout[s] = timer;
+}
+int lca(int u,int v) {
+	if (depth[u]>depth[v]) swap(u,v);
+	for(int i = LOGN-1;i>=0;i--) if (depth[p[v][i]]>=depth[u]) v=p[v][i];
+	if (u==v) return u;
+	for(int i = LOGN-1;i>=0;i--) if (p[v][i]!=p[u][i]) u=p[u][i],v=p[v][i];
+	return p[u][0];
+}
 
-       while(l<=h){
-           int mid= (l+h)/2;
-           if(query(0,n-1,0,mid,1) >= rooms[i]){
-               ans[i] = mid+1;
-               h=mid-1;
-           }else{
-               l=mid+1;
-           }
-       }
-       if(ans[i] != 0){
-           update(0,n-1,ans[i]-1,arr[ans[i]-1] - rooms[i],1);
-       }
-   }
-   forn(i,q){
-       cout << ans[i] << " ";
-   }
+int kth(int u,int k) {
+    int nd = depth[u] - k;
+    if(nd <= 1)return 1;
+	for(int i = LOGN-1;i>=0;i--) if (depth[p[u][i]]>=nd) u=p[u][i];
+	return u;
+}
 
-   
+
+void __Solve__(){
+    cin >> n >> q;
+    rep(i,n) cin >> arr[i];
+    
+    forn(i,n-1){
+        int u,v;
+        cin >> u >> v;
+        G[u].PB(v),G[v].PB(u);
+    }
+    dfs(1,0);
+    for(int j =1;j<LOGN;j++){
+        for(int i = 1;i<=n;i++){
+            p[i][j] = p[p[i][j-1]][j-1];
+        }
+    }
+    // for(int i = 1;i<=n;i++){
+    //     trace(tin[i],tout[i]);
+    // }
+    rep(i,n){
+        add(tin[i],1,arr[i]);
+        add(tout[i],-1,arr[i]);
+    }
+    while(q--){
+        int t;
+        cin >> t;
+        if(t == 1){
+            int v,x;
+            cin >> v >> x;
+            //trace(tin[v],arr[v]);
+            add(tin[v],-1,arr[v]);
+            add(tout[v],1,arr[v]);
+            arr[v] = x;
+            add(tin[v],1,arr[v]);
+
+            add(tout[v],-1,arr[v]);
+
+            // add(tin[v],-1,arr[v]);
+            // arr[v] = x;
+            // add(tin[v],1,arr[v]);
+
+            //add(tout[v]+1,-1,arr[v]);
+
+        }else{
+            int v,k;
+            cin >> v >> k;
+             int u = kth(v,k);
+            int fans = 0;
+            //trace(v,k,u);
+            for(int i = 0;i<K;i++){
+                int s1 = sum(tin[v],i) - sum(tin[u]-1,i);
+                if(s1) trace(s1,i,v,k,u,s1%2 ==0 );
+                if(s1 %2 == 1){
+                    fans += i;
+                }
+            }
+            cout << fans << endl;
+            
+        }
+    }
+    trace(kth(8,0));
 }
 
 signed main()

@@ -1,22 +1,22 @@
-
 #pragma GCC optimize("O3")
 #pragma comment(linker, "/stack:200000000")
 #pragma GCC optimize("unroll-loops")
 #include<bits/stdc++.h>
 using namespace std;
 
-// #include "ext/pb_ds/assoc_container.hpp"
-// #include "ext/pb_ds/tree_policy.hpp"
-// using namespace __gnu_pbds;
-// template<class T> 
-// using ordered_set = tree<T, null_type,less<T>, rb_tree_tag,tree_order_statistics_node_update> ;
-// template<class key, class value, class cmp = std::less<key>>
-// using ordered_map = tree<key, value, cmp, rb_tree_tag, tree_order_statistics_node_update>;
+#include "ext/pb_ds/assoc_container.hpp"
+#include "ext/pb_ds/tree_policy.hpp"
+using namespace __gnu_pbds;
+template<class T> 
+using ordered_set = tree<T, null_type,less<T>, rb_tree_tag,tree_order_statistics_node_update> ;
+
+template<class key, class value, class cmp = std::less<key>>
+using ordered_map = tree<key, value, cmp, rb_tree_tag, tree_order_statistics_node_update>;
 
 template<class T> ostream& operator<<(ostream &os, set<T> S){os << "{ ";for(auto s:S) os<<s<<" ";return os<<"}";}
 template<class T> ostream& operator<<(ostream &os, unordered_set<T> S){os << "{ ";for(auto s:S) os<<s<<" ";return os<<"}";}
 template<class T> ostream& operator << (ostream& os, multiset<T> S){os << "{ ";for(auto s:S) os<<s<<" ";return os<<"}";}
-//template<class T> ostream& operator<<(ostream &os, ordered_set<T> S){os << "{ ";for(auto s:S) os<<s<<" ";return os<<"}";}
+template<class T> ostream& operator<<(ostream &os, ordered_set<T> S){os << "{ ";for(auto s:S) os<<s<<" ";return os<<"}";}
 template<class L, class R> ostream& operator<<(ostream &os, pair<L,R> P) {return os << "(" << P.first << "," << P.second << ")";}
 template<class L, class R> ostream& operator<<(ostream &os, map<L,R> M) {os << "{ ";for(auto m:M) os<<"("<<m.first<<":"<<m.second<<") ";return os<<"}";}
 template<class T> ostream& operator<<(ostream &os,vector<T> V){os<<"[ ";for(auto v:V)os<<v<<" ";return os<<"]";}
@@ -84,147 +84,44 @@ template <typename T> T lcm(T a,T b){ return a*b /gcd(a,b);}
 template <typename T> string to_bin(T num){string binary = "";while (num){binary += (num % 2 == 1 ? "1" : "0");num >>= 1;}reverse(binary.begin(), binary.end());return binary;}
 ////////////////////////////////////////////////////
 
+const  int N = 2.1e5;
 
- 
-
- 
-struct node{
-    int s,val = 0,lazy1= 0,lazy2 =0,mini = 1e9;
-    bool lz2 = 0;
-};
- 
-const int N = 2e5+1;
- 
-node tree[4*N];
 int arr[N];
-int brr[N];
-int pos[N];
-int ans[N];
- 
- 
- 
- 
-void apply1(int index,int v,int s,int e){
-    tree[index].s += v;
-    tree[index].val += (e-s+1)*v;
-    tree[index].lazy1 += v;
-}
-void apply2(int index,int v,int s,int e){
-    tree[index].s = v;
-    tree[index].val = (e-s+1)*v;
-    tree[index].lazy2 = v;
-    tree[index].lazy1 = 0;
-}
- 
-void push(int index,int l,int r){
-    int mid = (l+r)/2;
-    
-    if(tree[index].lazy2){
-        apply2(2*index,tree[index].lazy2,l,mid);
-        apply2(2*index+1,tree[index].lazy2,mid+1,r);
-        tree[index].lazy2 = 0;
-    }
-    
-    if(tree[index].lazy1){
-        apply1(2*index,tree[index].lazy1,l,mid);
-        apply1(2*index+1,tree[index].lazy1,mid+1,r);
-        tree[index].lazy1 = 0;
-    }
-    
-    
-    
-}
-void build(int s,int e,int index){
-    if(s == e){
-        tree[index].s = arr[s];
-        tree[index].val = arr[s];
-        return;
-    }
-    int mid = (s+e)/2;
-    build(s,mid,index*2);
-    build(mid+1,e,index*2+1);
- 
-    tree[index].val = tree[2*index].val + tree[2*index+1].val;
-    //tree[index].mini = max(tree[2*index].mini, tree[2*index+1].mini);
-}
- 
-void update(int s,int e,int p,int v,int index){
-    if( s > p || e < p) return;
-    if(s == e){
-        tree[index].s = v;
-        tree[index].val = v;
-        return;
-    }
-    int mid = (s+e)/2;
-    update(s,mid,p,v,index*2);
-    update(mid+1,e,p,v,index*2+1);
-    //tree[index].mini = max(tree[2*index].mini, tree[2*index+1].mini);
-    tree[index].val = tree[2*index].val + tree[2*index+1].val;
-}
-void update2(int s,int e,int l,int r,int v,int index, int t){
-    if(s > r || e < l)return;
-    if(s >= l && e <=r ) {
-        if(t == 2) apply2(index,v,s,e);
-        else apply1(index,v,s,e);
-        return;
-    }
-    push(index,s,e);
-    int mid = (s+e)/2;
-    update2(s,mid,l,r,v,index*2,t);
-    update2(mid+1,e,l,r,v,index*2+1,t);
-    tree[index].val = tree[2*index].val + tree[2*index+1].val;
-}
- 
- 
-int query(int s,int e,int l,int r,int index){
- 
-    if(s > r || e < l) return 0;
-    if(s >= l && e <=r ) return tree[index].val;
- 
-    int mid = (s+e)/2;
-    int L = query(s,mid,l,r,2*index);
-    int R = query(mid+1,e,l,r,2*index+1);
-    return L+R;
- 
-}
- 
-int n,q;
 
-VPII Q[N];
-  
+ordered_set<pair<int,int>> ods;
+ 
 void __Solve__(){
-    
-   cin >> n >> q;
-   forn(i,n){
-       cin >> arr[i];
-   } 
-
-    forn(i,q){
-        int a,b;
-        cin >> a >> b;
-        a--;b--;
-        Q[b].push_back({a,i});
+    int n,q;
+    cin >> n >> q;
+    forn(i,n) cin >>arr[i];
+    forn(i,n){
+        ods.insert({arr[i],i});
     }
-    map<int,int> m1;
+    while(q--){
 
     
-    for(int i = 0;i<n;i++){
-        update(0,n-1,i,1,1);
-        if(m1.find(arr[i]) != m1.end() ){
-            update(0,n-1,m1[arr[i]],0,1);
-        }
-        m1[arr[i]] = i;
-        for(PII p : Q[i]){
-            ans[p.S] = query(0,n-1,p.F,i,1);
-        }
+        char c;
+        cin >> c;
+        //trace(ods);
+        if(c == '?'){
+            int a,b;
+            cin >>a >> b;
+            cout <<  ods.order_of_key({b+1,0}) - ods.order_of_key({a,0})  << endl;
+        }else{
+            int p,x;
+            cin >> p >> x;
+            p--;
+            ods.erase({arr[p],p});
+            arr[p] = x;
+            ods.insert({arr[p],p});
 
+        }
     }
-    forn(i,q){
-        cout << ans[i] << endl;
-    }
- 
-   
+    
 }
+
+ 
+ 
 signed main()
 {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());

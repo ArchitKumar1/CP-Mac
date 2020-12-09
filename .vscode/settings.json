@@ -32,7 +32,8 @@
         "tuple": "cpp",
         "type_traits": "cpp",
         "variant": "cpp",
-        "memory": "cpp"
+        "memory": "cpp",
+        "iomanip": "cpp"
     },
     "python.pythonPath": "/usr/bin/python3"
 }

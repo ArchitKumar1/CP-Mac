@@ -1,17 +1,5 @@
-
-#pragma GCC optimize("O3")
-#pragma comment(linker, "/stack:200000000")
-#pragma GCC optimize("unroll-loops")
 #include<bits/stdc++.h>
 using namespace std;
-
-// #include "ext/pb_ds/assoc_container.hpp"
-// #include "ext/pb_ds/tree_policy.hpp"
-// using namespace __gnu_pbds;
-// template<class T> 
-// using ordered_set = tree<T, null_type,less<T>, rb_tree_tag,tree_order_statistics_node_update> ;
-// template<class key, class value, class cmp = std::less<key>>
-// using ordered_map = tree<key, value, cmp, rb_tree_tag, tree_order_statistics_node_update>;
 
 template<class T> ostream& operator<<(ostream &os, set<T> S){os << "{ ";for(auto s:S) os<<s<<" ";return os<<"}";}
 template<class T> ostream& operator<<(ostream &os, unordered_set<T> S){os << "{ ";for(auto s:S) os<<s<<" ";return os<<"}";}
@@ -64,13 +52,13 @@ typedef vector<VI> VVI;
 auto clk=clock();
 
 //constants
-int mod = 1e9+7;
+int mod = 998244353;
 const long long inf = 1e17;
 const double eps = 1e-6;
 const int  LOGN = 25;
 
 // maths stuff
-template <class T,class U>T pow_mod(T a,T b,int m= mod){long long  res = 1;while(b){ if(b&1) res =((long long)res*a)%m; a = ((long long)a*a)%m;b >>=1;}return res;}
+template <typename T>T pow_mod(T a,T b,int m= mod){long long  res = 1;while(b){ if(b&1) res =((long long)res*a)%m; a = ((long long)a*a)%m;b >>=1;}return res;}
 template <typename T> T inv(T a){return pow_mod(a,mod-2,mod);}
 template <typename T> T gcd(T a,T b){if(b == 0) return a;return gcd(b,a%b);}
 template <typename T> T lcm(T a,T b){ return a*b /gcd(a,b);}
@@ -79,51 +67,58 @@ template <typename T> string to_bin(T num){string binary = "";while (num){binary
 
 
 
-const int N =  1e5+10;
+const int n = 3;
+int vis[n][n];
+int dx[4] = {0,1,0,-1};
+int dy[4] = {1,0,-1,0};
 
-vector<vector<int>>p(N);
+string D = "RDLU";
+string s;
 
-void pre(){
-    
-    for(int i =2;i<N;i++){
-        int m = i;
-        for(int j =2;j*j<=i;j++){
-            int cnt = 0;
-            while(m % j == 0){
-                m = m/j;
-                cnt += 1;
-            }
-            if(cnt > 0){
-                p[i].push_back(j);
-            }
-        }
-        if(m > 1){
-            p[i].push_back(m);
+int dfs(int i,int j,int pos){
+    trace(i,j,pos);
+    if(i == n-1 && j == n-1){
+        if(pos == s.size()){
+            return 1;
+        }else{
+            return 0;
         }
     }
+    if(pos == s.size()){
+        return 0;
+    }
+    
+    if(i < 0 || j < 0 || i >= n || j >=n) return 0;
+    if(vis[i][j] == 1) return 0;
+    int ans = 0; 
+    forn(k,4){
+        vis[i][j] = 1;
+        if(s[pos]=='?' || s[pos] == D[k]) ans += dfs(i+dx[k],j+dy[k],pos+1);
+        //vis[i][j] = 0;
+    }
+    return ans;
 }
-
-
 
 void __Solve__(){
-    
-    
-    int fans;
-    cin >> fans;
-    cout << fans << endl;
-}
+    //cin >> s;
+    s = string(n*n-1,'?');
+    int fans = 0;
 
+    fans += dfs(0,0,0);
+    cout << fans <<endl;
+ 
+   
+}
 signed main()
 {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-	cout<<fixed<<setprecision(2);
+	cout<<fixed<<setprecision(12);
     FASTIO
 #ifdef LOCAL 
-    freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);
+freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);
 #endif 
-pre();
     int test_case = 1;
-    cin >> test_case;
+    //cin >> test_case;
     forn(i,test_case){
         //cout << "Case #" << i+1<<": ";
         __Solve__();

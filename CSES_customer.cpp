@@ -1,22 +1,19 @@
 
-#pragma GCC optimize("O3")
-#pragma comment(linker, "/stack:200000000")
-#pragma GCC optimize("unroll-loops")
 #include<bits/stdc++.h>
 using namespace std;
 
-// #include "ext/pb_ds/assoc_container.hpp"
-// #include "ext/pb_ds/tree_policy.hpp"
-// using namespace __gnu_pbds;
-// template<class T> 
-// using ordered_set = tree<T, null_type,less<T>, rb_tree_tag,tree_order_statistics_node_update> ;
-// template<class key, class value, class cmp = std::less<key>>
-// using ordered_map = tree<key, value, cmp, rb_tree_tag, tree_order_statistics_node_update>;
+#include "ext/pb_ds/assoc_container.hpp"
+#include "ext/pb_ds/tree_policy.hpp"
+using namespace __gnu_pbds;
+template<class T> 
+using ordered_set = tree<T, null_type,less<T>, rb_tree_tag,tree_order_statistics_node_update> ;
+template<class key, class value, class cmp = std::less<key>>
+using ordered_map = tree<key, value, cmp, rb_tree_tag, tree_order_statistics_node_update>;
 
 template<class T> ostream& operator<<(ostream &os, set<T> S){os << "{ ";for(auto s:S) os<<s<<" ";return os<<"}";}
 template<class T> ostream& operator<<(ostream &os, unordered_set<T> S){os << "{ ";for(auto s:S) os<<s<<" ";return os<<"}";}
 template<class T> ostream& operator << (ostream& os, multiset<T> S){os << "{ ";for(auto s:S) os<<s<<" ";return os<<"}";}
-//template<class T> ostream& operator<<(ostream &os, ordered_set<T> S){os << "{ ";for(auto s:S) os<<s<<" ";return os<<"}";}
+template<class T> ostream& operator<<(ostream &os, ordered_set<T> S){os << "{ ";for(auto s:S) os<<s<<" ";return os<<"}";}
 template<class L, class R> ostream& operator<<(ostream &os, pair<L,R> P) {return os << "(" << P.first << "," << P.second << ")";}
 template<class L, class R> ostream& operator<<(ostream &os, map<L,R> M) {os << "{ ";for(auto m:M) os<<"("<<m.first<<":"<<m.second<<") ";return os<<"}";}
 template<class T> ostream& operator<<(ostream &os,vector<T> V){os<<"[ ";for(auto v:V)os<<v<<" ";return os<<"]";}
@@ -77,40 +74,60 @@ template <typename T> T lcm(T a,T b){ return a*b /gcd(a,b);}
 template <typename T> string to_bin(T num){string binary = "";while (num){binary += (num % 2 == 1 ? "1" : "0");num >>= 1;}reverse(binary.begin(), binary.end());return binary;}
 ////////////////////////////////////////////////////
 
-
-
-const int N =  1e5+10;
-
-vector<vector<int>>p(N);
-
-void pre(){
-    
-    for(int i =2;i<N;i++){
-        int m = i;
-        for(int j =2;j*j<=i;j++){
-            int cnt = 0;
-            while(m % j == 0){
-                m = m/j;
-                cnt += 1;
-            }
-            if(cnt > 0){
-                p[i].push_back(j);
-            }
-        }
-        if(m > 1){
-            p[i].push_back(m);
-        }
-    }
-}
-
-
+ordered_set<pair<int,int>> os;
 
 void __Solve__(){
     
+    int n; cin >> n;
+    VPII t(n);
+    forn(i,n) cin >> t[i].F >> t[i].S;
+
+    VPII v;
+    for(auto x : t){
+        v.EB(x.F,-1);
+        v.EB(x.S,1);
+    }
+    sort(ALL(v));
+    int curr = 0;
+    VI ans;
+    trace(v);
+    map<int,int> m1;
+
+    int max_cnt = 0;
+    int curr_cnt = 0;
+    for(auto x : v){
+        if(x.second == -1){
+            curr_cnt+=1;
+        }if(x.second == 1){
+            curr_cnt-=1;
+        }
+        max_cnt = max(max_cnt,curr_cnt);
+    }
+    set<int> s;
+    for(int i = 1;i<=max_cnt;i++){
+        s.insert(i);
+    }
     
-    int fans;
-    cin >> fans;
-    cout << fans << endl;
+    for(auto x : v){
+        if(x.second == -1){
+            m1[x.first] = *s.begin();
+            ans.PB(*s.begin());
+            s.erase(s.begin());
+        }if(x.second == 1){
+            int room = m1[x.first];
+            s.insert(room);
+        }
+    }
+    trace(v);
+    trace(ans);
+    // cout << *max_element(ALL(ans)) << endl;
+    for(int c : ans){
+        cout << c << " ";
+    }
+
+
+    
+
 }
 
 signed main()
@@ -121,9 +138,8 @@ signed main()
 #ifdef LOCAL 
     freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);
 #endif 
-pre();
     int test_case = 1;
-    cin >> test_case;
+    //cin >> test_case;
     forn(i,test_case){
         //cout << "Case #" << i+1<<": ";
         __Solve__();

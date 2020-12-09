@@ -36,16 +36,9 @@ void __f(const char* names,Arg1&& arg1,Args&&... args){
 #define trace(...) 1
 #endif
 
-
-//make vectors
-template <typename T> vector<T> GV(int n){return vector<T>(n);}
-template <typename T> vector<vector<T>> GV(int n,int m){return vector<vector<T>>(n,vector<T>(m));}
-template <typename T> vector<vector<vector<T>>> GV(int n,int m,int o){return vector<vector<vector<T>>>(n,vector<vector<T>>(m,vector<T>(o)));}
-
 //reading vectors
 template <class T> void RV(vector<T> &v){for(auto &c : v) cin >> c;}
 template <class T> void RV(vector<vector<T>> &v){for(auto &c : v) RV(c);}
-template <class T> void RV(vector<vector<vector<T>>> &v){for(auto &c : v) RV(c);}
 
 
 //defines and typedefs
@@ -71,7 +64,7 @@ typedef vector<VI> VVI;
 auto clk=clock();
 
 //constants
-const int mod = 1e9+7;
+int mod = 1e9+7;
 const long long inf = 1e17;
 const double eps = 1e-6;
 const int  LOGN = 25;
@@ -85,9 +78,7 @@ template <typename T> string to_bin(T num){string binary = "";while (num){binary
 ////////////////////////////////////////////////////
 
 
- 
 
- 
 struct node{
     int s,val = 0,lazy1= 0,lazy2 =0,mini = 1e9;
     bool lz2 = 0;
@@ -100,8 +91,8 @@ int arr[N];
 int brr[N];
 int pos[N];
 int ans[N];
- 
- 
+
+
  
  
 void apply1(int index,int v,int s,int e){
@@ -137,7 +128,7 @@ void push(int index,int l,int r){
 void build(int s,int e,int index){
     if(s == e){
         tree[index].s = arr[s];
-        tree[index].val = arr[s];
+        tree[index].val = (arr[s] != 0);
         return;
     }
     int mid = (s+e)/2;
@@ -151,8 +142,9 @@ void build(int s,int e,int index){
 void update(int s,int e,int p,int v,int index){
     if( s > p || e < p) return;
     if(s == e){
+        arr[p] = v;
         tree[index].s = v;
-        tree[index].val = v;
+        tree[index].val = (v != 0);
         return;
     }
     int mid = (s+e)/2;
@@ -189,46 +181,48 @@ int query(int s,int e,int l,int r,int index){
 }
  
 int n,q;
-
-VPII Q[N];
   
 void __Solve__(){
     
-   cin >> n >> q;
+   cin >> n;
    forn(i,n){
        cin >> arr[i];
+       brr[i] = arr[i];
    } 
 
-    forn(i,q){
-        int a,b;
-        cin >> a >> b;
-        a--;b--;
-        Q[b].push_back({a,i});
-    }
-    map<int,int> m1;
-
-    
-    for(int i = 0;i<n;i++){
-        update(0,n-1,i,1,1);
-        if(m1.find(arr[i]) != m1.end() ){
-            update(0,n-1,m1[arr[i]],0,1);
-        }
-        m1[arr[i]] = i;
-        for(PII p : Q[i]){
-            ans[p.S] = query(0,n-1,p.F,i,1);
-        }
-
-    }
-    forn(i,q){
-        cout << ans[i] << endl;
-    }
+   forn(i,n) cin >> pos[i];
+   build(0,n-1,1);
  
+   for(int i = 0;i<n;i++){
+       int l = 0;int h = n-1;
+
+       while(l<=h){
+           int mid= (l+h)/2;
+
+           int cnt = query(0,n-1,0,mid,1);
+           if(cnt >= pos[i]){
+               ans[i] = mid+1;
+               h = mid-1;
+           }else{
+               l = mid+1;
+           }
+       }
+       trace(ans[i]);
+       update(0,n-1,ans[i]-1,0,1);
+       
+       
+   }
+   forn(i,n){
+       cout << brr[ans[i]-1] << " ";
+   }
+
    
 }
+
 signed main()
 {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-	cout<<fixed<<setprecision(25);
+	cout<<fixed<<setprecision(2);
     FASTIO
 #ifdef LOCAL 
     freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);
@@ -236,7 +230,6 @@ signed main()
     int test_case = 1;
     //cin >> test_case;
     forn(i,test_case){
-        //Google Code Jam
         //cout << "Case #" << i+1<<": ";
         __Solve__();
     }

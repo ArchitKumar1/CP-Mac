@@ -1,7 +1,4 @@
 
-#pragma GCC optimize("O3")
-#pragma comment(linker, "/stack:200000000")
-#pragma GCC optimize("unroll-loops")
 #include<bits/stdc++.h>
 using namespace std;
 
@@ -36,16 +33,9 @@ void __f(const char* names,Arg1&& arg1,Args&&... args){
 #define trace(...) 1
 #endif
 
-
-//make vectors
-template <typename T> vector<T> GV(int n){return vector<T>(n);}
-template <typename T> vector<vector<T>> GV(int n,int m){return vector<vector<T>>(n,vector<T>(m));}
-template <typename T> vector<vector<vector<T>>> GV(int n,int m,int o){return vector<vector<vector<T>>>(n,vector<vector<T>>(m,vector<T>(o)));}
-
 //reading vectors
 template <class T> void RV(vector<T> &v){for(auto &c : v) cin >> c;}
 template <class T> void RV(vector<vector<T>> &v){for(auto &c : v) RV(c);}
-template <class T> void RV(vector<vector<vector<T>>> &v){for(auto &c : v) RV(c);}
 
 
 //defines and typedefs
@@ -62,6 +52,7 @@ template <class T> void RV(vector<vector<vector<T>>> &v){for(auto &c : v) RV(c);
 #define F first
 #define S second
 #define endl "\n"
+#define SZ(x) (int)x.size()
 
 typedef pair<int,int>PII;
 typedef vector<PII> VPII;
@@ -71,7 +62,7 @@ typedef vector<VI> VVI;
 auto clk=clock();
 
 //constants
-const int mod = 1e9+7;
+int mod = 1e9+7;
 const long long inf = 1e17;
 const double eps = 1e-6;
 const int  LOGN = 25;
@@ -84,151 +75,67 @@ template <typename T> T lcm(T a,T b){ return a*b /gcd(a,b);}
 template <typename T> string to_bin(T num){string binary = "";while (num){binary += (num % 2 == 1 ? "1" : "0");num >>= 1;}reverse(binary.begin(), binary.end());return binary;}
 ////////////////////////////////////////////////////
 
+int n,m;
+const int N = 1234;
+int vis[N][N];
+string s[N];
+char res[N][N];
+pair<int,int> par[N][N];
 
- 
-
- 
-struct node{
-    int s,val = 0,lazy1= 0,lazy2 =0,mini = 1e9;
-    bool lz2 = 0;
-};
- 
-const int N = 2e5+1;
- 
-node tree[4*N];
-int arr[N];
-int brr[N];
-int pos[N];
-int ans[N];
- 
- 
- 
- 
-void apply1(int index,int v,int s,int e){
-    tree[index].s += v;
-    tree[index].val += (e-s+1)*v;
-    tree[index].lazy1 += v;
-}
-void apply2(int index,int v,int s,int e){
-    tree[index].s = v;
-    tree[index].val = (e-s+1)*v;
-    tree[index].lazy2 = v;
-    tree[index].lazy1 = 0;
-}
- 
-void push(int index,int l,int r){
-    int mid = (l+r)/2;
-    
-    if(tree[index].lazy2){
-        apply2(2*index,tree[index].lazy2,l,mid);
-        apply2(2*index+1,tree[index].lazy2,mid+1,r);
-        tree[index].lazy2 = 0;
-    }
-    
-    if(tree[index].lazy1){
-        apply1(2*index,tree[index].lazy1,l,mid);
-        apply1(2*index+1,tree[index].lazy1,mid+1,r);
-        tree[index].lazy1 = 0;
-    }
-    
-    
-    
-}
-void build(int s,int e,int index){
-    if(s == e){
-        tree[index].s = arr[s];
-        tree[index].val = arr[s];
-        return;
-    }
-    int mid = (s+e)/2;
-    build(s,mid,index*2);
-    build(mid+1,e,index*2+1);
- 
-    tree[index].val = tree[2*index].val + tree[2*index+1].val;
-    //tree[index].mini = max(tree[2*index].mini, tree[2*index+1].mini);
-}
- 
-void update(int s,int e,int p,int v,int index){
-    if( s > p || e < p) return;
-    if(s == e){
-        tree[index].s = v;
-        tree[index].val = v;
-        return;
-    }
-    int mid = (s+e)/2;
-    update(s,mid,p,v,index*2);
-    update(mid+1,e,p,v,index*2+1);
-    //tree[index].mini = max(tree[2*index].mini, tree[2*index+1].mini);
-    tree[index].val = tree[2*index].val + tree[2*index+1].val;
-}
-void update2(int s,int e,int l,int r,int v,int index, int t){
-    if(s > r || e < l)return;
-    if(s >= l && e <=r ) {
-        if(t == 2) apply2(index,v,s,e);
-        else apply1(index,v,s,e);
-        return;
-    }
-    push(index,s,e);
-    int mid = (s+e)/2;
-    update2(s,mid,l,r,v,index*2,t);
-    update2(mid+1,e,l,r,v,index*2+1,t);
-    tree[index].val = tree[2*index].val + tree[2*index+1].val;
-}
- 
- 
-int query(int s,int e,int l,int r,int index){
- 
-    if(s > r || e < l) return 0;
-    if(s >= l && e <=r ) return tree[index].val;
- 
-    int mid = (s+e)/2;
-    int L = query(s,mid,l,r,2*index);
-    int R = query(mid+1,e,l,r,2*index+1);
-    return L+R;
- 
-}
- 
-int n,q;
-
-VPII Q[N];
-  
 void __Solve__(){
-    
-   cin >> n >> q;
-   forn(i,n){
-       cin >> arr[i];
-   } 
+    cin >> n >> m;
+    forn(i,n) cin >>s[i];
 
-    forn(i,q){
-        int a,b;
-        cin >> a >> b;
-        a--;b--;
-        Q[b].push_back({a,i});
-    }
-    map<int,int> m1;
+    int sx=0,sy=0;
+    int ex=0,ey=0;
+    forn(i,n) forn(j,m) if(s[i][j] == 'A') sx=i,sy=j;
+    forn(i,n) forn(j,m) if(s[i][j] == 'B') ex=i,ey=j;
+    int dx[4] = {0,1,0,-1};
+    int dy[4] = {1,0,-1,0};
+    string DIR = "RDLU";
+    string ans;
 
-    
-    for(int i = 0;i<n;i++){
-        update(0,n-1,i,1,1);
-        if(m1.find(arr[i]) != m1.end() ){
-            update(0,n-1,m1[arr[i]],0,1);
+    queue<array<int,2>> q;
+
+    q.push({sx,sy});
+    while(q.size()){
+        array<int,2> arr = q.front();q.pop();
+        int x = arr[0],y=arr[1];
+        if(x==ex&&y==ey) break;
+        forn(k,4){
+            int X = x + dx[k] ,Y = y+dy[k];
+            if(X<0||Y<0||X>=n||Y>=m) continue;
+            if(vis[X][Y] ||s[X][Y] == '#') continue;
+            vis[X][Y] = 1;
+            res[X][Y] = DIR[k];
+            q.push({X,Y});
         }
-        m1[arr[i]] = i;
-        for(PII p : Q[i]){
-            ans[p.S] = query(0,n-1,p.F,i,1);
+    }
+    if(vis[ex][ey] == 0){
+        cout << "NO" << endl;
+        return;
+    }
+    while(sx!=ex||sy!=ey){
+        ans += res[ex][ey];
+        int ind =0;
+        forn(k,4){
+            if(DIR[k] == res[ex][ey]) 
+                ind = k;
         }
+        ind = (ind+2)%4;
+        ex = ex + dx[ind];
+        ey = ey + dy[ind];
+    }
+    reverse(ALL(ans));
+    cout << "YES" << endl << SZ(ans) << endl;
+    cout << ans << endl;
 
-    }
-    forn(i,q){
-        cout << ans[i] << endl;
-    }
- 
-   
+
 }
 signed main()
 {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-	cout<<fixed<<setprecision(25);
+	cout<<fixed<<setprecision(2);
     FASTIO
 #ifdef LOCAL 
     freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);
@@ -236,7 +143,6 @@ signed main()
     int test_case = 1;
     //cin >> test_case;
     forn(i,test_case){
-        //Google Code Jam
         //cout << "Case #" << i+1<<": ";
         __Solve__();
     }

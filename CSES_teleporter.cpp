@@ -1,17 +1,5 @@
-
-#pragma GCC optimize("O3")
-#pragma comment(linker, "/stack:200000000")
-#pragma GCC optimize("unroll-loops")
 #include<bits/stdc++.h>
 using namespace std;
-
-// #include "ext/pb_ds/assoc_container.hpp"
-// #include "ext/pb_ds/tree_policy.hpp"
-// using namespace __gnu_pbds;
-// template<class T> 
-// using ordered_set = tree<T, null_type,less<T>, rb_tree_tag,tree_order_statistics_node_update> ;
-// template<class key, class value, class cmp = std::less<key>>
-// using ordered_map = tree<key, value, cmp, rb_tree_tag, tree_order_statistics_node_update>;
 
 template<class T> ostream& operator<<(ostream &os, set<T> S){os << "{ ";for(auto s:S) os<<s<<" ";return os<<"}";}
 template<class T> ostream& operator<<(ostream &os, unordered_set<T> S){os << "{ ";for(auto s:S) os<<s<<" ";return os<<"}";}
@@ -64,66 +52,99 @@ typedef vector<VI> VVI;
 auto clk=clock();
 
 //constants
-int mod = 1e9+7;
+int mod = 998244353;
 const long long inf = 1e17;
 const double eps = 1e-6;
 const int  LOGN = 25;
 
 // maths stuff
-template <class T,class U>T pow_mod(T a,T b,int m= mod){long long  res = 1;while(b){ if(b&1) res =((long long)res*a)%m; a = ((long long)a*a)%m;b >>=1;}return res;}
+template <typename T>T pow_mod(T a,T b,int m= mod){long long  res = 1;while(b){ if(b&1) res =((long long)res*a)%m; a = ((long long)a*a)%m;b >>=1;}return res;}
 template <typename T> T inv(T a){return pow_mod(a,mod-2,mod);}
 template <typename T> T gcd(T a,T b){if(b == 0) return a;return gcd(b,a%b);}
 template <typename T> T lcm(T a,T b){ return a*b /gcd(a,b);}
 template <typename T> string to_bin(T num){string binary = "";while (num){binary += (num % 2 == 1 ? "1" : "0");num >>= 1;}reverse(binary.begin(), binary.end());return binary;}
 ////////////////////////////////////////////////////
 
+const int N = 4e5;
 
+VI G[N];
+VI res;
+VPII E(N);
+VI vis(N);
+VI in(N),out(N);
 
-const int N =  1e5+10;
+int n,m;
 
-vector<vector<int>>p(N);
-
-void pre(){
-    
-    for(int i =2;i<N;i++){
-        int m = i;
-        for(int j =2;j*j<=i;j++){
-            int cnt = 0;
-            while(m % j == 0){
-                m = m/j;
-                cnt += 1;
-            }
-            if(cnt > 0){
-                p[i].push_back(j);
-            }
+void dfs(int s){
+    while(G[s].size()){
+        int e = G[s].back();
+        G[s].pop_back();
+        if(vis[e] == 1){
+            continue;
         }
-        if(m > 1){
-            p[i].push_back(m);
-        }
+        vis[e] = 1;
+        dfs(E[e].S^E[e].F^s);
+        
     }
+    res.PB(s);
 }
 
 
 
 void __Solve__(){
     
-    
-    int fans;
-    cin >> fans;
-    cout << fans << endl;
-}
+    cin >> n >> m;
+    forn(i,m){
+        int x,y;
+        cin >> x  >> y;
+        E[i].F = x,E[i].S = y;
+        G[x].PB(i);
+        //G[y].PB(i);
+        in[y]++;out[x]++;
+    }
+    rep(i,n){
+        if(i == 1){
+            if(in[i]+1!=out[i]){
+                trace(in[i],out[i]);
+                cout << "IMPOSSIBLE" << endl;
+                return ;
+            }
+        }else if(i == n){
+            if(in[i]!=out[i]+1){
+                cout << "IMPOSSIBLE" << endl;
+                return ;
+            }
+        }else{
+            if(in[i]!=out[i]){
+                cout << "IMPOSSIBLE" << endl;
+                return ;
+            }
+        }
+    }
 
+    dfs(1);
+    if(res.size() != m+1){
+        cout << "IMPOSSIBLE" << endl;
+        return;
+    }
+    reverse(ALL(res));
+    res.pop_back();
+    res.push_back(n);
+    for(int c : res){
+        cout << c << " ";
+    }
+    //cout << n ;
+}
 signed main()
 {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-	cout<<fixed<<setprecision(2);
+	cout<<fixed<<setprecision(12);
     FASTIO
 #ifdef LOCAL 
-    freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);
+freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);
 #endif 
-pre();
     int test_case = 1;
-    cin >> test_case;
+    //cin >> test_case;
     forn(i,test_case){
         //cout << "Case #" << i+1<<": ";
         __Solve__();
