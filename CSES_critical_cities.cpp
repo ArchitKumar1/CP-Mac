@@ -2,18 +2,18 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-// #include "ext/pb_ds/assoc_container.hpp"
-// #include "ext/pb_ds/tree_policy.hpp"
-// using namespace __gnu_pbds;
-// template<class T> 
-// using ordered_set = tree<T, null_type,less<T>, rb_tree_tag,tree_order_statistics_node_update> ;
-// template<class key, class value, class cmp = std::less<key>>
-// using ordered_map = tree<key, value, cmp, rb_tree_tag, tree_order_statistics_node_update>;
+#include "ext/pb_ds/assoc_container.hpp"
+#include "ext/pb_ds/tree_policy.hpp"
+using namespace __gnu_pbds;
+template<class T> 
+using ordered_set = tree<T, null_type,less<T>, rb_tree_tag,tree_order_statistics_node_update> ;
+template<class key, class value, class cmp = std::less<key>>
+using ordered_map = tree<key, value, cmp, rb_tree_tag, tree_order_statistics_node_update>;
 
 template<class T> ostream& operator<<(ostream &os, set<T> S){os << "{ ";for(auto s:S) os<<s<<" ";return os<<"}";}
 template<class T> ostream& operator<<(ostream &os, unordered_set<T> S){os << "{ ";for(auto s:S) os<<s<<" ";return os<<"}";}
 template<class T> ostream& operator << (ostream& os, multiset<T> S){os << "{ ";for(auto s:S) os<<s<<" ";return os<<"}";}
-//template<class T> ostream& operator<<(ostream &os, ordered_set<T> S){os << "{ ";for(auto s:S) os<<s<<" ";return os<<"}";}
+template<class T> ostream& operator<<(ostream &os, ordered_set<T> S){os << "{ ";for(auto s:S) os<<s<<" ";return os<<"}";}
 template<class L, class R> ostream& operator<<(ostream &os, pair<L,R> P) {return os << "(" << P.first << "," << P.second << ")";}
 template<class L, class R> ostream& operator<<(ostream &os, map<L,R> M) {os << "{ ";for(auto m:M) os<<"("<<m.first<<":"<<m.second<<") ";return os<<"}";}
 template<class T> ostream& operator<<(ostream &os,vector<T> V){os<<"[ ";for(auto v:V)os<<v<<" ";return os<<"]";}
@@ -75,42 +75,24 @@ template <typename T> T lcm(T a,T b){ return a*b /gcd(a,b);}
 template <typename T> string to_bin(T num){string binary = "";while (num){binary += (num % 2 == 1 ? "1" : "0");num >>= 1;}reverse(binary.begin(), binary.end());return binary;}
 ////////////////////////////////////////////////////
 
-VI B,C;
-
-
-void solve(int i,int sum,VI &INPUT,VI &RES){
-    if(i == INPUT.size()){
-        RES.push_back(sum);
-        return;
-    }
-    solve(i+1,sum+INPUT[i],INPUT,RES);
-    solve(i+1,sum,INPUT,RES);
-}
 
 void __Solve__(){
-    int n,t;
-    cin >> n >> t;
-    VI brr,crr;
+    int n; cin >> n;
+    VPII all;
     forn(i,n){
-        int x; cin >> x;
-        if(i&1) brr.push_back(x);
-        else crr.push_back(x);
+        int l,r;
+        cin >> l >> r;
+        all.emplace_back(l,-1);
+        all.emplace_back(r,1);
     }
-    solve(0,0,brr,B);
-    solve(0,0,crr,C);
-    
-    
-
-    sort(ALL(B));
-
-    int ans = 0;
-    for(int c : C ){
-        auto it = upper_bound(ALL(B),t-c);
-        if(it == B.begin())continue;
-        it = prev(it);
-        ans = max(ans,c+*it);
+    sort(ALL(all));
+    int mx = 0;
+    int cx = 0;
+    for(auto p : all){
+        cx -= p.second;
+        mx = max(mx,cx);
     }
-    cout << ans << endl;
+    cout << n-mx << endl;
 
 }
 
@@ -123,7 +105,7 @@ signed main()
     freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);
 #endif 
     int test_case = 1;
-    //cin >> test_case;
+    cin >> test_case;
     forn(i,test_case){
         //cout << "Case #" << i+1<<": ";
         __Solve__();

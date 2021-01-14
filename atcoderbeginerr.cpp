@@ -78,39 +78,46 @@ template <typename T> string to_bin(T num){string binary = "";while (num){binary
 VI B,C;
 
 
-void solve(int i,int sum,VI &INPUT,VI &RES){
-    if(i == INPUT.size()){
-        RES.push_back(sum);
-        return;
-    }
-    solve(i+1,sum+INPUT[i],INPUT,RES);
-    solve(i+1,sum,INPUT,RES);
-}
 
 void __Solve__(){
-    int n,t;
-    cin >> n >> t;
-    VI brr,crr;
-    forn(i,n){
-        int x; cin >> x;
-        if(i&1) brr.push_back(x);
-        else crr.push_back(x);
-    }
-    solve(0,0,brr,B);
-    solve(0,0,crr,C);
-    
-    
+    int n,m,t;
+    cin >> n >> m >> t;
+    VPII v(m);
+    forn(i,m) cin >> v[i].F >> v[i].S;
 
-    sort(ALL(B));
+    int safe = 1;
 
-    int ans = 0;
-    for(int c : C ){
-        auto it = upper_bound(ALL(B),t-c);
-        if(it == B.begin())continue;
-        it = prev(it);
-        ans = max(ans,c+*it);
+    int curr = 0;
+    int battery = n;
+    forn(i,m){
+        //start//
+        {
+            int s = v[i].F;
+            int cnt = s - curr;
+            if(battery - cnt <= 0){
+                safe = 0;
+                continue;
+            }
+            battery -= cnt;
+            curr = s;
+        }
+
+        //middle update
+        {
+            int e = v[i].S;
+            int cnt = e - curr;
+            battery = min(n,battery+cnt);
+            curr = e;
+        }
     }
-    cout << ans << endl;
+
+    //check end home
+    int cnt = t - curr;
+    if(battery - cnt <= 0){
+        safe = 0;
+    }
+    cout << (safe?"Yes":"No") << endl;
+    
 
 }
 

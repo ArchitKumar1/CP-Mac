@@ -75,43 +75,32 @@ template <typename T> T lcm(T a,T b){ return a*b /gcd(a,b);}
 template <typename T> string to_bin(T num){string binary = "";while (num){binary += (num % 2 == 1 ? "1" : "0");num >>= 1;}reverse(binary.begin(), binary.end());return binary;}
 ////////////////////////////////////////////////////
 
-VI B,C;
-
-
-void solve(int i,int sum,VI &INPUT,VI &RES){
-    if(i == INPUT.size()){
-        RES.push_back(sum);
-        return;
+const int K = 11;
+int N;
+int DP[300][K];
+int solve(int pos,int cuts){
+    if(pos > N) return 0;
+    if(cuts == K){
+        return pos <= N;
     }
-    solve(i+1,sum+INPUT[i],INPUT,RES);
-    solve(i+1,sum,INPUT,RES);
+    int ans;
+    if(DP[pos][cuts] != -1){
+       return DP[pos][cuts];
+    }
+    ans = 0;
+    if(pos > 0){
+        ans += solve(pos+1,cuts+1) ;
+    }
+    ans += solve(pos+1,cuts);
+    return DP[pos][cuts] = ans;
 }
 
+
+
 void __Solve__(){
-    int n,t;
-    cin >> n >> t;
-    VI brr,crr;
-    forn(i,n){
-        int x; cin >> x;
-        if(i&1) brr.push_back(x);
-        else crr.push_back(x);
-    }
-    solve(0,0,brr,B);
-    solve(0,0,crr,C);
-    
-    
-
-    sort(ALL(B));
-
-    int ans = 0;
-    for(int c : C ){
-        auto it = upper_bound(ALL(B),t-c);
-        if(it == B.begin())continue;
-        it = prev(it);
-        ans = max(ans,c+*it);
-    }
-    cout << ans << endl;
-
+    memset(DP,-1,sizeof(DP));
+       cin >> N;
+       cout << solve(0,0);
 }
 
 signed main()

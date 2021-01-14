@@ -2,18 +2,18 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-// #include "ext/pb_ds/assoc_container.hpp"
-// #include "ext/pb_ds/tree_policy.hpp"
-// using namespace __gnu_pbds;
-// template<class T> 
-// using ordered_set = tree<T, null_type,less<T>, rb_tree_tag,tree_order_statistics_node_update> ;
-// template<class key, class value, class cmp = std::less<key>>
-// using ordered_map = tree<key, value, cmp, rb_tree_tag, tree_order_statistics_node_update>;
+#include "ext/pb_ds/assoc_container.hpp"
+#include "ext/pb_ds/tree_policy.hpp"
+using namespace __gnu_pbds;
+template<class T> 
+using ordered_set = tree<T, null_type,less<T>, rb_tree_tag,tree_order_statistics_node_update> ;
+template<class key, class value, class cmp = std::less<key>>
+using ordered_map = tree<key, value, cmp, rb_tree_tag, tree_order_statistics_node_update>;
 
 template<class T> ostream& operator<<(ostream &os, set<T> S){os << "{ ";for(auto s:S) os<<s<<" ";return os<<"}";}
 template<class T> ostream& operator<<(ostream &os, unordered_set<T> S){os << "{ ";for(auto s:S) os<<s<<" ";return os<<"}";}
 template<class T> ostream& operator << (ostream& os, multiset<T> S){os << "{ ";for(auto s:S) os<<s<<" ";return os<<"}";}
-//template<class T> ostream& operator<<(ostream &os, ordered_set<T> S){os << "{ ";for(auto s:S) os<<s<<" ";return os<<"}";}
+template<class T> ostream& operator<<(ostream &os, ordered_set<T> S){os << "{ ";for(auto s:S) os<<s<<" ";return os<<"}";}
 template<class L, class R> ostream& operator<<(ostream &os, pair<L,R> P) {return os << "(" << P.first << "," << P.second << ")";}
 template<class L, class R> ostream& operator<<(ostream &os, map<L,R> M) {os << "{ ";for(auto m:M) os<<"("<<m.first<<":"<<m.second<<") ";return os<<"}";}
 template<class T> ostream& operator<<(ostream &os,vector<T> V){os<<"[ ";for(auto v:V)os<<v<<" ";return os<<"]";}
@@ -43,6 +43,7 @@ template <class T> void RV(vector<vector<T>> &v){for(auto &c : v) RV(c);}
 #define TC int testcase; cin >> testcase;while(testcase--)
 #define forn(i,n) for(int i=0;i<n;i++)
 #define rep(i,n) for(int i = 1;i<=n;i++)
+
 
 #define ALL(x) x.begin(),x.end()
 #define int long long int
@@ -75,49 +76,36 @@ template <typename T> T lcm(T a,T b){ return a*b /gcd(a,b);}
 template <typename T> string to_bin(T num){string binary = "";while (num){binary += (num % 2 == 1 ? "1" : "0");num >>= 1;}reverse(binary.begin(), binary.end());return binary;}
 ////////////////////////////////////////////////////
 
-VI B,C;
+const int N = 5100;
+int dp[N][N];
+string s1,s2;
 
+int n,m;
 
-void solve(int i,int sum,VI &INPUT,VI &RES){
-    if(i == INPUT.size()){
-        RES.push_back(sum);
-        return;
+int solve(int i,int j){
+    if(i == n) return m-j;
+    if(j == m) return n-i;
+    
+    if(dp[i][j]!=0) return dp[i][j];
+    if(s1[i] == s2[j]){
+        return dp[i][j] = solve(i+1,j+1);
+    }else{
+        return dp[i][j] = 1 + min({solve(i+1,j+1),solve(i+1,j),solve(i,j+1)});
     }
-    solve(i+1,sum+INPUT[i],INPUT,RES);
-    solve(i+1,sum,INPUT,RES);
 }
 
 void __Solve__(){
-    int n,t;
-    cin >> n >> t;
-    VI brr,crr;
-    forn(i,n){
-        int x; cin >> x;
-        if(i&1) brr.push_back(x);
-        else crr.push_back(x);
-    }
-    solve(0,0,brr,B);
-    solve(0,0,crr,C);
-    
-    
-
-    sort(ALL(B));
-
-    int ans = 0;
-    for(int c : C ){
-        auto it = upper_bound(ALL(B),t-c);
-        if(it == B.begin())continue;
-        it = prev(it);
-        ans = max(ans,c+*it);
-    }
-    cout << ans << endl;
+    cin >> s1 >> s2;
+    n = SZ(s1);
+    m = SZ(s2);
+    cout << solve(0,0);
 
 }
 
 signed main()
 {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-	cout<<fixed<<setprecision(2);
+	cout<<fixed<<setprecision(12);
     FASTIO
 #ifdef LOCAL 
     freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);

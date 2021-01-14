@@ -113,37 +113,26 @@ string to_bin(T num){
 ////////////////////////////////////////////////////
 
 
-const int N = 110;
 
-double dp[N+1][6*N+1];
-
-void __Solve__(){
-     
+void __Solve__(){ 
 
     int n;
     cin >> n;
-    VI arr(n);
-    forn(i,n) cin >> arr[i];
-    while(arr.size() && arr.front() == 0){
-        arr.erase(arr.begin());
-    }
-    while(arr.size() && arr.back() == 0){
-        arr.erase(arr.begin()+arr.size()-1);
-    }
-    cout << count(ALL(arr),0) << endl;
+    cout << n*n << endl;
 }
+     
 
+    
 signed main()
 {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
 	cout<<fixed<<setprecision(6);
     FASTIO
 #ifdef LOCAL 
-    freopen("input.txt", "r", stdin);
-    freopen("output.txt", "w", stdout);
+    freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);
  #endif 
     int test_case = 1;
-    cin >> test_case;
+    //cin >> test_case;
     forn(i,test_case){
         //cout << "Case #" << i+1<<": ";
         __Solve__();

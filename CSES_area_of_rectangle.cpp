@@ -75,43 +75,117 @@ template <typename T> T lcm(T a,T b){ return a*b /gcd(a,b);}
 template <typename T> string to_bin(T num){string binary = "";while (num){binary += (num % 2 == 1 ? "1" : "0");num >>= 1;}reverse(binary.begin(), binary.end());return binary;}
 ////////////////////////////////////////////////////
 
-VI B,C;
+
+const int N = 2.1e6;
+VPII L[N];
 
 
-void solve(int i,int sum,VI &INPUT,VI &RES){
-    if(i == INPUT.size()){
-        RES.push_back(sum);
-        return;
-    }
-    solve(i+1,sum+INPUT[i],INPUT,RES);
-    solve(i+1,sum,INPUT,RES);
+
+struct node{
+    int s,val,lazy1= 0;
+    bool lz1 = 0;
+};
+ 
+node tree[4*N];
+ 
+ 
+void apply1(int index,int v,int s,int e){
+    tree[index].s = v;
+    tree[index].val =  (e-s)*v;
+    tree[index].lazy1 =  v;
 }
 
+ 
+void push(int index,int l,int r){
+    int mid = (l+r)/2;
+    if(tree[index].lazy1){
+        apply1(2*index,tree[index].lazy1,l,mid);
+        apply1(2*index+1,tree[index].lazy1,mid+1,r);
+        tree[index].lazy1 = 0;
+    }
+}
+void build(int s,int e,int index){
+    if(s == e){
+        tree[index].s = 0;
+        tree[index].val = 0;
+        return;
+    }
+    int mid = (s+e)/2;
+    build(s,mid,index*2);
+    build(mid+1,e,index*2+1);
+    tree[index].val = tree[2*index].val + tree[2*index+1].val;
+}
+ 
+ 
+void update2(int s,int e,int l,int r,int v,int index){
+    if(s > r || e < l)return;
+    if(s >= l && e <=r ) {
+        apply1(index,v,s,e);
+        return;
+    }
+    push(index,s,e);
+    int mid = (s+e)/2;
+    update2(s,mid,l,r,v,index*2);
+    update2(mid+1,e,l,r,v,index*2+1);
+    tree[index].val = tree[2*index].val + tree[2*index+1].val;
+}
+ 
+ 
+int query(int s,int e,int l,int r,int index){
+ 
+    if(s > r || e < l) return 0;
+    if(s >= l && e <=r ) return tree[index].val;
+ 
+    push(index,s,e);
+    int mid = (s+e)/2;
+    int L = query(s,mid,l,r,2*index);
+    int R = query(mid+1,e,l,r,2*index+1);
+    return L+R;
+}
+
+
+
+vector<array<int,4>> rects;
+
 void __Solve__(){
-    int n,t;
-    cin >> n >> t;
-    VI brr,crr;
+    int n;
+    cin >> n;
+    rects.resize(n);
+    forn(i,n) forn(j,4) cin >> rects[i][j];
+    forn(i,n) forn(j,4) rects[i][j] += 1e6;
+
     forn(i,n){
-        int x; cin >> x;
-        if(i&1) brr.push_back(x);
-        else crr.push_back(x);
+        int x1 = rects[i][0];
+        int y1 = rects[i][1];
+        int x2 = rects[i][2];
+        int y2 = rects[i][3];
+        L[x1].emplace_back(i,1);
+        L[x2].emplace_back(i,-1);
     }
-    solve(0,0,brr,B);
-    solve(0,0,crr,C);
-    
-    
 
-    sort(ALL(B));
+    int fans = 0;
+    int currx = -1;
+    for(int i = 1;i<N;i++){
+        for(pair<int,int> p: L[i]){
+            int ind = p.first;
+            int y1 = rects[ind][1],y2 =rects[ind][3];
+            int x1 = rects[ind][0],x2 =rects[ind][2];
+            int t = p.second;
 
-    int ans = 0;
-    for(int c : C ){
-        auto it = upper_bound(ALL(B),t-c);
-        if(it == B.begin())continue;
-        it = prev(it);
-        ans = max(ans,c+*it);
+            int segs = query(0,n-1,0,n-1,1);
+            trace(i,p,segs);
+            if(t == 1){
+                if(currx == -1) currx = x1+1;
+                fans += (currx - x1 - 1)*segs;
+                currx = x1;
+            }else{
+                fans += (currx - x2- 1)*segs;
+                currx = x2;
+            }
+            update2(0,N-1,y1,y2,t,1);
+        }
     }
-    cout << ans << endl;
-
+    cout << fans << endl;
 }
 
 signed main()
