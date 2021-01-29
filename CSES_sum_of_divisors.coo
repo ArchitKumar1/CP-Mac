@@ -75,14 +75,9 @@ template <typename T> T LCM(T a,T b){ return a*b /gcd(a,b);}
 template <typename T> string to_bin(T num){string binary = "";while (num){binary += (num % 2 == 1 ? "1" : "0");num >>= 1;}reverse(binary.begin(), binary.end());return binary;}
 ////////////////////////////////////////////////////
 
-
 void __Solve__(){
 
-    int n;
-    cin >> n;
-    
-    
-     
+   
 }   
 
 signed main()
@@ -94,7 +89,7 @@ signed main()
     freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);
 #endif 
     int test_case = 1;
-    cin >> test_case;
+    //cin >> test_case;
     forn(i,test_case){
         //cout << "Case #" << i+1<<": ";
         __Solve__();

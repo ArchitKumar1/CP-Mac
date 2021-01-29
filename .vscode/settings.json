@@ -33,7 +33,13 @@
         "type_traits": "cpp",
         "variant": "cpp",
         "memory": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "hash_map": "cpp",
+        "unordered_set": "cpp",
+        "string_view": "cpp",
+        "initializer_list": "cpp",
+        "ranges": "cpp",
+        "span": "cpp"
     },
     "python.pythonPath": "/Users/archit.ext/.pyenv/versions/3.6.0/bin/python"
 }

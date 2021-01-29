@@ -75,14 +75,46 @@ template <typename T> T LCM(T a,T b){ return a*b /gcd(a,b);}
 template <typename T> string to_bin(T num){string binary = "";while (num){binary += (num % 2 == 1 ? "1" : "0");num >>= 1;}reverse(binary.begin(), binary.end());return binary;}
 ////////////////////////////////////////////////////
 
+vector<int> factorize(int x){
+    vector<int> facts;
+
+    for(int i = 2;i*i<=x;i++){
+        while(x %i == 0){
+            facts.PB(i);
+            x /= i;
+        }
+    }
+    if(x > 1){
+        facts.push_back(x);
+    }
+    return facts;
+}
+
+
+const int MODY = 1e9+7;
+
 
 void __Solve__(){
 
-    int n;
+    long long n;
     cin >> n;
+    n = 2*n+1;
+
+    long long fans = 0;
+
+    if(n%2 == 1){
+        fans += n/2;
+        n--;
+    }
+    long long M = n/2 - 1;
+
+    fans += M*(M+1);
+    fans %= MODY;
     
+    cout << fans << endl;
+    // 1 2 3 4 5 6 7 8 9 10
+    // 0 0 1 1 2 2 3 3 4 4 
     
-     
 }   
 
 signed main()

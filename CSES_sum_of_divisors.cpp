@@ -75,14 +75,54 @@ template <typename T> T LCM(T a,T b){ return a*b /gcd(a,b);}
 template <typename T> string to_bin(T num){string binary = "";while (num){binary += (num % 2 == 1 ? "1" : "0");num >>= 1;}reverse(binary.begin(), binary.end());return binary;}
 ////////////////////////////////////////////////////
 
+template <int32_t MOD_> struct modnum {
+    static constexpr int32_t MOD = MOD_;
+    static_assert(MOD_ > 0, "MOD must be positive");
+private:
+    using ll = long long;
+    int32_t v;
+    static int32_t minv(int32_t a, int32_t m) {a %= m;assert(a);return a == 1 ? 1 : int32_t(m - ll(minv(m, a)) * ll(m) / a);}
+public:
+    modnum() : v(0) {}
+    modnum(ll v_) : v(int32_t(v_ % MOD)) { if (v < 0) v += MOD; }
+    explicit operator int32_t() const { return v; }
+    friend std::ostream& operator << (std::ostream& out, const modnum& n) { return out << int32_t(n); }
+    friend std::istream& operator >> (std::istream& in, modnum& n) { ll v_; in >> v_; n = modnum(v_); return in; }
+ 
+    friend bool operator == (const modnum& a, const modnum& b) { return a.v == b.v; }
+    friend bool operator != (const modnum& a, const modnum& b) { return a.v != b.v; }
+ 
+    modnum inv() const {modnum res;res.v = minv(v, MOD);return res;}
+    friend modnum inv(const modnum& m) { return m.inv(); }
+    modnum neg() const {modnum res;res.v = v ? MOD-v : 0;return res;}
+    friend modnum neg(const modnum& m) { return m.neg(); }
+    modnum operator- () const {return neg();}
+    modnum operator+ () const {return modnum(*this);}
+    modnum& operator ++ () {v ++;if (v == MOD) v = 0;return *this;}
+    modnum& operator -- () {if (v == 0) v = MOD;v --;return *this;}
+    modnum& operator += (const modnum& o) {v -= MOD-o.v;v = (v < 0) ? v + MOD : v;return *this;}
+    modnum& operator -= (const modnum& o) {v -= o.v;v = (v < 0) ? v + MOD : v;return *this;}
+    modnum& operator *= (const modnum& o) {v = int32_t(ll(v) * ll(o.v) % MOD);return *this;}
+    modnum& operator /= (const modnum& o) {return *this *= o.inv();}
+ 
+    friend modnum operator ++ (modnum& a, int32_t) { modnum r = a; ++a; return r; }
+    friend modnum operator -- (modnum& a, int32_t) { modnum r = a; --a; return r; }
+    friend modnum operator + (const modnum& a, const modnum& b) { return modnum(a) += b; }
+    friend modnum operator - (const modnum& a, const modnum& b) { return modnum(a) -= b; }
+    friend modnum operator * (const modnum& a, const modnum& b) { return modnum(a) *= b; }
+    friend modnum operator / (const modnum& a, const modnum& b) { return modnum(a) /= b; }
+};
+using num = modnum<(int)(MOD)>;
 
+
+  
 void __Solve__(){
 
-    int n;
-    cin >> n;
+   int n;
+   cin >> n;
     
-    
-     
+   num ans = 0;
+
 }   
 
 signed main()
@@ -94,7 +134,7 @@ signed main()
     freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);
 #endif 
     int test_case = 1;
-    cin >> test_case;
+    //cin >> test_case;
     forn(i,test_case){
         //cout << "Case #" << i+1<<": ";
         __Solve__();

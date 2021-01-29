@@ -76,13 +76,50 @@ template <typename T> string to_bin(T num){string binary = "";while (num){binary
 ////////////////////////////////////////////////////
 
 
+int dp[2][20][20][2];
+
+string num;
+
+int solve(bool smaller,int digit,int pos,int start){
+     //print(smaller,digit,pos);
+    if(SZ(num) == pos){
+         //print("end",num,smaller,digit,pos);
+
+        return 1;
+    }
+    if(dp[smaller][digit][pos][start]!= -1){
+        return dp[smaller][digit][pos][start];
+    }
+    int ans = 0;
+    
+    int N = SZ(num);
+    int C = num[pos] -'0';
+    int D =  !smaller ? 9 :C;
+
+    for(int i = 0;i<=D;i++){
+        if(start || i!= digit){
+            ans += solve(smaller&(C == i),i,pos+1,start&(i == 0));
+        }
+    }
+    return dp[smaller][digit][pos][start] = ans;
+}
+
+int comp(int x){
+    
+    num = to_string(x);
+    memset(dp,-1,sizeof(dp));
+    int A = 0;
+    int N = SZ(num);
+    return solve(1,0,0,1);
+
+}
+
+
 void __Solve__(){
 
-    int n;
-    cin >> n;
-    
-    
-     
+   int a,b;
+    read(a,b);
+    print(comp(b) - comp(a-1));
 }   
 
 signed main()
@@ -94,7 +131,7 @@ signed main()
     freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);
 #endif 
     int test_case = 1;
-    cin >> test_case;
+    //cin >> test_case;
     forn(i,test_case){
         //cout << "Case #" << i+1<<": ";
         __Solve__();

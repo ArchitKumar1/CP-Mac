@@ -77,12 +77,11 @@ template <typename T> string to_bin(T num){string binary = "";while (num){binary
 
 
 void __Solve__(){
+    int n = 10;
 
-    int n;
-    cin >> n;
-    
-    
-     
+    VI arr(n);
+    iota(ALL(arr),0);
+
 }   
 
 signed main()
@@ -94,7 +93,7 @@ signed main()
     freopen("input.txt", "r", stdin);freopen("output.txt", "w", stdout);
 #endif 
     int test_case = 1;
-    cin >> test_case;
+    //cin >> test_case;
     forn(i,test_case){
         //cout << "Case #" << i+1<<": ";
         __Solve__();
